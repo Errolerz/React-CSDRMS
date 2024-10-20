@@ -132,7 +132,11 @@ const Record = () => {
           </div>
         </div>
         {loading ? (
-          <p>Loading...</p>
+          <div className="loading">
+            <div class="slide"><i></i></div>
+            <div class="paper"></div>
+            <div class="keyboard"></div>
+        </div>
         ) : view === 'table' ? (
           <RecordTable records={records} schoolYears={schoolYears} grades={grades} />
         ) : view === 'analytics' ? (

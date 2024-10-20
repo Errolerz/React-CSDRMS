@@ -236,7 +236,16 @@ const RecordAnalytics = () => {
   };
 
   if (!lineChartData || !barChartData || !pieChartData) {
-    return <p>Loading data...</p>;
+    return <div class="dot-spinner">
+      <div class="dot-spinner__dot"></div>
+      <div class="dot-spinner__dot"></div>
+      <div class="dot-spinner__dot"></div>
+      <div class="dot-spinner__dot"></div>
+      <div class="dot-spinner__dot"></div>
+      <div class="dot-spinner__dot"></div>
+      <div class="dot-spinner__dot"></div>
+      <div class="dot-spinner__dot"></div>
+    </div>
   }
 
   // Pie Chart Options

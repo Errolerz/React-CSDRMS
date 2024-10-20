@@ -180,7 +180,16 @@ const Reports = () => {
           <h2 className={navStyles['h1-title']}>Reports List</h2>
         </div>
         {loading ? (
-          <p>Loading reports...</p>
+          <div class="dot-spinner">
+            <div class="dot-spinner__dot"></div>
+            <div class="dot-spinner__dot"></div>
+            <div class="dot-spinner__dot"></div>
+            <div class="dot-spinner__dot"></div>
+            <div class="dot-spinner__dot"></div>
+            <div class="dot-spinner__dot"></div>
+            <div class="dot-spinner__dot"></div>
+            <div class="dot-spinner__dot"></div>
+          </div>
         ) : (
           <div className={tableStyles['table-container']}>
             <table className={tableStyles['global-table']}>

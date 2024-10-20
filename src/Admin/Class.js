@@ -144,10 +144,15 @@ const Class = () => {
 
     const filteredSchoolYears = schoolYears.filter(schoolYear => schoolYear.schoolYear?.includes(searchTerm));
 
-    if (loading) {
-        return <div>Loading...</div>; // You can customize this loading state
-    }
-
+    if (loading) 
+        return <div className='center'>
+            <div className="loading">
+                <div class="slide"><i></i></div>
+                <div class="paper"></div>
+                <div class="keyboard"></div>
+            </div>
+            <p className='period' >Loading...</p>
+        </div>
     return (
         <div className={navStyles.wrapper}>
             <Navigation loggedInUser={loggedInUser} />

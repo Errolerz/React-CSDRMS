@@ -71,7 +71,15 @@ const TimeLog = () => {
         setSelectedRow(index);
     };
 
-    if (loading) return <div>Loading...</div>;
+    if (loading) 
+        return <div className='center'>
+            <div className="loading">
+                <div class="slide"><i></i></div>
+                <div class="paper"></div>
+                <div class="keyboard"></div>
+            </div>
+            <p className='period' >Loading...</p>
+        </div>
     if (error) return <div>{error}</div>;
 
     return (

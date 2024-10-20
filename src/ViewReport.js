@@ -40,7 +40,16 @@ const ViewReportModal = ({ reportId, onClose }) => {
   }, [reportId]);
 
   if (loading) {
-    return <p>Loading report...</p>;
+    return <div class="dot-spinner">
+      <div class="dot-spinner__dot"></div>
+      <div class="dot-spinner__dot"></div>
+      <div class="dot-spinner__dot"></div>
+      <div class="dot-spinner__dot"></div>
+      <div class="dot-spinner__dot"></div>
+      <div class="dot-spinner__dot"></div>
+      <div class="dot-spinner__dot"></div>
+      <div class="dot-spinner__dot"></div>
+    </div>
   }
 
   if (!report) {

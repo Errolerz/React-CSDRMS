@@ -1,23 +1,21 @@
 import React, { useState, useEffect } from 'react';
-/* import { useNavigate } from 'react-router-dom'; */
 import axios from 'axios';
 import styles from './TimeLog.module.css'; 
 import navStyles from '../Navigation.module.css'; 
 import Navigation from '../Navigation'; // Importing the updated Navigation component
-import AdviserTimeLogModal from './AdviserTimeLogModal'; // Import the modal
+import UserTimeLogModal from './UserTimeLogModal'; // Import the modal
 
 const TimeLog = () => {
-    const [advisers, setAdvisers] = useState([]);
+    const [users, setUsers] = useState([]); // Changed from advisers to users
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const [selectedAdviser, setSelectedAdviser] = useState(null);
+    const [selectedUser, setSelectedUser] = useState(null); // Changed from selectedAdviser to selectedUser
     const [selectedRow, setSelectedRow] = useState(null);
     const [searchQuery, setSearchQuery] = useState('');
     const authToken = localStorage.getItem('authToken');
     const loggedInUser = JSON.parse(authToken);
     const { uid } = loggedInUser;
-    /*const navigate = useNavigate();*/
 
     // Set the document title for the Time Log page
     useEffect(() => {
@@ -25,38 +23,39 @@ const TimeLog = () => {
     }, []); // Empty dependency array ensures this runs once when the component mounts
 
     useEffect(() => {
-        const fetchAdvisers = async () => {
+        const fetchUsers = async () => { // Changed from fetchAdvisers to fetchUsers
             try {
-                const response = await axios.get('http://localhost:8080/user/getAllAdvisers');
-                setAdvisers(response.data);
+                const response = await axios.get('http://localhost:8080/user/getAllUsers'); // Updated endpoint
+                setUsers(response.data); // Set users instead of advisers
             } catch (err) {
-                setError('Failed to fetch advisers');
+                setError('Failed to fetch users'); // Updated error message
                 console.error(err);
             } finally {
                 setLoading(false);
             }
         };
 
-        fetchAdvisers();
+        fetchUsers();
     }, []);
 
     const openModal = () => {
-        if (selectedAdviser) {
+       
+        if (selectedUser) { // Changed from selectedAdviser to selectedUser
             setIsModalOpen(true);
         }
     };
 
     const closeModal = () => {
-        setSelectedAdviser(null);
+        setSelectedUser(null); // Changed from selectedAdviser to selectedUser
         setIsModalOpen(false);
         setSelectedRow(null);
     };
 
-    // Filter advisers based on search query
-    const filteredAdvisers = advisers.filter(adviser => {
-        const fullName = `${adviser.firstname} ${adviser.middlename || ''} ${adviser.lastname}`.toLowerCase();
-        const gradeSection = `${adviser.grade} - ${adviser.section}`.toLowerCase();
-        const email = adviser.email.toLowerCase();
+    // Filter users based on search query
+    const filteredUsers = users.filter(user => { // Changed from filteredAdvisers to filteredUsers
+        const fullName = `${user.firstname} ${user.middlename || ''} ${user.lastname}`.toLowerCase();
+        const gradeSection = `${user.grade} - ${user.section}`.toLowerCase();
+        const email = user.email.toLowerCase();
 
         const queryLower = searchQuery.toLowerCase();
         return (
@@ -66,19 +65,32 @@ const TimeLog = () => {
         );
     });
 
-    const handleRowClick = (adviser, index) => {
-        setSelectedAdviser(adviser);
+    const handleRowClick = (user, index) => { // Changed from adviser to user
+    
+        setSelectedUser(user); // Changed from selectedAdviser to selectedUser
         setSelectedRow(index);
+    };
+
+    const getUserTypeString = (userType) => {
+        switch (userType) {
+            case 1: return 'SSO';
+            case 2: return 'Principal';
+            case 3: return 'Adviser';
+            case 4: return 'Admin';
+            case 5: return 'Teacher';
+            case 6: return 'Guidance';
+            default: return 'Unknown';
+        }
     };
 
     if (loading) 
         return <div className='center'>
             <div className="loading">
-                <div class="slide"><i></i></div>
-                <div class="paper"></div>
-                <div class="keyboard"></div>
+                <div className="slide"><i></i></div>
+                <div className="paper"></div>
+                <div className="keyboard"></div>
             </div>
-            <p className='period' >Loading...</p>
+            <p className='period'>Loading...</p>
         </div>
     if (error) return <div>{error}</div>;
 
@@ -105,21 +117,21 @@ const TimeLog = () => {
                             <thead>
                                 <tr>
                                     <th>Name</th>
-                                    <th>Grade & Section</th>
+                                    <th>UserType</th>
                                     <th>Email</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                {filteredAdvisers.length > 0 ? (
-                                    filteredAdvisers.map((adviser, index) => (
+                                {filteredUsers.length > 0 ? ( // Changed from filteredAdvisers to filteredUsers
+                                    filteredUsers.map((user, index) => ( // Changed from adviser to user
                                         <tr 
-                                            key={adviser.adviser_id} 
-                                            onClick={() => handleRowClick(adviser, index)}
+                                            key={user.user_id} // Changed from adviser_id to user_id
+                                            onClick={() => handleRowClick(user, index)} // Changed from adviser to user
                                             className={selectedRow === index ? styles['log-selected-row'] : ''}
                                         >
-                                            <td>{`${adviser.firstname} ${adviser.middlename ? adviser.middlename + ' ' : ''}${adviser.lastname}`}</td>
-                                            <td>{`${adviser.grade} - ${adviser.section}`}</td>
-                                            <td>{`${adviser.email}`}</td>
+                                            <td>{`${user.firstname} ${user.middlename ? user.middlename + ' ' : ''}${user.lastname}`}</td>
+                                            <td>{getUserTypeString(user.userType)}</td>
+                                            <td>{`${user.email}`}</td>
                                         </tr>
                                     ))
                                 ) : (
@@ -138,18 +150,17 @@ const TimeLog = () => {
                         <button 
                             className={styles.viewlogButton} 
                             onClick={openModal} 
-                            disabled={!selectedAdviser}
+                            disabled={!selectedUser} // Changed from selectedAdviser to selectedUser
                         >
                             View
                         </button>
-                    </div>
-                    
+                    </div>                    
                 </div>               
             </div>
 
             {isModalOpen && (
-                <AdviserTimeLogModal 
-                    adviser={selectedAdviser} 
+                <UserTimeLogModal // Changed from AdviserTimeLogModal to UserTimeLogModal
+                    user={selectedUser} // Changed from adviser to user
                     onClose={closeModal} 
                 />
             )}

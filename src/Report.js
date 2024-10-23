@@ -214,17 +214,7 @@ const Reports = () => {
                     <td>{report.date}</td>
                     <td>{report.record.monitored_record}</td>
                     <td>
-                      {report.ssoComplainant 
-                        ? `${report.ssoComplainant.firstname} ${report.ssoComplainant.lastname}`
-                        : report.principalComplainant
-                        ? `${report.principalComplainant.firstname} ${report.principalComplainant.lastname}` 
-                        : report.adviserComplainant 
-                          ? `${report.adviserComplainant.firstname} ${report.adviserComplainant.lastname}` 
-                          : report.teacherComplainant 
-                            ? `${report.teacherComplainant.firstname} ${report.teacherComplainant.lastname}` 
-                            : report.guidanceComplainant 
-                              ? `${report.guidanceComplainant.firstname} ${report.guidanceComplainant.lastname}` 
-                              : 'N/A'} {/* Display 'N/A' if no complainant is found */}
+                    {report.userComplainant.firstname}  {report.userComplainant.lastname}
                     </td>
                     <td>{report.record.student.name}</td>
                     <td>{report.adviser.firstname} {report.adviser.lastname}</td>

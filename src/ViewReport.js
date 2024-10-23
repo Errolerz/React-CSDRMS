@@ -99,17 +99,7 @@ const ViewReportModal = ({ reportId, onClose }) => {
                 <tr>
                   <td>Complainant:</td>
                   <td>
-                    {report.ssoComplainant 
-                      ? `${report.ssoComplainant.firstname} ${report.ssoComplainant.lastname}`
-                      : report.principalComplainant
-                      ? `${report.principalComplainant.firstname} ${report.principalComplainant.lastname}` 
-                      : report.adviserComplainant 
-                        ? `${report.adviserComplainant.firstname} ${report.adviserComplainant.lastname}` 
-                        : report.teacherComplainant 
-                          ? `${report.teacherComplainant.firstname} ${report.teacherComplainant.lastname}` 
-                          : report.guidanceComplainant 
-                            ? `${report.guidanceComplainant.firstname} ${report.guidanceComplainant.lastname}` 
-                            : 'N/A'} {/* Display 'N/A' if no complainant is found */}
+                    {report.userComplainant.firstname} {report.userComplainant.lastname}
                   </td>
                 </tr>
                 <tr>

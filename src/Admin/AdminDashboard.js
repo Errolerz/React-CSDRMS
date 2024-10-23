@@ -34,7 +34,7 @@ const AdminDashboard = () => {
 
   const fetchUsers = async () => {
     try {
-      const response = await axios.get('http://localhost:8080/user/allUsers');
+      const response = await axios.get('http://localhost:8080/user/getAllUsers');
       setUsers(response.data);
     } catch (error) {
       console.error('Error fetching users:', error);
@@ -172,6 +172,7 @@ const AdminDashboard = () => {
             setIsUpdateAccountModalOpen(false);
             refreshUsers();
           }}
+          userId={selectedUser?.userId}
           user={selectedUser}
           onUpdateSuccess={refreshUsers}
         />

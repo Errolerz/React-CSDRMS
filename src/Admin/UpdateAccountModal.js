@@ -4,7 +4,7 @@ import axios from 'axios';
 import styles from './RegisterUserModal.module.css';
 import styles1 from '../GlobalForm.module.css';
 
-const UpdateAccountModal = ({ isOpen, onClose, user }) => {
+const UpdateAccountModal = ({ isOpen, onClose, userId, user }) => {
     const authToken = localStorage.getItem('authToken');
     const loggedInUser = authToken ? JSON.parse(authToken) : null;
 
@@ -23,6 +23,7 @@ const UpdateAccountModal = ({ isOpen, onClose, user }) => {
     const [passwordStrength, setPasswordStrength] = useState(0); // Password strength state
 
     useEffect(() => {
+        console.log("User id: ",userId);
         if (isOpen && user) {
             setUpdatedUser({
                 username: user.username,
@@ -50,8 +51,8 @@ const UpdateAccountModal = ({ isOpen, onClose, user }) => {
     };
 
     const handleUpdate = () => {
-        const updatedData = { ...updatedUser };
-    
+        const updatedData = { ...updatedUser, userId }; // Add userId to the updatedData
+
         // If the password field is empty, remove it from the object to avoid updating
         if (updatedData.password === '') {
             delete updatedData.password;
@@ -59,45 +60,37 @@ const UpdateAccountModal = ({ isOpen, onClose, user }) => {
             // Validate password strength
             const passwordStrength = calculatePasswordStrength(updatedData.password);
             const minimumPasswordStrength = 5;
-    
+
             // Check if password strength meets the requirement
             if (passwordStrength < minimumPasswordStrength) {
                 alert("Password must be at least 8 characters, 1 uppercase, 1 lowercase, 1 number, and 1 special character.");
                 return; // Prevent form submission
             }
         }
-    
-        const endpoint = updatedUser.userType === 1 ? 'updateSSO' :
-                         updatedUser.userType === 2 ? 'updatePrincipal' :
-                         updatedUser.userType === 3 ? 'updateAdviser' :
-                         updatedUser.userType === 4 ? 'updateAdmin' :
-                         updatedUser.userType === 5 ? 'updateTeacher' :
-                         updatedUser.userType === 6 ? 'updateGuidance' : '';
-    
-        if (endpoint) {
-            axios.put(`http://localhost:8080/user/${endpoint}`, updatedData)
-                .then(response => {
-                    console.log(response.data);
-                    alert('Account Successfully Updated');
-    
-                    if (updatedUser.username === loggedInUser.username) {
-                        localStorage.setItem('authToken', JSON.stringify(updatedUser));
-                    }
-                    
-                    onClose(); // Close the modal
-                    window.location.reload();
-                })
-                .catch(error => {
-                    console.error('Error updating user:', error);
-                    alert('Error updating account. Please try again.');
-                });
-        }
+
+        // Use a generic endpoint for updating the user
+        axios.put(`http://localhost:8080/user/updateUser/${userId}`, updatedData)
+            .then(response => {
+                console.log(response.data);
+                alert('Account Successfully Updated');
+
+                if (updatedUser.username === loggedInUser.username) {
+                    localStorage.setItem('authToken', JSON.stringify(updatedData));
+                }
+                
+                onClose(); // Close the modal
+                window.location.reload();
+            })
+            .catch(error => {
+                console.error('Error updating user:', error);
+                alert('Error updating account. Please try again.');
+            });
     };
-    
+
     // Password strength calculation function
     const calculatePasswordStrength = (password) => {
         let strength = 0;
-    
+
         // Check password length
         if (password.length >= 8) strength += 1; // Minimum length 8
         if (password.length >= 12) strength += 1; // More points for longer
@@ -105,10 +98,9 @@ const UpdateAccountModal = ({ isOpen, onClose, user }) => {
         if (/[a-z]/.test(password)) strength += 1; // At least one lowercase letter
         if (/[0-9]/.test(password)) strength += 1; // At least one digit
         if (/[\W_]/.test(password)) strength += 1; // At least one special character
-    
+
         return strength; // Return a value from 0 to 6
     };
-    
 
     if (!isOpen) return null;
 

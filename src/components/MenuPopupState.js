@@ -14,6 +14,7 @@ const MenuPopupState = () => {
     const loggedInUser = authToken ? JSON.parse(authToken) : null;
     const navigate = useNavigate();
     const [isModalOpen, setModalOpen] = useState(false); // State for modal visibility
+    console.log("Updates: ",loggedInUser.userId);
 
     // Check if the user is logged in
     if (!loggedInUser) {
@@ -23,7 +24,7 @@ const MenuPopupState = () => {
     }
 
     const user = loggedInUser;
-    const { uid } = user;
+    const { userId } = user;
 
     // User type label for display purposes
     const userTypeLabel = `${user.lastname || 'User'} ${user.userType === 1 ? " | SSO Officer" : 
@@ -35,15 +36,9 @@ const MenuPopupState = () => {
     const handleLogout = async () => {
         const userType = user.userType;
 
-        if (userType !== 3) {
-            localStorage.removeItem('authToken');
-            navigate('/');
-            return;
-        }
-
         try {
             const logoutTime = new Date().toISOString();
-            const response = await axios.get(`http://localhost:8080/time-log/getLatestLog/${uid}`);
+            const response = await axios.get(`http://localhost:8080/time-log/getLatestLog/${userId}`);
             const { timelog_id: timelogId } = response.data;
 
             await axios.post('http://localhost:8080/time-log/logout', {
@@ -83,7 +78,7 @@ const MenuPopupState = () => {
                         <MenuItem onClick={handleProfileClick}>Update Account</MenuItem>
                         <MenuItem onClick={handleLogout}>Logout</MenuItem>
                     </Menu>
-                    <UpdateAccountModal isOpen={isModalOpen} onClose={handleModalClose} user={user}  /> {/* Include the modal */}
+                    <UpdateAccountModal isOpen={isModalOpen} onClose={handleModalClose} userId={user.userId} user={user}  /> {/* Include the modal */}
                 </React.Fragment>
             )}
         </PopupState>

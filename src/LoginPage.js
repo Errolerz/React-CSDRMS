@@ -68,13 +68,12 @@ const LoginPage = () => {
       console.log("User id: ", response.data.uid);
   
       // Only log time if the userType is 3
-      if (userType === 3) {
+     
         const loginTime = new Date().toISOString(); // Get current time in ISO format
         await axios.post('http://localhost:8080/time-log/login', {
-          userId: response.data.uid, // Assuming `userObject` contains `uid`
+          userId: response.data.userId, // Assuming `userObject` contains `uid`
           loginTime: loginTime,
         });
-      }
   
       // Redirect based on userType
       switch (userType) {

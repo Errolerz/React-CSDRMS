@@ -6,7 +6,7 @@ import formStyles from '../GlobalForm.module.css';
 
 const RegisterUserModal = ({ isOpen, onClose, role }) => {
     const [userData, setUserData] = useState({
-        uid: '',
+        userId: '',
         username: '',
         password: '',
         firstname: '',
@@ -22,7 +22,7 @@ const RegisterUserModal = ({ isOpen, onClose, role }) => {
     const [schoolYears, setSchoolYears] = useState([]);
     const [message, setMessage] = useState('');
     const [error, setError] = useState('');
-    const [passwordStrength, setPasswordStrength] = useState(0); // Password strength state
+    const [passwordStrength, setPasswordStrength] = useState(0);
 
     useEffect(() => {
         if (isOpen) {
@@ -77,7 +77,6 @@ const RegisterUserModal = ({ isOpen, onClose, role }) => {
         const { name, value } = e.target;
         setUserData(prevUserData => ({ ...prevUserData, [name]: value }));
 
-        // Update password strength if the password field is changed
         if (name === 'password') {
             setPasswordStrength(calculatePasswordStrength(value));
         }
@@ -85,50 +84,40 @@ const RegisterUserModal = ({ isOpen, onClose, role }) => {
 
     const calculatePasswordStrength = (password) => {
         let strength = 0;
+        if (password.length >= 8) strength += 1; 
+        if (password.length >= 12) strength += 1; 
+        if (/[A-Z]/.test(password)) strength += 1; 
+        if (/[a-z]/.test(password)) strength += 1; 
+        if (/[0-9]/.test(password)) strength += 1; 
+        if (/[\W_]/.test(password)) strength += 1; 
 
-        // Check password length
-        if (password.length >= 8) strength += 1; // Minimum length 8
-        if (password.length >= 12) strength += 1; // More points for longer
-        if (/[A-Z]/.test(password)) strength += 1; // At least one uppercase letter
-        if (/[a-z]/.test(password)) strength += 1; // At least one lowercase letter
-        if (/[0-9]/.test(password)) strength += 1; // At least one digit
-        if (/[\W_]/.test(password)) strength += 1; // At least one special character
-
-        return strength; // Return a value from 0 to 6
+        return strength; 
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
     
-        // Minimum strength required for the password
         const minimumPasswordStrength = 5;
-    
-        // Check if password strength meets the requirement
         if (passwordStrength < minimumPasswordStrength) {
             alert("Password must be at least 8 characters, 1 uppercase, 1 lowercase, 1 number, and 1 special character.");
-            return; // Prevent form submission
+            return; 
         }
-    
-        const endpoint = role === 'Adviser' ? 'registerAdviser' 
-                         : role === 'Principal' ? 'registerPrincipal' 
-                         : role === 'Teacher' ? 'registerTeacher' 
-                         : role === 'Guidance' ? 'registerGuidance' 
-                         : 'registerSSO';
+        
         try {
-            const response = await axios.post(`http://localhost:8080/user/${endpoint}`, userData);
+            // Directly register using the endpoint provided
+            const response = await axios.post(`http://localhost:8080/user/registerUser`, userData);
             console.log(response.data);
             alert(`${role} is successfully registered.`);
             setError('');
             setTimeout(() => {
                 onClose();
-                window.location.reload(); // Refresh the page
+                window.location.reload(); 
             }, 200);
         } catch (error) {
             console.error('Error:', error);
             if (error.response && error.response.data) {
-                
                 const errorMessage = error.response.data.message;
-                if (errorMessage === "Adviser with the grade, section, and school year already exists") {
+                if (errorMessage === "Adviser with the same grade, section, and school year already exists") {
                     alert(`${role} with the same school year, grade, and section already exists.`);
                 } else if (errorMessage === "Username already exist") {
                     alert("Username already exists. Please use another one");
@@ -139,8 +128,6 @@ const RegisterUserModal = ({ isOpen, onClose, role }) => {
             setMessage('');
         }
     };
-    
-    
 
     if (!isOpen) return null;
 
@@ -175,17 +162,15 @@ const RegisterUserModal = ({ isOpen, onClose, role }) => {
                             placeholder="Password"
                             required
                         />
-                        
                     </div>
-                    
                     <div className={styles['password-strength-container']}>
-                            <div className={styles['password-strength-bar']} style={{ width: `${(passwordStrength / 6) * 100}%`, backgroundColor: passwordStrength === 6 ? 'green' : passwordStrength >= 4 ? 'yellow' : 'red' }} />
-                        </div>
-                        <p className={styles['password-strength-text']}>
-                            {passwordStrength === 0 ? '' :
-                             passwordStrength < 3 ? 'Weak' :
-                             passwordStrength < 5 ? 'Moderate' : 'Strong'}
-                        </p>
+                        <div className={styles['password-strength-bar']} style={{ width: `${(passwordStrength / 6) * 100}%`, backgroundColor: passwordStrength === 6 ? 'green' : passwordStrength >= 4 ? 'yellow' : 'red' }} />
+                    </div>
+                    <p className={styles['password-strength-text']}>
+                        {passwordStrength === 0 ? '' :
+                         passwordStrength < 3 ? 'Weak' :
+                         passwordStrength < 5 ? 'Moderate' : 'Strong'}
+                    </p>
                     <div className={formStyles['form-group']}>
                         <label htmlFor="firstname">First Name:</label>
                         <input

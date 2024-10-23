@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import styles from './AdviserTimeLogModal.module.css';
+import styles from './UserTimeLogModal.module.css'; // Updated file name
 
-const AdviserTimeLogModal = ({ adviser, onClose }) => {
-    const [adviserTimeLogs, setAdviserTimeLogs] = useState([]);
+const UserTimeLogModal = ({ user, onClose }) => { // Changed from adviser to user
+    const [userTimeLogs, setUserTimeLogs] = useState([]); // Changed from adviserTimeLogs to userTimeLogs
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [loginCount, setLoginCount] = useState(0); 
@@ -14,19 +14,19 @@ const AdviserTimeLogModal = ({ adviser, onClose }) => {
     const [selectedWeek, setSelectedWeek] = useState('all');
 
     useEffect(() => {
-        const fetchAdviserTimeLogs = async () => {
+        const fetchUserTimeLogs = async () => { // Changed from fetchAdviserTimeLogs
             try {
-                const response = await axios.get(`http://localhost:8080/time-log/getAllTimelogsByAdviser/${adviser.uid}`);
-                setAdviserTimeLogs(response.data);
+                const response = await axios.get(`http://localhost:8080/time-log/getAllTimelogsByUser/${user.userId}`); // Changed endpoint
+                setUserTimeLogs(response.data);
                 setLoading(false);
             } catch (err) {
-                setError('Failed to fetch adviser time logs');
+                setError('Failed to fetch user time logs'); // Updated error message
                 console.error(err);
             }
         };
 
-        fetchAdviserTimeLogs();
-    }, [adviser.uid]);
+        fetchUserTimeLogs();
+    }, [user.uid]);
 
     const handleYearChange = (event) => {
         setSelectedYear(event.target.value);
@@ -41,7 +41,7 @@ const AdviserTimeLogModal = ({ adviser, onClose }) => {
         setSelectedWeek(event.target.value);
     };
 
-    const filteredTimeLogs = adviserTimeLogs.filter(log => {
+    const filteredTimeLogs = userTimeLogs.filter(log => { // Changed from adviserTimeLogs
         const logDate = new Date(log.loginTime);
 
         if (selectedYear !== 'all' && logDate.getFullYear() !== parseInt(selectedYear)) {
@@ -72,7 +72,7 @@ const AdviserTimeLogModal = ({ adviser, onClose }) => {
         <div className={styles['timelog-modal-overlay']} onClick={onClose}>
             <div className={styles['timelog-modal-content']} onClick={e => e.stopPropagation()}>
                 <button className={styles['timelog-close-button']} onClick={onClose}>X</button>
-                <h2 className={styles['timelog-title']}>{adviser.firstname} {adviser.lastname}'s Time Logs</h2>
+                <h2 className={styles['timelog-title']}>{user.firstname} {user.lastname}'s Time Logs</h2> {/* Changed from adviser to user */}
 
                 <div className={styles['timelog-filters']}>
                     <div className={styles['filter-item']}>
@@ -88,7 +88,7 @@ const AdviserTimeLogModal = ({ adviser, onClose }) => {
                     </div>
 
                     <div className={styles['filter-item']}>
-                        <label label className={styles['filter-timelog-label']}>
+                        <label className={styles['filter-timelog-label']}>
                             Month:
                             <select className={styles['select-timelog']} value={selectedMonth} onChange={handleMonthChange}>
                                 <option value="all">All</option>
@@ -110,7 +110,7 @@ const AdviserTimeLogModal = ({ adviser, onClose }) => {
 
                     {selectedMonth !== 'all' && (
                         <div className={styles['filter-item']}>
-                            <label label className={styles['filter-timelog-label']}>
+                            <label className={styles['filter-timelog-label']}>
                                 Week:
                                 <select className={styles['select-timelog']} value={selectedWeek} onChange={handleWeekChange}>
                                     <option value="all">All</option>
@@ -164,4 +164,4 @@ const AdviserTimeLogModal = ({ adviser, onClose }) => {
     );
 };
 
-export default AdviserTimeLogModal;
+export default UserTimeLogModal; // Changed from AdviserTimeLogModal to UserTimeLogModal

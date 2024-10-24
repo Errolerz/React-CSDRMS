@@ -80,6 +80,18 @@ const AdminDashboard = () => {
     return usernameMatches || nameMatches || emailMatches || userTypeMatches;
   }), [users, searchQuery]);
 
+  const getUserTypeString = (userType) => {
+    switch (userType) {
+        case 1: return 'SSO';
+        case 2: return 'Principal';
+        case 3: return 'Adviser';
+        case 4: return 'Admin';
+        case 5: return 'Teacher';
+        case 6: return 'Guidance';
+        default: return 'Unknown';
+    }
+};
+
   return (
     <div className={navStyles.wrapper}>
       <Navigation loggedInUser={loggedInUser} />  
@@ -109,7 +121,7 @@ const AdminDashboard = () => {
                       <td>{user.username}</td>
                       <td>{`${user.firstname} ${user.lastname}`}</td>
                       <td>{user.email}</td>
-                      <td>{user.userType}</td>
+                      <td>{getUserTypeString(user.userType)}</td>
                     </tr>
                   ))
                 ) : (

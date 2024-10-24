@@ -11,6 +11,8 @@ import RecordStudentViewModal from './RecordStudentViewModal'; // Import the vie
 import AddStudentModal from './Adviser/AddStudentModal';
 import EditNoteIcon from '@mui/icons-material/Edit';
 import ViewNoteIcon from '@mui/icons-material/Visibility';
+import DeleteIcon from '@mui/icons-material/Delete'; // Import Delete icon
+
 
 const RecordStudent = ({ loggedInUser, schoolYears, grades, students, setStudents }) => {
   const [filteredStudents, setFilteredStudents] = useState([]); // For filtered search results
@@ -127,6 +129,21 @@ const RecordStudent = ({ loggedInUser, schoolYears, grades, students, setStudent
   };
   
   const frequencies = countFrequency();
+
+  const handleDeleteRecord = async (recordId) => {
+    const confirmed = window.confirm('Are you sure you want to delete this record?'); // Confirmation alert
+    if (confirmed) {
+      try {
+        await axios.delete(`http://localhost:8080/student-record/delete/${recordId}`); // Call your delete API
+        setRecords(records.filter((record) => record.recordId !== recordId)); // Remove the deleted record from state
+        alert('Record deleted successfully!'); // Optionally, show a success message
+      } catch (error) {
+        console.error('Error deleting record:', error);
+        alert('Failed to delete record. Please try again.'); // Optionally, show an error message
+      }
+    }
+  };
+  
   
   return (
     <>
@@ -332,13 +349,20 @@ const RecordStudent = ({ loggedInUser, schoolYears, grades, students, setStudent
                         style={{ marginRight: loggedInUser?.userType === 3 ? '0' : '15px' }}  
                       />   
                       {loggedInUser?.userType === 1 && (
+                        <>
                         <EditNoteIcon
                           onClick={() => {
                             setRecordToEdit(record); // Set the record to edit
                             setShowEditRecordModal(true); // Show the edit modal
                           }}
                           className={styles['record-action-icon']}
-                        />                   
+                        />
+                        <DeleteIcon
+                        onClick={() => handleDeleteRecord(record.recordId)} // Call delete function
+                        className={styles['record-action-icon']}
+                         
+                      />        
+                      </>           
                       )}
                     </td>
                   </tr>

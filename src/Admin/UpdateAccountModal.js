@@ -69,7 +69,7 @@ const UpdateAccountModal = ({ isOpen, onClose, userId, user }) => {
         }
 
         // Use a generic endpoint for updating the user
-        axios.put(`http://localhost:8080/user/updateUser/${userId}`, updatedData)
+        axios.put(`http://localhost:8080/user/updateUser/${userId}/${loggedInUser.userId}`, updatedData)
             .then(response => {
                 console.log(response.data);
                 alert('Account Successfully Updated');

@@ -125,7 +125,7 @@ const EditReportModal = ({ reportId, onClose, refreshReports }) => {
     };
 
     try {
-      await axios.put(`http://localhost:8080/report/updateReport/${reportId}/${reportData.record.id}/${reportData.record.monitored_record}`, updatedReportData);
+      await axios.put(`http://localhost:8080/report/updateReport/${reportId}/${reportData.record.id}/${reportData.record.monitored_record}/${loggedInUser.userId}`, updatedReportData);
       refreshReports(); // Refresh the report list after submission
       onClose(); // Close the modal after submission
     } catch (error) {

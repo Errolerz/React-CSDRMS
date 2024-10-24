@@ -24,6 +24,9 @@ const Reports = () => {
   const [selectedReportId, setSelectedReportId] = useState(null);
   const [loading, setLoading] = useState(false);
   const [selectedReportStatus, setSelectedReportStatus] = useState({ completed: false, suspended: false });
+  const [filterCompleted, setFilterCompleted] = useState('all');
+  const [searchTerm, setSearchTerm] = useState(''); // State for search term
+
 
   useEffect(() => {
     fetchReports();
@@ -161,6 +164,19 @@ const Reports = () => {
     setShowEditModal(true);
   };
 
+  const handleDelete = async (reportId) => {
+    if (window.confirm("Are you sure you want to delete this report?")) {
+        try {
+            await axios.delete(`http://localhost:8080/report/delete/${reportId}/${loggedInUser.userId}`);
+            fetchReports(); // Refresh the reports after deletion
+        } catch (error) {
+            console.error('Error deleting the report:', error);
+            alert('Failed to delete the report.');
+        }
+    }
+};
+
+
   const handleViewReport = (reportId) => {
     setSelectedReportId(reportId);
     setShowViewReportModal(true); // Show the modal
@@ -171,6 +187,20 @@ const Reports = () => {
     setSelectedReportId(null);
   };
 
+  const filteredReports = reports
+  .filter((report) => {
+    if (filterCompleted === 'completed') {
+      return report.complete === true;
+    } else if (filterCompleted === 'notCompleted') {
+      return report.complete === false;
+    }
+    return true;
+  })
+  .filter((report) =>
+    report.record.student.name.toLowerCase().includes(searchTerm.toLowerCase())
+  ); // Filter by student name
+  
+
   return (
     <div className={navStyles.wrapper}>
       <Navigation loggedInUser={loggedInUser} />
@@ -179,6 +209,30 @@ const Reports = () => {
         <div className={navStyles.TitleContainer}>
           <h2 className={navStyles['h1-title']}>Reports List</h2>
         </div>
+        <div className={styles['filter-container']}>
+          <input
+            type="text"
+            placeholder="Search by student name"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className={styles['search-input']}
+          />
+        </div>
+
+        <div className={styles['filter-container']}>
+          <label htmlFor="filter">Filter by status:</label>
+          <select
+            id="filter"
+            className={styles['filter-select']}
+            value={filterCompleted}
+            onChange={(e) => setFilterCompleted(e.target.value)}
+          >
+            <option value="all">All</option>
+            <option value="completed">Completed</option>
+            <option value="notCompleted">Not Completed</option>
+          </select>
+        </div>
+
         {loading ? (
           <div class="dot-spinner">
             <div class="dot-spinner__dot"></div>
@@ -205,7 +259,7 @@ const Reports = () => {
                 </tr>
               </thead>
               <tbody>
-                {reports.map((report) => (
+                {filteredReports.map((report) => (
                   <tr 
                     key={report.reportId} 
                     onClick={() => handleRowClick(report)}
@@ -248,6 +302,13 @@ const Reports = () => {
                 disabled={!selectedReportId}
               >
                 Edit 
+              </button>
+              <button
+                className={`${styles['report-action-button']} ${styles['report-delete-btn']}`}
+                onClick={() => handleDelete(selectedReportId)}
+                disabled={!selectedReportId}
+              >
+                Delete 
               </button>
               <button
                 className={styles['report-action-button']}

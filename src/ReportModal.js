@@ -68,7 +68,7 @@ const handleCreateReport = async () => {
     };
 
 
-    await axios.post(`http://localhost:8080/report/insertReport/${newReport.studentId}`, reportData);
+    await axios.post(`http://localhost:8080/report/insertReport/${newReport.studentId}/${loggedInUser.userId}`, reportData);
     refreshReports(); // Refresh the reports list after submission
     onClose(); // Close the modal after submission
   } catch (error) { 

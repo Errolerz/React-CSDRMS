@@ -13,6 +13,7 @@ import axios from 'axios';
 import NotificationModal from './NotificationModal'; // Import NotificationModal
 import MenuPopupState from './Components/MenuPopupState'; 
 import IconButton from '@mui/material/IconButton';
+import AssignmentIcon from '@mui/icons-material/Assignment';
 
 const Navigation = ({ loggedInUser }) => {
   const { uid } = loggedInUser;
@@ -159,6 +160,7 @@ const Navigation = ({ loggedInUser }) => {
             {/* Admin - usertype 4 */}
             {loggedInUser.userType === 4 && createSidebarLink("/AdminDashboard", "Dashboard", AccountBoxIcon)}
             {loggedInUser.userType === 4 && createSidebarLink("/Class", "Class", SchoolIcon)}
+            {loggedInUser.userType === 4 && createSidebarLink("/activitylog", "Activity Log", AssignmentIcon)}
 
             {/* Guidance - usertype 6 */}
             {loggedInUser.userType === 6 && createSidebarLink("/record", "Dashboard", AssessmentIcon)}

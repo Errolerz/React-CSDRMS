@@ -21,7 +21,8 @@ import UpdateStudent from './Adviser/UpdateStudent';
 import UpdateAccount from './UpdateAccount';
 
 import AdminDashboard from './Admin/AdminDashboard';
-import Class from './Admin/Class'
+import Class from './Admin/Class';
+import ActivityLog from './ActivityLog';
 
 
 import PrivateRoute from './PrivateRoute';
@@ -75,6 +76,7 @@ function App() {
             <>
               <Route path="/AdminDashboard" element={<PrivateRoute element={<AdminDashboard />} />} />
               <Route path="/Class" element={<PrivateRoute element={<Class />} />} />
+              <Route path="/activitylog" element={<PrivateRoute element={<ActivityLog />} />} />
             </>
           )}
 

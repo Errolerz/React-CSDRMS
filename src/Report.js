@@ -8,6 +8,7 @@ import ReportModal from './ReportModal';
 import ViewReportModal from './ViewReport'; // Import the modal
 import EditReportModal from './EditReportModal';
 import AddSuspensionModal from './SSO/AddSuspensionModal';
+import CompleteReportModal from './CompleteReportModal';
 import styles from './Report.module.css';
 
 const Reports = () => {
@@ -21,6 +22,7 @@ const Reports = () => {
   const [showSuspensionModal, setShowSuspensionModal] = useState(false);
   const [showViewReportModal, setShowViewReportModal] = useState(false); // State for showing modal
   const [showEditModal, setShowEditModal] = useState(false);
+  const [showCompleteReportModal, setShowCompleteReportModal] = useState(false);
   const [selectedReportId, setSelectedReportId] = useState(null);
   const [loading, setLoading] = useState(false);
   const [selectedReportStatus, setSelectedReportStatus] = useState({ completed: false, suspended: false });
@@ -127,14 +129,9 @@ const Reports = () => {
     return suspensions.some((suspension) => suspension.reportId === reportId);
   };
 
-  const handleComplete = async (reportId) => {
-    try {
-      await axios.put(`http://localhost:8080/report/complete/${reportId}`);
-      fetchReports(); 
-    } catch (error) {
-      console.error('Error completing the report:', error);
-      alert('Failed to complete the report.');
-    }
+  const handleCompleteModalOpen = (reportId) => {
+    setSelectedReportId(reportId);
+    setShowCompleteReportModal(true);
   };
 
   const handleAddSuspension = (reportId) => {
@@ -312,7 +309,7 @@ const Reports = () => {
               </button>
               <button
                 className={styles['report-action-button']}
-                onClick={() => handleComplete(selectedReportId)}
+                onClick={() => handleCompleteModalOpen(selectedReportId)}
                 disabled={!selectedReportId || selectedReportStatus.completed}
               >
                 Complete
@@ -361,6 +358,14 @@ const Reports = () => {
             refreshReports={fetchReports}
           />
         )}
+
+        {showCompleteReportModal && (
+        <CompleteReportModal
+          reportId={selectedReportId}
+          onClose={() => setShowCompleteReportModal(false)}
+          refreshReports={fetchReports}
+        />
+      )}
       </div>
     </div>
   );

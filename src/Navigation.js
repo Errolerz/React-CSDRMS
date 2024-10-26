@@ -141,10 +141,13 @@ const Navigation = ({ loggedInUser }) => {
 
             {/* SSO - usertype 1 */}
             {loggedInUser.userType === 1 && createSidebarLink("/record", "Dashboard", AssessmentIcon)}
+            {loggedInUser.userType === 1 && createSidebarLink("/student", "Student", SchoolIcon)}
             {/*loggedInUser.userType === 1 && createSidebarLink("/student", "Student", SchoolIcon)*/}
             {loggedInUser.userType === 1 && createSidebarLink("/timeLog", "Time Log", AccessTimeFilledIcon)}
             {/*loggedInUser.userType === 1 && createSidebarLink("/notification", "Notification", NotificationsActiveIcon)*/}
             {loggedInUser.userType === 1 && createSidebarLink("/report", "Report", PostAddIcon)}
+            {loggedInUser.userType === 1 && createSidebarLink("/viewSuspensions", "Suspension", LocalPoliceIcon)}
+            
 
             {/* Principal - usertype 2 */}
             {loggedInUser.userType === 2 && createSidebarLink("/record", "Dashboard", AssessmentIcon)}
@@ -153,7 +156,7 @@ const Navigation = ({ loggedInUser }) => {
 
             {/* Adviser - usertype 3 */}
             {loggedInUser.userType === 3 && createSidebarLink("/record", "Dashboard", AssessmentIcon)}
-            {/*loggedInUser.userType === 3 && createSidebarLink("/student", "Student", SchoolIcon)}*/}
+            {loggedInUser.userType === 3 && createSidebarLink("/student", "Student", SchoolIcon)}
             {/*loggedInUser.userType === 3 && createSidebarLink("/notification", "Notification", NotificationsActiveIcon)*/}
             {loggedInUser.userType === 3 && createSidebarLink("/report", "Report", PostAddIcon)}            
 

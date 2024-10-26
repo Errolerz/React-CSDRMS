@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import RecordTable from './RecordTable';
 import RecordAnalytics from './RecordAnalytics';
-import ViewStudentRecord from './RecordStudent'; // Import the ViewRecord component
+import Student from './Student'; // Import the ViewRecord component
 import recStyle from './Record.module.css'; // CSS for Record
 import navStyles from './Navigation.module.css'; // CSS for Navigation
 import Navigation from './Navigation'; // Import the Navigation component
@@ -143,7 +143,7 @@ const Record = () => {
           <RecordAnalytics records={records} schoolYears={schoolYears} grades={grades} />
         ) : (
           (loggedInUser?.userType === 1 || loggedInUser?.userType === 3) && ( 
-            <ViewStudentRecord
+            <Student
             loggedInUser={loggedInUser}
             schoolYears={schoolYears} // Pass schoolYears from Record.js
             grades={grades} // Pass grades from Record.js

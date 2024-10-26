@@ -6,6 +6,7 @@ import './App.css';
 import Notification from './Notification';
 import Record from './Record';
 import Report from './Report';
+import Student from './Student'
 // import ViewReport from './ViewReport'; 
 
 import Feedback from './SSO/Feedback';
@@ -56,7 +57,7 @@ function App() {
 
           )}
 
-          {loggedInUser && loggedInUser.userType === 2 && (
+          {(loggedInUser && (loggedInUser.userType === 1 ||  loggedInUser.userType === 2))&& (
             <>
              <Route path="/viewSuspensions" element={<ViewSuspensions />} />
             </>
@@ -83,6 +84,7 @@ function App() {
           {(loggedInUser && (loggedInUser.userType === 1 || loggedInUser.userType === 3)) && (
             <>
             <Route path="/notification" element={<Notification />} />
+            <Route path="/student" element={<Student />}  />
             {/*<Route path="/student" element={<PrivateRoute element={<Student />} />}  /> */}
             <Route path="/add-record/:sid" element={<AddStudentRecord />} /> 
             </>

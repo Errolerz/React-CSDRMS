@@ -5,6 +5,10 @@ import tableStyles from "../GlobalTable.module.css"; // Import GlobalTable CSS m
 import Navigation from '../Navigation'; // Import the Navigation component
 import SuspensionModal from "./SuspensionModal"; // Import the modal component
 import styles from "./ViewSuspensions.module.css"; // Import GlobalTable CSS module
+import EditSuspensionModal from "./EditSuspensionModal"; // Import the edit modal component
+import ViewReportModal from '../ViewReport';
+
+
 
 const ViewSuspensions = () => {
   const authToken = localStorage.getItem('authToken');
@@ -14,16 +18,21 @@ const ViewSuspensions = () => {
   const [error, setError] = useState(null);
   const [selectedSuspension, setSelectedSuspension] = useState(null); // State to store the selected suspension
   const [isModalOpen, setIsModalOpen] = useState(false); // State to control modal visibility
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false); // State to control Edit modal visibility
+  const [selectedReportId, setSelectedReportId] = useState(null);
+  const [showViewReportModal, setShowViewReportModal] = useState(false); // State for showing modal
+
 
   useEffect(() => {
-    // Fetch suspensions and mark them as viewed when the component mounts
     const fetchAndMarkSuspensions = async () => {
       setLoading(true);
       setError(null);
       try {
-        await axios.post('http://localhost:8080/suspension/markAsViewedForPrincipal'); // Mark as viewed
+        if (loggedInUser.userType === 2) {
+          await axios.post('http://localhost:8080/suspension/markAsViewedForPrincipal'); // Mark as viewed
+        }
         const response = await axios.get('http://localhost:8080/suspension/getAllSuspensions');
-
+  
         const sortedSuspensions = response.data.sort((a, b) => b.suspensionId - a.suspensionId);
         setSuspensions(sortedSuspensions);
       } catch (error) {
@@ -33,9 +42,10 @@ const ViewSuspensions = () => {
         setLoading(false);
       }
     };
-
+  
     fetchAndMarkSuspensions();
   }, []);
+  
 
 
   // Handle row click to select suspension
@@ -47,6 +57,39 @@ const ViewSuspensions = () => {
   const handleViewClick = () => {
     setIsModalOpen(true);
   };
+
+  const handleEditClick = () => {
+    setIsEditModalOpen(true);
+  };
+
+  const handleViewReport = (reportId) => {
+    setSelectedReportId(reportId);
+    setShowViewReportModal(true); // Show the modal
+  };
+
+  const closeViewReportModal = () => {
+    setShowViewReportModal(false); // Close modal
+    setSelectedReportId(null);
+  };
+
+
+  const handleDeleteClick = async () => {
+    if (selectedSuspension) {
+      const confirmDelete = window.confirm("Are you sure you want to delete this suspension?");
+      if (!confirmDelete) return; // Exit if user cancels
+  
+      try {
+        await axios.delete(`http://localhost:8080/suspension/delete/${selectedSuspension.suspensionId}`);
+        setSuspensions(suspensions.filter(suspension => suspension.suspensionId !== selectedSuspension.suspensionId));
+        setSelectedSuspension(null); // Deselect after deletion
+      } catch (error) {
+        console.error("Error deleting suspension:", error);
+        setError("Failed to delete suspension. Please try again later.");
+      }
+    }
+  };
+  
+  
 
   return (
     <div className={navStyles.wrapper}>
@@ -99,19 +142,49 @@ const ViewSuspensions = () => {
                   )}
                 </tbody>
               </table>
+             
             </div>
 
             {/* "View" button below the table */}
             <div className={styles["suspension-action-buttons"]}>
-              <button 
-                variant="contained" 
-                onClick={handleViewClick} 
-                className={styles['suspension-button']} 
-                disabled={!selectedSuspension} // Disable when no row is selected
-              >
-                View
-              </button>
+            <button 
+              variant="contained" 
+              onClick={() => {
+                if (loggedInUser.userType === 1) {
+                  handleViewReport(selectedSuspension.reportId); // Call function for userType 1
+                } else {
+                  handleViewClick(); // Call existing view function for other userTypes
+                }
+              }} 
+              className={styles['suspension-button']} 
+              disabled={!selectedSuspension} // Disable when no row is selected
+            >
+              View
+            </button>
+
+            {loggedInUser.userType === 1 && (
+                <>
+                  <button
+                    variant="contained"
+                    onClick={handleEditClick}
+                    className={styles['suspension-button']}
+                    disabled={!selectedSuspension} // Disable if no row selected
+                  >
+                    Edit
+                  </button>
+                  <button
+                    variant="contained"
+                    onClick={handleDeleteClick}
+                    className={styles['suspension-button']}
+                    disabled={!selectedSuspension} // Disable if no row selected
+                  >
+                    Delete
+                  </button>
+                </>
+              )}
+           
             </div>
+           
           </>
         )}
 
@@ -123,6 +196,23 @@ const ViewSuspensions = () => {
             suspension={selectedSuspension}
           />
         )}
+
+        {/* Edit Suspension Modal */}
+        {selectedSuspension && (
+          <EditSuspensionModal
+            isOpen={isEditModalOpen}
+            onClose={() => setIsEditModalOpen(false)}
+            suspension={selectedSuspension}
+          />
+        )}
+
+          {showViewReportModal && (
+          <ViewReportModal
+            reportId={selectedSuspension.reportId}
+            onClose={closeViewReportModal}
+          />
+        )} 
+        
       </div>
     </div>
   );

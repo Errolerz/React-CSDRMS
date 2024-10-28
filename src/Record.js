@@ -1,161 +1,361 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import RecordTable from './RecordTable';
-import RecordAnalytics from './RecordAnalytics';
-import Student from './Student'; // Import the ViewRecord component
-import recStyle from './Record.module.css'; // CSS for Record
-import navStyles from './Navigation.module.css'; // CSS for Navigation
-import Navigation from './Navigation'; // Import the Navigation component
+import { Line } from 'react-chartjs-2';
+import {
+    Chart as ChartJS,
+    LineElement,
+    PointElement,
+    LinearScale,
+    Title,
+    Tooltip,
+    Legend,
+    CategoryScale,
+} from 'chart.js';
+
+import styles from './Record.module.css';
+import navStyles from './Navigation.module.css'; 
+import Navigation from './Navigation';
+import tableStyles from './GlobalTable.module.css';
+
+ChartJS.register(LineElement, PointElement, LinearScale, Title, Tooltip, Legend, CategoryScale);
 
 const Record = () => {
-  const authToken = localStorage.getItem('authToken');
-  const loggedInUser = authToken ? JSON.parse(authToken) : null;
-  const [records, setRecords] = useState([]);
-  const [students, setStudents] = useState([]); // State for students
-  const [view, setView] = useState('table'); // Toggle view between table, analytics, and viewRecord
-  const [loading, setLoading] = useState(false); // Loading state
-  const [schoolYears, setSchoolYears] = useState([]);
-  const [grades, setGrades] = useState([]);
+    const authToken = localStorage.getItem('authToken');
+    const loggedInUser = JSON.parse(authToken);
+    const [records, setRecords] = useState([]);
+    const [classData, setClassData] = useState([]);
+    const [schoolYears, setSchoolYears] = useState([]);
+    const [selectedYear, setSelectedYear] = useState('');
+    const [selectedMonth, setSelectedMonth] = useState('');
+    const [selectedWeek, setSelectedWeek] = useState('');
+    const [selectedGrade, setSelectedGrade] = useState(loggedInUser.userType === 3 ? loggedInUser.grade : ''); // Set grade based on user type
+    const [selectedSection, setSelectedSection] = useState(loggedInUser.userType === 3 ? loggedInUser.section : ''); // Set section based on user type
+    const [uniqueGrades, setUniqueGrades] = useState([]); // To store unique grades
+    const [sectionsForGrade, setSectionsForGrade] = useState([]); // Sections based on selected grade
+    const [frequencyData, setFrequencyData] = useState({});
+    const [monthlyData, setMonthlyData] = useState({});
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
 
-  useEffect(() => {
-    fetchRecords();
-    fetchInitialData(); // Fetch both school years and grades in one go
-    fetchStudents(); // Fetch students when component mounts
-  }, []);
+    const filteredFrequencyData = selectedGrade ? { [selectedGrade]: frequencyData[selectedGrade] } : frequencyData;
 
-  const fetchRecords = async () => {
-    setLoading(true);
-    try {
-      const response = loggedInUser?.userType === 3 
-        ? await axios.get(`http://localhost:8080/student-record/getStudentRecordsByAdviser`, {
-            params: { 
-              grade: loggedInUser.grade, // Assuming grade is available in the loggedInUser object
-              section: loggedInUser.section, 
-              schoolYear: loggedInUser.schoolYear 
+
+// Fetch initial data (records, classes, school years, unique grades)
+useEffect(() => {
+    const fetchData = async () => {
+        try {
+            let recordRes;
+
+            // Check if the logged-in user is an adviser
+            if (loggedInUser.userType === 3) {
+                // Fetch records based on adviser parameters
+                recordRes = await axios.get('http://localhost:8080/student-record/getStudentRecordsByAdviser', {
+                    params: {
+                        grade: loggedInUser.grade,
+                        section: loggedInUser.section,
+                        schoolYear: loggedInUser.schoolYear,
+                    },
+                });
+            } else {
+                // Fetch all records for other user types
+                recordRes = await axios.get('http://localhost:8080/student-record/getAllStudentRecords');
             }
-          })
-        : await axios.get('http://localhost:8080/student-record/getAllStudentRecords');
-      setRecords(response.data);
-    } catch (error) {
-      console.error('Error fetching records:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
-  
 
-  const fetchInitialData = async () => {
-    try {
-      const [schoolYearResponse, gradeResponse] = await Promise.all([
-        axios.get('http://localhost:8080/schoolYear/getAllSchoolYears'),
-        axios.get('http://localhost:8080/class/allUniqueGrades')
-      ]);
-      setSchoolYears(schoolYearResponse.data);
-      setGrades(gradeResponse.data);
-    } catch (error) {
-      console.error('Error fetching initial data:', error);
-    }
-  };
+            const [classRes, yearRes, gradeRes] = await Promise.all([
+                axios.get('http://localhost:8080/class/getAllClasses'),
+                axios.get('http://localhost:8080/schoolYear/getAllSchoolYears'),
+                axios.get('http://localhost:8080/class/allUniqueGrades'),
+            ]);
 
-  const fetchStudents = async () => {
-    try {
-      const response = loggedInUser?.userType === 3
-        ? await axios.get('http://localhost:8080/student/getAllStudentsByAdviser', {
-            params: { grade: loggedInUser.grade, section: loggedInUser.section, schoolYear: loggedInUser.schoolYear },
-          })
-        : await axios.get('http://localhost:8080/student/getAllCurrentStudents');
+            setRecords(recordRes.data);
+            setClassData(classRes.data);
+            setSchoolYears(yearRes.data);
+            setUniqueGrades(gradeRes.data); // Set unique grades
+        } catch (err) {
+            setError(err.message || 'Error fetching data.');
+        } finally {
+            setLoading(false);
+        }
+    };
 
-      setStudents(response.data); // Set students data
-    } catch (error) {
-      console.error('Error fetching students:', error);
-    }
-  };
+    fetchData();
+}, []); // Add loggedInUser as a dependency
 
-  // Handle switching views based on the selected radio option
-  const handleViewChange = (event) => {
-    setView(event.target.value); // Set the view based on the selected radio button
-  };
 
-  return (
-    <div className={navStyles['wrapper']}>
-      <Navigation loggedInUser={loggedInUser} />
+    // Fetch sections for a specific grade when selectedGrade changes
+    useEffect(() => {
+        const fetchSections = async () => {
+            if (selectedGrade) {
+                try {
+                    const response = await axios.get(`http://localhost:8080/class/sections/${selectedGrade}`);
+                    setSectionsForGrade(response.data); // Set sections for selected grade
+                } catch (err) {
+                    setError(err.message || 'Error fetching sections.');
+                }
+            } else {
+                setSectionsForGrade([]); // Clear sections if no grade is selected
+            }
+        };
 
-      {/* Main Content */}
-      <div className={navStyles.content}>
-        <div className={recStyle.TitleContainer}>
-          <div className={recStyle['h1-title']}>Junior High School Records</div>
+        fetchSections();
+    }, [selectedGrade]);
 
-          {/* Radio Button Toggle for switching views */}
-          <div className={recStyle['view-wrapper']}>
-            <div className={recStyle['view-option']}>
-              <input
-                checked={view === 'table'}
-                value="table"
-                name="btn"
-                type="radio"
-                className={recStyle['view-input']}
-                onChange={handleViewChange}
-              />
-              <div className={recStyle['view-btn']}>
-                <span className={recStyle['view-span']}>Table</span>
-              </div>
+    // Calculate frequency of monitored records based on selected filters
+    useEffect(() => {
+        if (records.length && classData.length) {
+            const frequency = {};
+            const monthlyFrequencies = {};
+
+            // Initialize frequency object for each grade in classData
+            classData.forEach(cls => {
+                frequency[cls.grade] = {
+                    Absent: 0,
+                    Tardy: 0,
+                    'Cutting Classes': 0,
+                    'Improper Uniform': 0,
+                    Offense: 0,
+                    Misbehavior: 0,
+                    Clinic: 0,
+                    Sanction: 0,
+                };
+            });
+
+            records.forEach(record => {
+                const recordDate = new Date(record.record_date);
+                const recordMonth = recordDate.toLocaleString('default', { month: 'long' });
+                const day = recordDate.getDate();
+                const week = Math.ceil(day / 7);
+
+                // Apply filters: selectedYear, selectedMonth, selectedWeek, selectedGrade, and selectedSection
+                const isYearMatch = !selectedYear || record.student.schoolYear === selectedYear;
+                const isMonthMatch = !selectedMonth || recordMonth === selectedMonth;
+                const isWeekMatch = !selectedWeek || week === parseInt(selectedWeek);
+                const isGradeMatch = !selectedGrade || record.student.grade === parseInt(selectedGrade);
+                const isSectionMatch = !selectedSection || record.student.section === selectedSection;
+
+                if (isYearMatch && isMonthMatch && isWeekMatch && isGradeMatch && isSectionMatch) {
+                    const key = selectedMonth ? day : recordMonth;
+
+                    if (!monthlyFrequencies[key]) {
+                        monthlyFrequencies[key] = {
+                            Absent: 0,
+                            Tardy: 0,
+                            'Cutting Classes': 0,
+                            'Improper Uniform': 0,
+                            Offense: 0,
+                            Misbehavior: 0,
+                            Clinic: 0,
+                            Sanction: 0,
+                        };
+                    }
+
+                    frequency[record.student.grade][record.monitored_record] += 1;
+                    monthlyFrequencies[key][record.monitored_record] += 1;
+
+                    if (record.sanction) {
+                        frequency[record.student.grade].Sanction += 1;
+                        monthlyFrequencies[key].Sanction += 1;
+                    }
+                }
+            });
+
+            setFrequencyData(frequency);
+            setMonthlyData(monthlyFrequencies);
+        }
+    }, [records, classData, selectedYear, selectedMonth, selectedWeek, selectedGrade, selectedSection]);
+
+    const handleYearChange = (e) => setSelectedYear(e.target.value);
+    const handleMonthChange = (e) => {
+        setSelectedMonth(e.target.value);
+        setSelectedWeek('');
+    };
+    const handleWeekChange = (e) => setSelectedWeek(e.target.value);
+    const handleGradeChange = (e) => {
+        setSelectedGrade(e.target.value);
+        setSelectedSection(''); // Reset section when grade changes
+    };
+    const handleSectionChange = (e) => setSelectedSection(e.target.value);
+
+    const getLineChartData = () => {
+        const labels = selectedMonth
+            ? Array.from({ length: 31 }, (_, i) => i + 1)
+            : ['August', 'September', 'October', 'November', 'December', 'January', 'February', 'March', 'April', 'May'];
+
+            const datasets = [
+                {
+                    label: 'Absent',
+                    data: labels.map(label => monthlyData[label]?.Absent || 0),
+                    borderColor: 'rgba(255, 99, 132, 1)',
+                    backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                },
+                {
+                    label: 'Tardy',
+                    data: labels.map(label => monthlyData[label]?.Tardy || 0),
+                    borderColor: 'rgba(54, 162, 235, 1)',
+                    backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                },
+                {
+                    label: 'Cutting Classes',
+                    data: labels.map(label => monthlyData[label]?.['Cutting Classes'] || 0),
+                    borderColor: 'rgba(255, 206, 86, 1)',
+                    backgroundColor: 'rgba(255, 206, 86, 0.2)',
+                },
+                {
+                    label: 'Improper Uniform',
+                    data: labels.map(label => monthlyData[label]?.['Improper Uniform'] || 0),
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                },
+                {
+                    label: 'Offense',
+                    data: labels.map(label => monthlyData[label]?.Offense || 0),
+                    borderColor: 'rgba(153, 102, 255, 1)',
+                    backgroundColor: 'rgba(153, 102, 255, 0.2)',
+                },
+                {
+                    label: 'Misbehavior',
+                    data: labels.map(label => monthlyData[label]?.Misbehavior || 0),
+                    borderColor: 'rgba(255, 159, 64, 1)',
+                    backgroundColor: 'rgba(255, 159, 64, 0.2)',
+                },
+                {
+                    label: 'Clinic',
+                    data: labels.map(label => monthlyData[label]?.Clinic || 0),
+                    borderColor: 'rgba(75, 192, 192, 0.7)',
+                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                },
+                {
+                    label: 'Sanction',
+                    data: labels.map(label => monthlyData[label]?.Sanction || 0),
+                    borderColor: 'rgba(255, 0, 0, 1)',
+                    backgroundColor: 'rgba(255, 0, 0, 0.2)',
+                },
+            ];
+
+        return { labels, datasets };
+    };
+
+    if (loading) return <div>Loading records...</div>;
+    if (error) return <div>Error: {error}</div>;
+
+    return (
+        <div className={navStyles.wrapper}>
+            <Navigation loggedInUser={loggedInUser} />
+            <div className={navStyles.content}>
+                <h2>Frequency of Monitored Records by Grade</h2>
+                
+                {loggedInUser.userType !== 3 && (
+                <div>
+                    <label htmlFor="schoolYear">Select School Year: </label>
+                    
+                    <select id="schoolYear" value={selectedYear} onChange={handleYearChange}>
+                        <option value="">All</option>
+                        {schoolYears.map(year => (
+                            <option key={year.schoolYear_ID} value={year.schoolYear}>
+                                {year.schoolYear}
+                            </option>
+                        ))}
+                    </select>
+                    
+                </div>
+                )}
+
+                <div>
+                    <label htmlFor="month">Select Month: </label>
+                    <select id="month" value={selectedMonth} onChange={handleMonthChange}>
+                        <option value="">All</option>
+                        {['August', 'September', 'October', 'November', 'December', 'January', 'February', 'March', 'April', 'May'].map((month, index) => (
+                            <option key={index} value={month}>{month}</option>
+                        ))}
+                    </select>
+                </div>
+
+                {selectedMonth && (
+                    <div>
+                        <label htmlFor="week">Select Week: </label>
+                        <select id="week" value={selectedWeek} onChange={handleWeekChange}>
+                            <option value="">All</option>
+                            {[1, 2, 3, 4, 5].map(week => (
+                                <option key={week} value={week}>{`Week ${week}`}</option>
+                            ))}
+                        </select>
+                    </div>
+                )}
+
+                <div>
+                    <label htmlFor="grade">Select Grade: </label>
+                    <select id="grade" value={selectedGrade} onChange={handleGradeChange} disabled={loggedInUser.userType === 3}>
+                        <option value="">All</option>
+                        {uniqueGrades.map((grade, index) => (
+                            <option key={index} value={grade}>{grade}</option>
+                        ))}
+                    </select>
+                </div>
+
+                {selectedGrade && (
+                    <div>
+                        <label htmlFor="section">Select Section: </label>
+                        <select id="section" value={selectedSection} onChange={handleSectionChange} disabled={loggedInUser.userType === 3}>
+                            <option value="">All</option>
+                            {sectionsForGrade.map((section, index) => (
+                                <option key={index} value={section}>{section}</option>
+                            ))}
+                        </select>
+                    </div>
+                )}
+
+                <Line
+                    data={getLineChartData()}
+                    options={{
+                        responsive: true,
+                        scales: {
+                            y: { beginAtZero: true },
+                        },
+                        plugins: {
+                            legend: { position: 'top' },
+                            title: {
+                                display: true,
+                                text: selectedMonth ? `Daily Frequencies in ${selectedMonth}` : 'Monthly Frequencies (Aug to May)',
+                            },
+                        },
+                    }}
+                />
+
+                <div className={tableStyles['table-container']}>
+                <table className={tableStyles['global-table']}>
+                    <thead>
+                        <tr>
+                            <th>Grade</th>
+                            <th>Absent</th>
+                            <th>Tardy</th>
+                            <th>Cutting Classes</th>
+                            <th>Improper Uniform</th>
+                            <th>Offense</th>
+                            <th>Misbehavior</th>
+                            <th>Clinic</th>
+                            <th>Sanction</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {Object.entries(filteredFrequencyData).map(([grade, frequencies]) => (
+                            <tr key={grade}>
+                                <td>{grade}</td>
+                                <td>{frequencies ? frequencies.Absent : 0}</td>
+                                <td>{frequencies ? frequencies.Tardy : 0}</td>
+                                <td>{frequencies ? frequencies['Cutting Classes'] : 0}</td>
+                                <td>{frequencies ? frequencies['Improper Uniform'] : 0}</td>
+                                <td>{frequencies ? frequencies.Offense : 0}</td>
+                                <td>{frequencies ? frequencies.Misbehavior : 0}</td>
+                                <td>{frequencies ? frequencies.Clinic : 0}</td>
+                                <td>{frequencies ? frequencies.Sanction : 0}</td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
+                </div>
             </div>
-
-            <div className={recStyle['view-option']}>
-              <input
-                checked={view === 'analytics'}
-                value="analytics"
-                name="btn"
-                type="radio"
-                className={recStyle['view-input']}
-                onChange={handleViewChange}
-              />
-              <div className={recStyle['view-btn']}>
-                <span className={recStyle['view-span']}>Analytics</span>
-              </div>
-            </div>
-            
-            {(loggedInUser?.userType === 1 || loggedInUser?.userType === 3) && (            <div className={recStyle['view-option']}>
-              <input
-                checked={view === 'viewRecord'}
-                value="viewRecord"
-                name="btn"
-                type="radio"
-                className={recStyle['view-input']}
-                onChange={handleViewChange}
-              />
-              <div className={recStyle['view-btn']}>
-                <span className={recStyle['view-span']}>Student</span>
-              </div>
-            </div>
-            )}
-          </div>
         </div>
-        {loading ? (
-          <div className="loading">
-            <div class="slide"><i></i></div>
-            <div class="paper"></div>
-            <div class="keyboard"></div>
-        </div>
-        ) : view === 'table' ? (
-          <RecordTable records={records} schoolYears={schoolYears} grades={grades} />
-        ) : view === 'analytics' ? (
-          <RecordAnalytics records={records} schoolYears={schoolYears} grades={grades} />
-        ) : (
-          (loggedInUser?.userType === 1 || loggedInUser?.userType === 3) && ( 
-            <Student
-            loggedInUser={loggedInUser}
-            schoolYears={schoolYears} // Pass schoolYears from Record.js
-            grades={grades} // Pass grades from Record.js
-            students={students} // Pass students from Record.js
-            setStudents={setStudents} // Pass setStudents in case you need to update the state
-          />
-          )
-        )}
-        
-      </div>
-    </div>
-  );
+    );
 };
 
 export default Record;

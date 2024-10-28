@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import './ActivityLog.module.css'; // Import your CSS module here
+import styles from './ActivityLog.module.css'; // Import your CSS module here
 import navStyles from './Navigation.module.css'; 
 import Navigation from './Navigation';
 import tableStyles from './GlobalTable.module.css';
+import UserTimeLogModal from './SSO/UserTimeLogModal'
 
 const ActivityLog = () => {
     const authToken = localStorage.getItem('authToken');
@@ -11,6 +12,11 @@ const ActivityLog = () => {
     const [activityLogs, setActivityLogs] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+
+    const [users, setUsers] = useState([]);
+    const [searchQuery, setSearchQuery] = useState('');
+    const [selectedUser, setSelectedUser] = useState(null);
+
 
     useEffect(() => {
         const fetchActivityLogs = async () => {
@@ -25,8 +31,40 @@ const ActivityLog = () => {
             }
         };
 
+        const fetchUsers = async () => {
+            try {
+                const response = await axios.get('http://localhost:8080/user/getAllUsers');
+                setUsers(response.data);
+            } catch (err) {
+                console.error('Error fetching users:', err);
+            }
+        };
+
         fetchActivityLogs();
+        fetchUsers();
     }, []);
+
+    const fetchUsers = async () => {
+        try {
+            const response = await axios.get('http://localhost:8080/getAllUsers');
+            setUsers(response.data);
+        } catch (err) {
+            console.error('Error fetching users:', err);
+        }
+    };
+    
+    const handleSearchChange = (e) => setSearchQuery(e.target.value);
+    
+    const filteredUsers = users.filter(user =>
+        user.firstname.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        user.lastname.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+
+    // Open UserTimeLogModal for a selected user
+    const handleUserClick = (user) => setSelectedUser(user);
+
+    // Close UserTimeLogModal
+    const closeModal = () => setSelectedUser(null);
 
     if (loading) {
         return <div>Loading activity logs...</div>;
@@ -41,6 +79,41 @@ const ActivityLog = () => {
             <Navigation loggedInUser={loggedInUser} />
             <div className={navStyles.content}>     
             <h2>Activity Logs</h2>
+            <div className={styles['search-container']}>
+                    <input
+                        type="text"
+                        className={styles['search-input']} // Apply CSS class
+                        placeholder="Search users..."
+                        value={searchQuery}
+                        onChange={handleSearchChange}
+                    />
+                </div>
+
+
+                {/* Users List */}
+                <div>
+                    
+                    {searchQuery && ( // Only render the user list if there's a search query
+                    <>
+                    {/* <h3>Users</h3> */}
+                        <ul className={styles['users-list']}>
+                            {filteredUsers.length > 0 ? ( // Check if there are filtered users
+                                filteredUsers.map(user => (
+                                    <li 
+                                        key={user.userId} 
+                                        className={styles['user-item']} 
+                                        onClick={() => handleUserClick(user)}
+                                    >
+                                        {user.firstname} {user.lastname}
+                                    </li>
+                                ))
+                            ) : (
+                                <li>No users found.</li> // Message when no users match the search
+                            )}
+                        </ul>
+                        </>
+                    )}
+                </div>
             <div className={tableStyles['table-container']}>
             <table className={tableStyles['global-table']}>
                 <thead>
@@ -66,6 +139,7 @@ const ActivityLog = () => {
             </table>
             </div>
         </div>
+        {selectedUser && <UserTimeLogModal user={selectedUser} onClose={closeModal} />}
     </div>
     );
 };

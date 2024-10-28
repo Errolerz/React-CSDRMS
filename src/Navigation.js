@@ -143,7 +143,7 @@ const Navigation = ({ loggedInUser }) => {
             {loggedInUser.userType === 1 && createSidebarLink("/record", "Dashboard", AssessmentIcon)}
             {loggedInUser.userType === 1 && createSidebarLink("/student", "Student", SchoolIcon)}
             {/*loggedInUser.userType === 1 && createSidebarLink("/student", "Student", SchoolIcon)*/}
-            {loggedInUser.userType === 1 && createSidebarLink("/timeLog", "Time Log", AccessTimeFilledIcon)}
+            {/* {loggedInUser.userType === 1 && createSidebarLink("/timeLog", "Time Log", AccessTimeFilledIcon)} */}
             {/*loggedInUser.userType === 1 && createSidebarLink("/notification", "Notification", NotificationsActiveIcon)*/}
             {loggedInUser.userType === 1 && createSidebarLink("/report", "Report", PostAddIcon)}
             {loggedInUser.userType === 1 && createSidebarLink("/viewSuspensions", "Suspension", LocalPoliceIcon)}

@@ -4,6 +4,9 @@ import styles from './UserTimeLogModal.module.css'; // Updated file name
 
 const UserTimeLogModal = ({ user, onClose }) => { // Changed from adviser to user
     const [userTimeLogs, setUserTimeLogs] = useState([]); // Changed from adviserTimeLogs to userTimeLogs
+    const [activityLogs, setActivityLogs] = useState([]); // New state for activity logs
+    
+
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [loginCount, setLoginCount] = useState(0); 
@@ -28,6 +31,22 @@ const UserTimeLogModal = ({ user, onClose }) => { // Changed from adviser to use
         fetchUserTimeLogs();
     }, [user.uid]);
 
+    useEffect(() => {
+        const fetchActivityLogs = async () => {
+            try {
+                const response = await axios.get(`http://localhost:8080/activity-log/getAllActivityLogsByUser/${user.userId}`);
+                const sortedLogs = response.data.sort((a, b) => b.activitylog_id - a.activitylog_id); // Sort by ID in descending order
+                setActivityLogs(sortedLogs);
+            } catch (err) {
+                setError('Failed to fetch activity logs');
+                console.error(err);
+            }
+        };
+    
+        fetchActivityLogs();
+    }, [user.userId]);
+    
+
     const handleYearChange = (event) => {
         setSelectedYear(event.target.value);
     };
@@ -41,26 +60,21 @@ const UserTimeLogModal = ({ user, onClose }) => { // Changed from adviser to use
         setSelectedWeek(event.target.value);
     };
 
-    const filteredTimeLogs = userTimeLogs.filter(log => { // Changed from adviserTimeLogs
-        const logDate = new Date(log.loginTime);
-
-        if (selectedYear !== 'all' && logDate.getFullYear() !== parseInt(selectedYear)) {
-            return false;
-        }
-
-        if (selectedMonth !== 'all' && logDate.getMonth() + 1 !== parseInt(selectedMonth)) {
-            return false;
-        }
-
-        if (selectedMonth !== 'all' && selectedWeek !== 'all') {
-            const weekOfMonth = Math.ceil(logDate.getDate() / 7);
-            if (weekOfMonth.toString() !== selectedWeek) {
-                return false;
+    const applyFilters = (logs) => {
+        return logs.filter(log => {
+            const logDate = new Date(log.timestamp || log.loginTime); // Use timestamp for activity logs and loginTime for time logs
+            if (selectedYear !== 'all' && logDate.getFullYear() !== parseInt(selectedYear)) return false;
+            if (selectedMonth !== 'all' && logDate.getMonth() + 1 !== parseInt(selectedMonth)) return false;
+            if (selectedMonth !== 'all' && selectedWeek !== 'all') {
+                const weekOfMonth = Math.ceil(logDate.getDate() / 7);
+                if (weekOfMonth.toString() !== selectedWeek) return false;
             }
-        }
+            return true;
+        });
+    };
 
-        return true;
-    });
+    const filteredTimeLogs = applyFilters(userTimeLogs);
+    const filteredActivityLogs = applyFilters(activityLogs);
 
     const totalLogins = filteredTimeLogs.length;
     const totalDurationFiltered = filteredTimeLogs.reduce((acc, log) => acc + log.duration, 0);
@@ -72,7 +86,7 @@ const UserTimeLogModal = ({ user, onClose }) => { // Changed from adviser to use
         <div className={styles['timelog-modal-overlay']} onClick={onClose}>
             <div className={styles['timelog-modal-content']} onClick={e => e.stopPropagation()}>
                 <button className={styles['timelog-close-button']} onClick={onClose}>X</button>
-                <h2 className={styles['timelog-title']}>{user.firstname} {user.lastname}'s Time Logs</h2> {/* Changed from adviser to user */}
+                <h2 className={styles['timelog-title']}>{user.firstname} {user.lastname}'s Activity Logs</h2> {/* Changed from adviser to user */}
 
                 <div className={styles['timelog-filters']}>
                     <div className={styles['filter-item']}>
@@ -133,13 +147,18 @@ const UserTimeLogModal = ({ user, onClose }) => { // Changed from adviser to use
                     <div className={styles['timelog-table-container']}>
                         <table className={styles['timelog-table']}>
                             <thead>
-                                <tr>
+                                {/* <tr>
                                     <th>Login Time</th>
                                     <th>Logout Time</th>
                                     <th>Duration</th>
+                                </tr> */}
+                                 <tr>
+                                    <th>Timestamp</th>
+                                    <th>Action</th>
+                                    <th>Description</th>
                                 </tr>
                             </thead>
-                            <tbody>
+                            {/* <tbody>
                                 {filteredTimeLogs.length === 0 ? (
                                     <tr>
                                         <td colSpan="3" className={styles['timelog-no-results']} style={{ textAlign: 'center', fontSize: '1.5rem' }}>
@@ -152,6 +171,21 @@ const UserTimeLogModal = ({ user, onClose }) => { // Changed from adviser to use
                                             <td>{new Date(log.loginTime).toLocaleString()}</td>
                                             <td>{log.logoutTime ? new Date(log.logoutTime).toLocaleString() : 'Not logged out yet'}</td>
                                             <td>{log.duration} minute/s</td>
+                                        </tr>
+                                    ))
+                                )}
+                            </tbody> */}
+                        <tbody>
+                                {filteredActivityLogs.length === 0 ? (
+                                    <tr>
+                                        <td colSpan="3" style={{ textAlign: 'center' }}>No Activity Logs Found</td>
+                                    </tr>
+                                ) : (
+                                    filteredActivityLogs.map(log => (
+                                        <tr key={log.activitylog_id}>
+                                            <td>{new Date(log.timestamp).toLocaleString()}</td>
+                                            <td>{log.action}</td>
+                                            <td>{log.description}</td>
                                         </tr>
                                     ))
                                 )}

@@ -1,0 +1,33 @@
+/* ActivityLog.module.css */
+
+.search-container {
+    position: relative;
+}
+
+.search-input {
+    padding: 0.5rem; /* Add padding for better appearance */
+    border: 1px solid #ccc; /* Border color */
+    border-radius: 4px; /* Rounded corners */
+    width: 100%; /* Full width */
+    max-width: 300px; /* Max width for the search bar */
+}
+
+.users-list {
+    position: absolute; /* Position it in front of other elements */
+    background-color: white; /* Optional: background color for better visibility */
+    border: 1px solid #ccc; /* Optional: border for the dropdown */
+    z-index: 1000; /* High z-index to display in front */
+    max-height: 150px; /* Optional: limit height for overflow */
+    overflow-y: auto; /* Optional: enable scrolling if needed */
+    width: 50%; /* Match the width of the search input */
+}
+
+/* Individual user item styles */
+.user-item {
+    padding: 8px; /* Add some padding */
+    cursor: pointer; /* Change cursor to pointer on hover */
+    border: 1px solid #ccc;
+}
+.user-item:hover {
+    background-color: #f0f0f0; /* Change background on hover */
+}

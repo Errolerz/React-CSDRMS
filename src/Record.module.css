@@ -33,11 +33,11 @@
 }
 
 .details-container {
-  padding: 30px; /* Adds some padding inside each container */
+  padding: 35px; /* Adds some padding inside each container */
   border: 2px solid #8A252C;
   border-radius: 20px; /* Optional: Slightly rounds the corners of the container */
   background-color: #f9f9f9; /* Optional: Light background color */
-  width: 700px;
+  width: 720px;
 }
 
 .search-container {
@@ -112,20 +112,26 @@
 
 .filters select,
 .filterContainer select {
-  padding: 10px; /* Reduced padding for smaller buttons */
-  font-size: 14px; /* Adjust font size for smaller appearance */
-  border: 1px solid #ccc; /* Border styling */
-  border-radius: 4px; /* Rounded corners */
-  background-color: #fff; /* Background color */
-  color: #414141;   
-  margin-left: 10px;
-  width: 12%;
-  text-align: center;
+  padding: 10px; /* Reduced padding for a tighter look */
+  font-size: 14px; /* Adjust font size */
+  border: 1px solid #ccc; /* Consistent border */
+  border-radius: 4px; /* Smooth edges */
+  background-color: #fff; /* White background */
+  color: #414141; /* Darker text color for contrast */
+  width: auto; /* Adjusts width based on content */
+  text-align: center; /* Center the text inside the select */
+  margin-left: 10px; /* Removed unnecessary left margin */
+  position: relative;
 }
 
 .filterContainer {
-  margin: 20px 0px;
-  max-width: 100%;
+  margin: 10px 0px;
+  max-width: 100%; /* Ensures it doesn't exceed the parent container's width */
+  display: flex; /* Added flexbox to control layout */
+  justify-content: flex-start; /* Align filters to the left */
+  gap: 10px; /* Space between individual filters */
+  flex-wrap: wrap; /* Allows filters to wrap to the next line if necessary */
+  justify-content: space-between;
 }
 
 /* Chart Styles */
@@ -184,90 +190,3 @@
   font-weight: bold;
 }
 
-/* Styles for Radio Button Wrapper */
-.view-wrapper {
-  --font-color-dark: #8A252C;
-  --font-color-light: #fff;
-  --bg-color: #fff;
-  --main-color: #8A252C;
-  --secondary-color: #a43a3f;
-  position: relative;
-  width: 250px;
-  height: 36px;
-  background-color: var(--bg-color);
-  border: 2px solid var(--main-color);
-  border-radius: 34px;
-  display: flex;
-  align-items: top;  
-  flex-direction: row;
-  box-shadow: 4px 4px var(--main-color);
-  font-size: 14px;
-  margin-left: 75px;
-}
-
-.view-option {
-  margin-right: 5px;
-  width: 80.5px;
-  height: 28px;
-  position: relative;
-  top: 2px;
-  left: 2px;
-  border-radius: 34px;
-  transition: 0.25s cubic-bezier(0, 0, 0, 1);
-}
-
-.view-option:last-child {
-  margin-right: 4px;
-}
-
-.view-option:hover {
-  background-color: var(--secondary-color);
-}
-
-.view-option:hover .view-span {
-  color: var(--font-color-light);
-}
-
-.view-input {
-  width: 100%;
-  height: 100%;
-  position: absolute;
-  left: 0;
-  top: 0;
-  appearance: none;
-  cursor: pointer;
-  border: none;
-}
-
-.view-input:focus, .view-input:active {
-  outline: none !important;
-  background-color: transparent !important;
-  box-shadow: none !important;
-}
-
-.view-btn {
-  width: 100%;
-  height: 100%;
-  border-radius: 50px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.view-btn:focus, .view-btn:active {
-  outline: none;
-  box-shadow: none; /* Prevent any shadow when clicked */
-}
-.view-span {
-  color: var(--font-color-dark);
-}
-
-.view-input:checked + .view-btn {
-  background-color: var(--main-color);
-  transition: 0.2s cubic-bezier(0, 0, 0, 1);
-}
-
-.view-input:checked + .view-btn .view-span {
-  color: var(--font-color-light);
-  transition: 0.25s cubic-bezier(0, 0, 0, 1);
-}

@@ -16,7 +16,7 @@ import ViewNoteIcon from '@mui/icons-material/Visibility';
 import DeleteIcon from '@mui/icons-material/Delete'; // Import Delete icon
 
 
-const RecordStudent = () => {
+const Student = () => {
   const authToken = localStorage.getItem('authToken');
   const loggedInUser = JSON.parse(authToken);
   const [filteredStudents, setFilteredStudents] = useState([]); // For filtered search results
@@ -197,246 +197,246 @@ const RecordStudent = () => {
     <div className={navStyles.wrapper}>
       <Navigation loggedInUser={loggedInUser} />
       <div className={navStyles.content}>  
-      <div className={styles.TitleContainer}>
-        <h2 className={styles.RecordTitle}>Student Overview</h2> 
-      </div>      
-      <div className={styles['triple-container']}>
-        {/* Display selected student details */}
-        <div className={styles['details-container']}>
-          <label>Details: </label>
-          <table className={styles['details-table']}>
-            <tbody>
-              <tr>
-                <td><strong>ID Number</strong></td>
-                <td><strong>:</strong></td>
-                <td>{selectedStudent?.sid || 'N/A'}</td>
-              </tr>
-              <tr>
-                <td><strong>Name</strong></td>
-                <td><strong>:</strong></td>
-                <td>{selectedStudent?.name || 'N/A'}</td>
-              </tr>
-              <tr>
-                <td><strong>Grade</strong></td>
-                <td><strong>:</strong></td>
-                <td>{selectedStudent?.grade || 'N/A'}</td>
-              </tr>
-              <tr>
-                <td><strong>Section</strong></td>
-                <td><strong>:</strong></td>
-                <td>{selectedStudent?.section || 'N/A'}</td>
-              </tr>
-              <tr>
-                <td><strong>Gender</strong></td>
-                <td><strong>:</strong></td>
-                <td>{selectedStudent?.gender || 'N/A'}</td>
-              </tr>
-              <tr>
-                <td><strong>Adviser</strong></td>
-                <td><strong>:</strong></td>
-                <td>{adviser ? `${adviser.firstname} ${adviser.lastname}` : 'N/A'}</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>    
-
-        {/* Search Bar for Students */}
-        <div className={styles['search-container']}>
-          <h2 className={styles['h2-title-record']}>Total Frequency of Monitored Records</h2>
-          <div className={tableStyles['table-container']}>
-            <table className={tableStyles['global-table-small']}>
-              <thead>
-                <tr>
-                  {monitoredRecordsList.map((monitoredRecord, index) => (
-                    <th key={index}>{monitoredRecord}</th>
-                  ))}
-                </tr>
-              </thead>
+        <div className={navStyles.TitleContainer}>
+          <h2 className={navStyles['h1-title']}>Student Overview</h2>
+        </div>  
+        <div className={styles['triple-container']}>
+          {/* Display selected student details */}
+          <div className={styles['details-container']}>
+            <label>Details: </label>
+            <table className={styles['details-table']}>
               <tbody>
                 <tr>
-                  {monitoredRecordsList.map((monitoredRecord, index) => (
-                    <td key={index}>{frequencies[monitoredRecord]}</td>
-                  ))}
+                  <td><strong>ID Number</strong></td>
+                  <td><strong>:</strong></td>
+                  <td>{selectedStudent?.sid || 'N/A'}</td>
+                </tr>
+                <tr>
+                  <td><strong>Name</strong></td>
+                  <td><strong>:</strong></td>
+                  <td>{selectedStudent?.name || 'N/A'}</td>
+                </tr>
+                <tr>
+                  <td><strong>Grade</strong></td>
+                  <td><strong>:</strong></td>
+                  <td>{selectedStudent?.grade || 'N/A'}</td>
+                </tr>
+                <tr>
+                  <td><strong>Section</strong></td>
+                  <td><strong>:</strong></td>
+                  <td>{selectedStudent?.section || 'N/A'}</td>
+                </tr>
+                <tr>
+                  <td><strong>Gender</strong></td>
+                  <td><strong>:</strong></td>
+                  <td>{selectedStudent?.gender || 'N/A'}</td>
+                </tr>
+                <tr>
+                  <td><strong>Adviser</strong></td>
+                  <td><strong>:</strong></td>
+                  <td>{adviser ? `${adviser.firstname} ${adviser.lastname}` : 'N/A'}</td>
                 </tr>
               </tbody>
             </table>
-          </div>
-          <label htmlFor="studentSearch">Search: </label>
-          <input
-            type="text"
-            id="studentSearch"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Enter student name or ID"
-          />
+          </div>    
 
-          {/* Import Modal */}
-          {showImportModal && (
-            <ImportModal
-              onClose={() => setShowImportModal(false)}
-              schoolYears={schoolYears}
+          {/* Search Bar for Students */}
+          <div className={styles['search-container']}>
+            <h2 className={styles['h2-title-record']}>Total Frequency of Monitored Records</h2>
+            <div className={tableStyles['table-container']}>
+              <table className={tableStyles['global-table-small']}>
+                <thead>
+                  <tr>
+                    {monitoredRecordsList.map((monitoredRecord, index) => (
+                      <th key={index}>{monitoredRecord}</th>
+                    ))}
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    {monitoredRecordsList.map((monitoredRecord, index) => (
+                      <td key={index}>{frequencies[monitoredRecord]}</td>
+                    ))}
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <label htmlFor="studentSearch">Search: </label>
+            <input
+              type="text"
+              id="studentSearch"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="Enter student name or ID"
             />
-          )}
 
-          {showAddStudentModal && ( 
-            <AddStudentModal
-              open={showAddStudentModal}
-              onClose={() => setShowAddStudentModal(false)}
-            />    
-          )}
-        
-          {/* Add Record Modal */}
-          {showAddRecordModal && (
-            <AddRecordModal
-              student={selectedStudent}
-              onClose={() => setShowAddRecordModal(false)}
-              refreshRecords={() => fetchStudentRecords(selectedStudent.sid)} // Pass the refresh function
-            />
-          )}        
+            {/* Import Modal */}
+            {showImportModal && (
+              <ImportModal
+                onClose={() => setShowImportModal(false)}
+                schoolYears={schoolYears}
+              />
+            )}
+
+            {showAddStudentModal && ( 
+              <AddStudentModal
+                open={showAddStudentModal}
+                onClose={() => setShowAddStudentModal(false)}
+              />    
+            )}
           
-          {/* Button to open Import Modal */}
-          {loggedInUser?.userType !== 3 && (
-            <button onClick={() => setShowImportModal(true)} 
-              className={`${formStyles['green-button']} ${formStyles['maroon-button']}`} 
-              style={{ marginLeft: '20px' }}>
-              Import Students
-            </button>
-          )}      
+            {/* Add Record Modal */}
+            {showAddRecordModal && (
+              <AddRecordModal
+                student={selectedStudent}
+                onClose={() => setShowAddRecordModal(false)}
+                refreshRecords={() => fetchStudentRecords(selectedStudent.sid)} // Pass the refresh function
+              />
+            )}        
+            
+            {/* Button to open Import Modal */}
+            {loggedInUser?.userType !== 3 && (
+              <button onClick={() => setShowImportModal(true)} 
+                className={`${formStyles['green-button']} ${formStyles['maroon-button']}`} 
+                style={{ marginLeft: '20px' }}>
+                Import Students
+              </button>
+            )}      
 
-          {loggedInUser?.userType !== 3 && (
-            <button onClick={() => setShowAddStudentModal(true)} 
-              className={formStyles['green-button']} 
-              style={{ marginLeft: '10px' }}>
-              Add Student
-            </button>
-          )}           
+            {loggedInUser?.userType !== 3 && (
+              <button onClick={() => setShowAddStudentModal(true)} 
+                className={formStyles['green-button']} 
+                style={{ marginLeft: '10px' }}>
+                Add Student
+              </button>
+            )}           
 
-          {/* Only show the student list if the searchQuery is not empty and filtered students exist */}
-          {searchQuery && (
-            <div>
-              {filteredStudents.length > 0 ? (
-                <div className={formStyles['global-dropdown']}>
-                  {filteredStudents.map((student) => (
-                    <div
-                      key={student.sid} 
-                      onClick={() => handleStudentSelect(student)} // Dropdown disappears after selection
-                      className={formStyles['global-dropdown-item']}>
-                      {student.name} ({student.sid})
-                    </div>
-                  ))}
-                </div>
-              ) : (
-                <p className={formStyles['global-dropdown']}>No students found.</p>
+            {/* Only show the student list if the searchQuery is not empty and filtered students exist */}
+            {searchQuery && (
+              <div>
+                {filteredStudents.length > 0 ? (
+                  <div className={formStyles['global-dropdown']}>
+                    {filteredStudents.map((student) => (
+                      <div
+                        key={student.sid} 
+                        onClick={() => handleStudentSelect(student)} // Dropdown disappears after selection
+                        className={formStyles['global-dropdown-item']}>
+                        {student.name} ({student.sid})
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <p className={formStyles['global-dropdown']}>No students found.</p>
+                )}
+              </div>
+            )}  
+            
+          </div>    
+        </div>   
+
+        {/* Display records if student is selected */}
+        {selectedStudent && (
+          <>
+            {/* Use RecordFilter component to filter by school year, month, week */}
+            <div className={styles['filter-container']}>
+              {selectedStudent && (
+                <RecordFilter
+                  schoolYears={schoolYears}
+                  loggedInUser={loggedInUser}
+                  selectedSchoolYear={selectedSchoolYear}
+                  setSelectedSchoolYear={setSelectedSchoolYear}
+                  selectedSection={null} // Pass null or undefined since we don't want section filter
+                  setSelectedSection={() => {}} // Empty setter for section
+                  selectedMonth={selectedMonth}
+                  setSelectedMonth={setSelectedMonth}
+                  selectedWeek={selectedWeek}
+                  setSelectedWeek={setSelectedWeek}
+                  showGradeAndSection={false} // Hide grade and section filters
+                />
+              )}    
+            </div>         
+            
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <h2>Detailed Records</h2>
+              {selectedStudent && loggedInUser?.userType === 1 && (
+                <button
+                  className={`${formStyles['green-button']} ${formStyles['orange-button']}`} 
+                  onClick={() => setShowAddRecordModal(true)}
+                >
+                  Add Record
+                </button>
               )}
             </div>
-          )}  
-          
-        </div>    
-      </div>   
-
-      {/* Display records if student is selected */}
-      {selectedStudent && (
-        <>
-          {/* Use RecordFilter component to filter by school year, month, week */}
-          <div className={styles['filter-container']}>
-            {selectedStudent && (
-              <RecordFilter
-                schoolYears={schoolYears}
-                loggedInUser={loggedInUser}
-                selectedSchoolYear={selectedSchoolYear}
-                setSelectedSchoolYear={setSelectedSchoolYear}
-                selectedSection={null} // Pass null or undefined since we don't want section filter
-                setSelectedSection={() => {}} // Empty setter for section
-                selectedMonth={selectedMonth}
-                setSelectedMonth={setSelectedMonth}
-                selectedWeek={selectedWeek}
-                setSelectedWeek={setSelectedWeek}
-                showGradeAndSection={false} // Hide grade and section filters
-              />
-            )}    
-          </div>         
-          
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <h2>Detailed Records</h2>
-            {selectedStudent && loggedInUser?.userType === 1 && (
-              <button
-                className={`${formStyles['green-button']} ${formStyles['orange-button']}`} 
-                onClick={() => setShowAddRecordModal(true)}
-              >
-                Add Record
-              </button>
-            )}
-          </div>
-                      
-          <div className={tableStyles['table-container']}>
-            <table className={tableStyles['global-table']}>
-              <thead>
-                <tr>
-                  <th>Record Date</th>
-                  <th>Incident Date</th>
-                  <th>Monitored Record</th>
-                  {/* <th>Sanction</th> */}
-                  <th>Action</th>
-                </tr>
-              </thead>  
-              <tbody>
-                {filteredRecords.map((record) => (
-                  <tr key={record.recordId}>
-                    <td>{record.record_date}</td>
-                    <td>{record.incident_date}</td>
-                    <td>{record.monitored_record}</td>
-                    {/* <td>{record.sanction}</td> */}
-                    <td>
-                      <ViewNoteIcon
-                        onClick={() => {
-                          setRecordToView(record); // Set the record to view
-                          setShowViewRecordModal(true); // Show the view modal
-                        }}
-                        className={styles['record-action-icon']}
-                        style={{ marginRight: loggedInUser?.userType === 3 ? '0' : '15px' }}  
-                      />   
-                      {loggedInUser?.userType === 1 && (
-                        <>
-                        <EditNoteIcon
+                        
+            <div className={tableStyles['table-container']}>
+              <table className={tableStyles['global-table']}>
+                <thead>
+                  <tr>
+                    <th>Record Date</th>
+                    <th>Incident Date</th>
+                    <th>Monitored Record</th>
+                    {/* <th>Sanction</th> */}
+                    <th>Action</th>
+                  </tr>
+                </thead>  
+                <tbody>
+                  {filteredRecords.map((record) => (
+                    <tr key={record.recordId}>
+                      <td>{record.record_date}</td>
+                      <td>{record.incident_date}</td>
+                      <td>{record.monitored_record}</td>
+                      {/* <td>{record.sanction}</td> */}
+                      <td>
+                        <ViewNoteIcon
                           onClick={() => {
-                            setRecordToEdit(record); // Set the record to edit
-                            setShowEditRecordModal(true); // Show the edit modal
+                            setRecordToView(record); // Set the record to view
+                            setShowViewRecordModal(true); // Show the view modal
                           }}
                           className={styles['record-action-icon']}
-                        />
-                        <DeleteIcon
-                        onClick={() => handleDeleteRecord(record.recordId)} // Call delete function
-                        className={styles['record-action-icon']}
-                         
-                      />        
-                      </>           
-                      )}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>      
+                          style={{ marginRight: loggedInUser?.userType === 3 ? '0' : '15px' }}  
+                        />   
+                        {loggedInUser?.userType === 1 && (
+                          <>
+                          <EditNoteIcon
+                            onClick={() => {
+                              setRecordToEdit(record); // Set the record to edit
+                              setShowEditRecordModal(true); // Show the edit modal
+                            }}
+                            className={styles['record-action-icon']}
+                          />
+                          <DeleteIcon
+                          onClick={() => handleDeleteRecord(record.recordId)} // Call delete function
+                          className={styles['record-action-icon']}
+                          
+                        />        
+                        </>           
+                        )}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>      
 
-          {/* Add the View Modal here */}
-          {showViewRecordModal && (
-            <RecordStudentViewModal
-              record={recordToView} // Pass the record to view
-              onClose={() => setShowViewRecordModal(false)} // Close handler
-            />
-          )}
+            {/* Add the View Modal here */}
+            {showViewRecordModal && (
+              <RecordStudentViewModal
+                record={recordToView} // Pass the record to view
+                onClose={() => setShowViewRecordModal(false)} // Close handler
+              />
+            )}
 
-          {showEditRecordModal && (
-            <RecordStudentEditModal
-              record={recordToEdit} // Pass the record to edit
-              onClose={() => setShowEditRecordModal(false)} // Close handler
-            />
-          )}     
-        </>
-      )}
+            {showEditRecordModal && (
+              <RecordStudentEditModal
+                record={recordToEdit} // Pass the record to edit
+                onClose={() => setShowEditRecordModal(false)} // Close handler
+              />
+            )}     
+          </>
+        )}
       </div>
     </div>
   );
 };
 
-export default RecordStudent;
+export default Student;

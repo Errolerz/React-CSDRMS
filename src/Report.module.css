@@ -100,44 +100,47 @@
   cursor: not-allowed;
 }
 
-.filter-container {
-  margin-bottom: 20px;
+/* Filter Styles */
+.filters {
+  margin-bottom: 20px; /* Space between filters and the chart */
   display: flex;
-  align-items: center;
+  gap: 10px; /* Space between individual filter elements */
+  flex-wrap: wrap; /* Allows filters to wrap to the next line if necessary */
+  text-align: center;
 }
 
-.filter-container label {
-  font-size: 16px;
-  margin-right: 10px;
-  font-weight: bold;
+.filters select,
+.filterContainer select {
+  padding: 10px; /* Reduced padding for a tighter look */
+  font-size: 14px; /* Adjust font size */
+  border: 1px solid #ccc; /* Consistent border */
+  border-radius: 4px; /* Smooth edges */
+  background-color: #fff; /* White background */
+  color: #414141; /* Darker text color for contrast */
+  width: auto; /* Adjusts width based on content */
+  text-align: center; /* Center the text inside the select */
+  margin-left: 10px; /* Removed unnecessary left margin */
+  position: relative;
 }
 
-.filter-select {
-  padding: 8px;
-  font-size: 14px;
-  border-radius: 4px;
-  border: 1px solid #ccc;
-  outline: none;
-}
-
-.filter-select:focus {
-  border-color: #007bff;
+.filterContainer {
+  margin: 10px 0px;
+  max-width: 100%; /* Ensures it doesn't exceed the parent container's width */
+  display: flex; /* Added flexbox to control layout */
+  gap: 10px; /* Space between individual filters */
+  flex-wrap: wrap; /* Allows filters to wrap to the next line if necessary */
+  justify-content: space-between;
 }
 
 /* Report.module.css */
 
 .search-input {
-  padding: 0.5rem;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  margin-left: 1rem; /* Space between filter and search input */
-  width: 200px; /* Adjust the width as needed */
-  font-size: 1rem; /* Font size */
-}
-
-.search-input:focus {
-  border-color: #007bff; /* Change border color on focus */
-  outline: none; /* Remove default outline */
+  width: 350px;
+  padding: 10px; /* Add left padding to avoid overlap with the icon */
+  border-radius: 8px;
+  border: 1px solid #ddd;
+  background-color: #fff;
+  font-size: 15px;
 }
 
 

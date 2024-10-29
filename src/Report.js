@@ -206,28 +206,32 @@ const Reports = () => {
         <div className={navStyles.TitleContainer}>
           <h2 className={navStyles['h1-title']}>Reports List</h2>
         </div>
-        <div className={styles['filter-container']}>
-          <input
-            type="text"
-            placeholder="Search by student name"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className={styles['search-input']}
-          />
-        </div>
 
-        <div className={styles['filter-container']}>
-          <label htmlFor="filter">Filter by status:</label>
-          <select
-            id="filter"
-            className={styles['filter-select']}
-            value={filterCompleted}
-            onChange={(e) => setFilterCompleted(e.target.value)}
-          >
-            <option value="all">All</option>
-            <option value="completed">Completed</option>
-            <option value="notCompleted">Not Completed</option>
-          </select>
+        <div className={styles['filterContainer']}>
+          <div>
+            <label htmlFor="filter">Filter by status:
+              <select
+                id="filter"
+                className={styles['filter-select']}
+                value={filterCompleted}
+                onChange={(e) => setFilterCompleted(e.target.value)}
+              >
+                <option value="all">All</option>
+                <option value="completed">Completed</option>
+                <option value="notCompleted">Not Completed</option>
+              </select>
+            </label>
+          </div>
+
+          <div>
+            <input
+                type="text"
+                placeholder="Search by student name"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className={styles['search-input']}
+            />
+          </div>
         </div>
 
         {loading ? (

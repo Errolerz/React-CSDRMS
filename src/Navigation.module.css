@@ -126,7 +126,6 @@ body{
 /* Content title */
 .h1-title {
     text-align: center;
-    margin-bottom: 20px;
     font-size: 28px;
     color: #8A252C;
     font-weight: bold;
@@ -134,7 +133,8 @@ body{
 
 .TitleContainer {
     display: flex; /* Use flexbox */
-    align-items: center; /* Align titles vertically */
+    text-align: center;
+    justify-content: space-between;
 }
 
 /* Content Area */

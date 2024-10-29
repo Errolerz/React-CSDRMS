@@ -18,6 +18,7 @@ import styles from './Record.module.css';
 import navStyles from './Navigation.module.css'; 
 import Navigation from './Navigation';
 import tableStyles from './GlobalTable.module.css';
+import formStyles from './GlobalForm.module.css'
 
 ChartJS.register(LineElement, PointElement, LinearScale, Title, Tooltip, Legend, CategoryScale);
 
@@ -280,70 +281,74 @@ useEffect(() => {
         <div className={navStyles.wrapper}>
             <Navigation loggedInUser={loggedInUser} />
             <div className={navStyles.content}>
-            <button onClick={handleExportToPDF}>Export to PDF</button>
             <div ref={exportRef} className={styles.exportSection}>
-            
-                <h2>Frequency of Monitored Records by Grade</h2>
-                
-                {loggedInUser.userType !== 3 && (
-                <div>
-                    <label htmlFor="schoolYear">Select School Year: </label>
-                    
-                    <select id="schoolYear" value={selectedYear} onChange={handleYearChange}>
-                        <option value="">All</option>
-                        {schoolYears.map(year => (
-                            <option key={year.schoolYear_ID} value={year.schoolYear}>
-                                {year.schoolYear}
-                            </option>
-                        ))}
-                    </select>
-                    
-                </div>
-                )}
-
-                <div>
-                    <label htmlFor="month">Select Month: </label>
-                    <select id="month" value={selectedMonth} onChange={handleMonthChange}>
-                        <option value="">All</option>
-                        {['August', 'September', 'October', 'November', 'December', 'January', 'February', 'March', 'April', 'May'].map((month, index) => (
-                            <option key={index} value={month}>{month}</option>
-                        ))}
-                    </select>
-                </div>
-
-                {selectedMonth && (
+                <div className={navStyles.TitleContainer}>
+                    <h2 className={navStyles['h1-title']}>JHS Monitored Records Analytics</h2>
+                </div>         
+                <div className={styles.filterContainer}>
                     <div>
-                        <label htmlFor="week">Select Week: </label>
-                        <select id="week" value={selectedWeek} onChange={handleWeekChange}>
-                            <option value="">All</option>
-                            {[1, 2, 3, 4, 5].map(week => (
-                                <option key={week} value={week}>{`Week ${week}`}</option>
-                            ))}
-                        </select>
+                        <label>Filters:
+                            <select id="schoolYear" value={selectedYear} onChange={handleYearChange}>
+                                <option value="">All School Years</option>
+                                {schoolYears.map(year => (
+                                    <option key={year.schoolYear_ID} value={year.schoolYear}>
+                                        {year.schoolYear}
+                                    </option>
+                                ))}
+                            </select>
+                            
+                            <select
+                                id="grade"
+                                value={selectedGrade}
+                                onChange={handleGradeChange}
+                                disabled={loggedInUser.userType === 3}
+                            >
+                                <option value="">All Grades</option>
+                                {uniqueGrades.map((grade, index) => (
+                                    <option key={index} value={grade}>Grade {grade}</option>
+                                ))}
+                            </select>
+
+                            {selectedGrade && (
+                                    <select
+                                        id="section"
+                                        value={selectedSection}
+                                        onChange={handleSectionChange}
+                                        disabled={loggedInUser.userType === 3}
+                                    >
+                                        <option value="">All Sections</option>
+                                        {sectionsForGrade.map((section, index) => (
+                                            <option key={index} value={section}>{section}</option>
+                                        ))}
+                                    </select>
+                            )}
+
+                            <select id="month" value={selectedMonth} onChange={handleMonthChange}>
+                                <option value="">All Months</option>
+                                {['August', 'September', 'October', 'November', 'December', 'January', 'February', 'March', 'April', 'May'].map((month, index) => (
+                                    <option key={index} value={month}>{month}</option>
+                                ))}
+                            </select>
+
+                            {selectedMonth && (
+                                    <select id="week" value={selectedWeek} onChange={handleWeekChange}>
+                                        <option value="">All Weeks</option>
+                                        {[1, 2, 3, 4, 5].map(week => (
+                                            <option key={week} value={week}>{`Week ${week}`}</option>
+                                        ))}
+                                    </select>
+                            )}
+
+                        </label>
                     </div>
-                )}
-
-                <div>
-                    <label htmlFor="grade">Select Grade: </label>
-                    <select id="grade" value={selectedGrade} onChange={handleGradeChange} disabled={loggedInUser.userType === 3}>
-                        <option value="">All</option>
-                        {uniqueGrades.map((grade, index) => (
-                            <option key={index} value={grade}>{grade}</option>
-                        ))}
-                    </select>
-                </div>
-
-                {selectedGrade && (
                     <div>
-                        <label htmlFor="section">Select Section: </label>
-                        <select id="section" value={selectedSection} onChange={handleSectionChange} disabled={loggedInUser.userType === 3}>
-                            <option value="">All</option>
-                            {sectionsForGrade.map((section, index) => (
-                                <option key={index} value={section}>{section}</option>
-                            ))}
-                        </select>
+                        <button 
+                            className={`${formStyles['green-button']} ${formStyles['maroon-button']}`} 
+                            onClick={handleExportToPDF}>
+                            Export to PDF
+                        </button>
                     </div>
-                )}
+                </div>
             
                 <Line
                     data={getLineChartData()}

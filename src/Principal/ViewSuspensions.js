@@ -96,7 +96,9 @@ const ViewSuspensions = () => {
       <Navigation loggedInUser={loggedInUser} />
 
       <div className={navStyles.content}>
-        <h2>Suspension List</h2>
+        <div className={navStyles.TitleContainer}>
+            <h2 className={navStyles['h1-title']}>Suspension List</h2>
+        </div>  
         {loading && <p>Loading suspensions...</p>}
         {error && <p>{error}</p>}
         {!loading && !error && (

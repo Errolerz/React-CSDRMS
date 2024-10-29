@@ -97,8 +97,19 @@ const AdminDashboard = () => {
       <Navigation loggedInUser={loggedInUser} />  
 
       {/* Main Content */}
-      <div className={navStyles.content}>
-        <div className={navStyles['h1-title']}>User Management</div>
+      <div className={navStyles.content}>   
+        <div className={navStyles.TitleContainer}>
+          <h2 className={navStyles['h1-title']}>User Management</h2>
+          <div className={styles['filter-search-bar']}>
+            <input
+              type="search"
+              className={styles['searchRec']}
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="Search Users..."
+            />
+          </div>  
+        </div>
         <div className={styles['user-center-container']}>
           <div className={styles['table-container']}>
             <table className={styles['user-table']}>
@@ -158,16 +169,6 @@ const AdminDashboard = () => {
           >
             Delete
           </button>
-          
-          <div className={styles['filter-search-bar']}>
-            <input
-              type="search"
-              className={styles['searchRec']}
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Search Users..."
-            />
-          </div>          
         </div>
 
         {/* Modals */}

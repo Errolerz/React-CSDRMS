@@ -159,7 +159,7 @@ const Class = () => {
 
             {/* Main Content */}
             <div className={navStyles.content}>
-                <div className={navStyles['h1-title']}>Class Management</div>
+                <h2 className={navStyles['h1-title']}>Class Management</h2>
                 <div className={classStyles.divide}>
                     <div className={classStyles.tableContainer}>
                         <div className={classStyles.table}>

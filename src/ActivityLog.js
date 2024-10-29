@@ -78,42 +78,42 @@ const ActivityLog = () => {
         <div className={navStyles.wrapper}>
             <Navigation loggedInUser={loggedInUser} />
             <div className={navStyles.content}>     
-            <h2>Activity Logs</h2>
-            <div className={styles['search-container']}>
-                    <input
-                        type="text"
-                        className={styles['search-input']} // Apply CSS class
-                        placeholder="Search users..."
-                        value={searchQuery}
-                        onChange={handleSearchChange}
-                    />
-                </div>
+            <div className={navStyles.TitleContainer}>
+                <h2 className={navStyles['h1-title']}>Activity Log</h2>   
+                <div className={styles['search-container']}>
+                        <input
+                            type="text"
+                            className={styles['search-input']} // Apply CSS class
+                            placeholder="Search users..."
+                            value={searchQuery}
+                            onChange={handleSearchChange}
+                        />
+                </div>  
+            </div>
 
-
-                {/* Users List */}
-                <div>
-                    
-                    {searchQuery && ( // Only render the user list if there's a search query
-                    <>
-                    {/* <h3>Users</h3> */}
-                        <ul className={styles['users-list']}>
-                            {filteredUsers.length > 0 ? ( // Check if there are filtered users
-                                filteredUsers.map(user => (
-                                    <li 
-                                        key={user.userId} 
-                                        className={styles['user-item']} 
-                                        onClick={() => handleUserClick(user)}
-                                    >
-                                        {user.firstname} {user.lastname}
-                                    </li>
-                                ))
-                            ) : (
-                                <li>No users found.</li> // Message when no users match the search
-                            )}
-                        </ul>
-                        </>
-                    )}
-                </div>
+            {/* Users List */}
+            <div>
+                {searchQuery && ( // Only render the user list if there's a search query
+                <>
+                {/* <h3>Users</h3> */}
+                    <ul className={styles['users-list']}>
+                        {filteredUsers.length > 0 ? ( // Check if there are filtered users
+                            filteredUsers.map(user => (
+                                <li 
+                                    key={user.userId} 
+                                    className={styles['user-item']} 
+                                    onClick={() => handleUserClick(user)}
+                                >
+                                    {user.firstname} {user.lastname}
+                                </li>
+                            ))
+                        ) : (
+                            <li>No users found.</li> // Message when no users match the search
+                        )}
+                    </ul>
+                    </>
+                )}
+            </div>
             <div className={tableStyles['table-container']}>
             <table className={tableStyles['global-table']}>
                 <thead>

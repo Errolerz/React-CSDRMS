@@ -74,6 +74,19 @@ const ActivityLog = () => {
         return <div>Error: {error}</div>;
     }
 
+    const getUserTypeString = (userType) => {
+        switch (userType) {
+            case 1: return 'SSO';
+            case 2: return 'Principal';
+            case 3: return 'Adviser';
+            case 4: return 'Admin';
+            case 5: return 'Teacher';
+            case 6: return 'Guidance';
+            default: return 'Unknown';
+        }
+    };
+
+
     return (
         <div className={navStyles.wrapper}>
             <Navigation loggedInUser={loggedInUser} />
@@ -118,7 +131,10 @@ const ActivityLog = () => {
             <table className={tableStyles['global-table']}>
                 <thead>
                     <tr>
-                        
+
+
+                         <th>Name</th>
+                         <th>UserType</th>
                         <th>Action</th>
                         <th>Description</th>
                         <th>Timestamp</th>
@@ -128,7 +144,8 @@ const ActivityLog = () => {
                 <tbody>
                     {activityLogs.map(log => (
                         <tr key={log.activitylog_id}>
-                            
+                            <td>{log.user.firstname} {log.user.firstname}</td>
+                            <td>{getUserTypeString(log.user.userType)}</td>
                             <td>{log.action}</td>
                             <td>{log.description}</td>
                             <td>{new Date(log.timestamp).toLocaleString()}</td>

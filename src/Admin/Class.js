@@ -159,7 +159,18 @@ const Class = () => {
 
             {/* Main Content */}
             <div className={navStyles.content}>
-                <h2 className={navStyles['h1-title']}>Class Management</h2>
+                <div className={navStyles.TitleContainer}>
+                    <h2 className={navStyles['h1-title']}>Class Management</h2>
+                    <div className={classStyles.searchContainer}>
+                        <input
+                            type="search"
+                            placeholder="Search by Class..."
+                            value={searchTerm}
+                            onChange={handleSearch}
+                            className={classStyles.searchInput}
+                        />
+                    </div>                  
+                </div>
                 <div className={classStyles.divide}>
                     <div className={classStyles.tableContainer}>
                         <div className={classStyles.table}>
@@ -221,10 +232,15 @@ const Class = () => {
                                         </tr>
                                     )}
                                 </tbody>
-                            </table>
+                            </table> 
                         </div>
                     </div>
                 </div>
+            
+                <div className={classStyles.addButtonContainer}>
+                    <button onClick={handleOpen} className={classStyles.button}>Add Class</button>
+                    <button onClick={handleOpenSchoolYear} className={classStyles.button}>Add School Year</button>
+                </div>       
 
                 {/* Add Grade Modal */}
                 <Modal open={showAddClass} onClose={handleClose}>
@@ -287,20 +303,6 @@ const Class = () => {
                         </div>
                     </Box>
                 </Modal>
-
-                <div className={classStyles.addButtonContainer}>
-                    <button onClick={handleOpen} className={classStyles.button}>Add Class</button>
-                    <button onClick={handleOpenSchoolYear} className={classStyles.button}>Add School Year</button>
-                    <div className={classStyles.searchContainer}>
-                        <input
-                            type="search"
-                            placeholder="Search by Class..."
-                            value={searchTerm}
-                            onChange={handleSearch}
-                            className={classStyles.searchInput}
-                        />
-                    </div>
-                </div>
             </div>
         </div>
     );

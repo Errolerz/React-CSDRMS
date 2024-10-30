@@ -1,15 +1,27 @@
 /* ActivityLog.module.css */
-
-.search-container {
-    position: relative;
+.icon-cell {
+    text-align: center;
+    width: 120px; /* Set a specific width for the column */
+    border-right: none;
+}
+/* Search Bar */
+.search-bar {
+    display: flex; /* Ensure children are aligned correctly */
+    align-items: center; /* Center the icon and input vertically */
+    padding-left: 10px; /* Space to the left of the input */
 }
 
 .search-input {
-    padding: 0.5rem; /* Add padding for better appearance */
-    border: 1px solid #ccc; /* Border color */
-    border-radius: 4px; /* Rounded corners */
-    width: 100%; /* Full width */
-    max-width: 300px; /* Max width for the search bar */
+    display: flex;
+    align-items: center;
+    border-radius: 4px;
+    color: #333333;
+    width: 300px;
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+    background-color: #fff;
+    font-size: 15px;
 }
 
 .users-list {
@@ -19,7 +31,8 @@
     z-index: 1000; /* High z-index to display in front */
     max-height: 150px; /* Optional: limit height for overflow */
     overflow-y: auto; /* Optional: enable scrolling if needed */
-    width: 50%; /* Match the width of the search input */
+    width: 15%; /* Match the width of the search input */
+    margin-left: 0;
 }
 
 /* Individual user item styles */
@@ -30,4 +43,8 @@
 }
 .user-item:hover {
     background-color: #f0f0f0; /* Change background on hover */
+}
+
+.no-results{
+    color: #414141;
 }

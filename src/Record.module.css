@@ -66,16 +66,6 @@
   max-width: 100%;
 }
 
-.record-action-icon{
-  color: #8A252C;
-  transition: background-color 0.3s, transform 0.3s;
-  font-size: 2.0rem;
-}
-
-.record-action-icon:hover {
-  transform: scale(1.25);
-}
-
 .details-table {
   width: 100%;  
   border-collapse: collapse;  
@@ -168,9 +158,10 @@
 }
 
 .linechart-Container, .barchart-Container{
-  width: 1000px;
-  height: 500px;
-  padding: 10px; /* Padding around the chart for better spacing */
+  margin-top: 20px;
+  width: 100%;
+  height: 100%;
+  padding: 30px; /* Padding around the chart for better spacing */
   border: 2px solid #8A252C; /* Optional: border around the chart */
   border-radius: 8px; /* Rounded corners for the chart */
   background-color: #f9f9f9; /* Light background for contrast */  

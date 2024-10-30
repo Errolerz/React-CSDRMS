@@ -38,7 +38,7 @@ h2 {
     padding-left: 10px; /* Space to the left of the input */
 }
 .searchRec {
-    width: 350px;
+    width: 300px;
     padding: 10px; /* Add left padding to avoid overlap with the icon */
     border-radius: 8px;
     border: 1px solid #ddd;

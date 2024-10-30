@@ -281,124 +281,128 @@ useEffect(() => {
         <div className={navStyles.wrapper}>
             <Navigation loggedInUser={loggedInUser} />
             <div className={navStyles.content}>
-            <div ref={exportRef} className={styles.exportSection}>
-                <div className={navStyles.TitleContainer}>
-                    <h2 className={navStyles['h1-title']}>JHS Monitored Records Analytics</h2>
-                </div>         
-                <div className={styles.filterContainer}>
-                    <div>
-                        <label>Filters:
-                            <select id="schoolYear" value={selectedYear} onChange={handleYearChange}>
-                                <option value="">All School Years</option>
-                                {schoolYears.map(year => (
-                                    <option key={year.schoolYear_ID} value={year.schoolYear}>
-                                        {year.schoolYear}
-                                    </option>
-                                ))}
-                            </select>
-                            
-                            <select
-                                id="grade"
-                                value={selectedGrade}
-                                onChange={handleGradeChange}
-                                disabled={loggedInUser.userType === 3}
-                            >
-                                <option value="">All Grades</option>
-                                {uniqueGrades.map((grade, index) => (
-                                    <option key={index} value={grade}>Grade {grade}</option>
-                                ))}
-                            </select>
+                <div ref={exportRef} className={styles.exportSection}>
+                    <div className={navStyles.TitleContainer}>
+                        <h2 className={navStyles['h1-title']}>JHS Monitored Records Analytics</h2>
+                    </div>         
+                    <div className={styles.filterContainer}>
+                        <div>
+                            <label>Filters:
+                                <select id="schoolYear" value={selectedYear} onChange={handleYearChange}>
+                                    <option value="">All School Years</option>
+                                    {schoolYears.map(year => (
+                                        <option key={year.schoolYear_ID} value={year.schoolYear}>
+                                            {year.schoolYear}
+                                        </option>
+                                    ))}
+                                </select>
+                                
+                                <select
+                                    id="grade"
+                                    value={selectedGrade}
+                                    onChange={handleGradeChange}
+                                    disabled={loggedInUser.userType === 3}
+                                >
+                                    <option value="">All Grades</option>
+                                    {uniqueGrades.map((grade, index) => (
+                                        <option key={index} value={grade}>Grade {grade}</option>
+                                    ))}
+                                </select>
 
-                            {selectedGrade && (
-                                    <select
-                                        id="section"
-                                        value={selectedSection}
-                                        onChange={handleSectionChange}
-                                        disabled={loggedInUser.userType === 3}
-                                    >
-                                        <option value="">All Sections</option>
-                                        {sectionsForGrade.map((section, index) => (
-                                            <option key={index} value={section}>{section}</option>
-                                        ))}
-                                    </select>
-                            )}
+                                {selectedGrade && (
+                                        <select
+                                            id="section"
+                                            value={selectedSection}
+                                            onChange={handleSectionChange}
+                                            disabled={loggedInUser.userType === 3}
+                                        >
+                                            <option value="">All Sections</option>
+                                            {sectionsForGrade.map((section, index) => (
+                                                <option key={index} value={section}>{section}</option>
+                                            ))}
+                                        </select>
+                                )}
 
-                            <select id="month" value={selectedMonth} onChange={handleMonthChange}>
-                                <option value="">All Months</option>
-                                {['August', 'September', 'October', 'November', 'December', 'January', 'February', 'March', 'April', 'May'].map((month, index) => (
-                                    <option key={index} value={month}>{month}</option>
-                                ))}
-                            </select>
+                                <select id="month" value={selectedMonth} onChange={handleMonthChange}>
+                                    <option value="">All Months</option>
+                                    {['August', 'September', 'October', 'November', 'December', 'January', 'February', 'March', 'April', 'May'].map((month, index) => (
+                                        <option key={index} value={month}>{month}</option>
+                                    ))}
+                                </select>
 
-                            {selectedMonth && (
-                                    <select id="week" value={selectedWeek} onChange={handleWeekChange}>
-                                        <option value="">All Weeks</option>
-                                        {[1, 2, 3, 4, 5].map(week => (
-                                            <option key={week} value={week}>{`Week ${week}`}</option>
-                                        ))}
-                                    </select>
-                            )}
+                                {selectedMonth && (
+                                        <select id="week" value={selectedWeek} onChange={handleWeekChange}>
+                                            <option value="">All Weeks</option>
+                                            {[1, 2, 3, 4, 5].map(week => (
+                                                <option key={week} value={week}>{`Week ${week}`}</option>
+                                            ))}
+                                        </select>
+                                )}
 
-                        </label>
+                            </label>
+                        </div>
+                        <div>
+                            <button 
+                                className={`${formStyles['green-button']} ${formStyles['maroon-button']}`} 
+                                onClick={handleExportToPDF}>
+                                Export to PDF
+                            </button>
+                        </div>
                     </div>
-                    <div>
-                        <button 
-                            className={`${formStyles['green-button']} ${formStyles['maroon-button']}`} 
-                            onClick={handleExportToPDF}>
-                            Export to PDF
-                        </button>
-                    </div>
-                </div>
-            
-                <Line
-                    data={getLineChartData()}
-                    options={{
-                        responsive: true,
-                        scales: {
-                            y: { beginAtZero: true },
-                        },
-                        plugins: {
-                            legend: { position: 'top' },
-                            title: {
-                                display: true,
-                                text: selectedMonth ? `Daily Frequencies in ${selectedMonth}` : 'Monthly Frequencies (Aug to May)',
-                            },
-                        },
-                    }}
-                />
 
-                <div className={tableStyles['table-container']}>
-                <table className={tableStyles['global-table']}>
-                    <thead>
-                        <tr>
-                            <th>Grade</th>
-                            <th>Absent</th>
-                            <th>Tardy</th>
-                            <th>Cutting Classes</th>
-                            <th>Improper Uniform</th>
-                            <th>Offense</th>
-                            <th>Misbehavior</th>
-                            <th>Clinic</th>
-                            <th>Sanction</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {Object.entries(filteredFrequencyData).map(([grade, frequencies]) => (
-                            <tr key={grade}>
-                                <td>{grade}</td>
-                                <td>{frequencies ? frequencies.Absent : 0}</td>
-                                <td>{frequencies ? frequencies.Tardy : 0}</td>
-                                <td>{frequencies ? frequencies['Cutting Classes'] : 0}</td>
-                                <td>{frequencies ? frequencies['Improper Uniform'] : 0}</td>
-                                <td>{frequencies ? frequencies.Offense : 0}</td>
-                                <td>{frequencies ? frequencies.Misbehavior : 0}</td>
-                                <td>{frequencies ? frequencies.Clinic : 0}</td>
-                                <td>{frequencies ? frequencies.Sanction : 0}</td>
-                            </tr>
-                        ))}
-                    </tbody>
-                </table>
-                </div>
+                    <div className={tableStyles['table-container']}>
+                        <table className={tableStyles['global-table']}>
+                            <thead>
+                                <tr>
+                                    <th>Grade</th>
+                                    <th>Absent</th>
+                                    <th>Tardy</th>
+                                    <th>Cutting Classes</th>
+                                    <th>Improper Uniform</th>
+                                    <th>Offense</th>
+                                    <th>Misbehavior</th>
+                                    <th>Clinic</th>
+                                    <th>Sanction</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {Object.entries(filteredFrequencyData).map(([grade, frequencies]) => (
+                                    <tr key={grade}>
+                                        <td>{grade}</td>
+                                        <td>{frequencies ? frequencies.Absent : 0}</td>
+                                        <td>{frequencies ? frequencies.Tardy : 0}</td>
+                                        <td>{frequencies ? frequencies['Cutting Classes'] : 0}</td>
+                                        <td>{frequencies ? frequencies['Improper Uniform'] : 0}</td>
+                                        <td>{frequencies ? frequencies.Offense : 0}</td>
+                                        <td>{frequencies ? frequencies.Misbehavior : 0}</td>
+                                        <td>{frequencies ? frequencies.Clinic : 0}</td>
+                                        <td>{frequencies ? frequencies.Sanction : 0}</td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div className={styles.chartContainer}> {/* This will apply the centering styles */}
+                        <div className={styles['linechart-Container']}>
+                            <Line
+                                data={getLineChartData()}
+                                options={{
+                                    responsive: true,
+                                    scales: {
+                                        y: { beginAtZero: true },
+                                    },
+                                    plugins: {
+                                        legend: { position: 'top' },
+                                        title: {
+                                            display: true,
+                                            text: selectedMonth ? `Daily Frequencies in ${selectedMonth}` : 'Monthly Frequencies (Aug to May)',
+                                        },
+                                    },
+                                }}
+                            />
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

@@ -60,6 +60,7 @@ function App() {
           {(loggedInUser && (loggedInUser.userType === 1 ||  loggedInUser.userType === 2))&& (
             <>
              <Route path="/viewSuspensions" element={<ViewSuspensions />} />
+             <Route path="/activitylog" element={<PrivateRoute element={<ActivityLog />} />} />
             </>
 
           )}

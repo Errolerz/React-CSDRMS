@@ -392,7 +392,7 @@ const Student = () => {
                             setRecordToView(record); // Set the record to view
                             setShowViewRecordModal(true); // Show the view modal
                           }}
-                          className={styles['record-action-icon']}
+                          className={formStyles['action-icon']}
                           style={{ marginRight: loggedInUser?.userType === 3 ? '0' : '15px' }}  
                         />   
                         {loggedInUser?.userType === 1 && (
@@ -402,13 +402,12 @@ const Student = () => {
                               setRecordToEdit(record); // Set the record to edit
                               setShowEditRecordModal(true); // Show the edit modal
                             }}
-                            className={styles['record-action-icon']}
+                            className={formStyles['action-icon']}
                           />
                           <DeleteIcon
-                          onClick={() => handleDeleteRecord(record.recordId)} // Call delete function
-                          className={styles['record-action-icon']}
-                          
-                        />        
+                            onClick={() => handleDeleteRecord(record.recordId)} // Call delete function
+                            className={formStyles['action-icon']}
+                          />        
                         </>           
                         )}
                       </td>

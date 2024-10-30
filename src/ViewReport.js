@@ -1,14 +1,17 @@
 // ViewReportModal.js
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import axios from 'axios';
 import styles from './ViewReport.module.css'; // New styles for modal
 import modalStyles from './ReportModal.module.css'; // Generic modal styles
+import { jsPDF } from 'jspdf';
+import html2canvas from 'html2canvas';
 
 const ViewReportModal = ({ reportId, onClose }) => {
   const [report, setReport] = useState(null);
   const [suspension, setSuspension] = useState(null);
   const [loading, setLoading] = useState(true);
   const [suspensionLoading, setSuspensionLoading] = useState(true);
+  const exportRef = useRef();
 
   useEffect(() => {
     const fetchReport = async () => {
@@ -39,6 +42,41 @@ const ViewReportModal = ({ reportId, onClose }) => {
     }
   }, [reportId]);
 
+  const handleExportToPDF = async () => {
+    const element = exportRef.current;
+
+    // Capture the element as an image using html2canvas
+    const canvas = await html2canvas(element);
+    const imgData = canvas.toDataURL('image/png');
+
+    // Create jsPDF document with long bond paper size
+    const pdf = new jsPDF({
+        orientation: 'portrait',
+        unit: 'mm',
+        format: [216, 330], // Long bond paper size in mm
+    });
+
+    // Define margins and calculate content dimensions
+    const marginTop = 20; // Top margin in mm
+    const marginLeft = 10; // Left margin in mm
+    const pdfWidth = 216 - 2 * marginLeft; // Width adjusted for margins
+    const pdfHeight = (canvas.height * pdfWidth) / canvas.width; // Maintain aspect ratio
+
+    // Add title and custom header (optional)
+    pdf.setFontSize(16);
+    pdf.text('Student Comprehensive Report', marginLeft, marginTop - 10);
+
+    // Add the image content with margins
+    pdf.addImage(imgData, 'PNG', marginLeft, marginTop, pdfWidth, pdfHeight);
+
+    // Optional footer
+    pdf.setFontSize(10);
+    pdf.text('Generated on: ' + new Date().toLocaleDateString(), marginLeft, 330 - 10); // Bottom left corner
+
+    // Save the PDF
+    pdf.save('student-report.pdf');
+};
+
   if (loading) {
     return <div class="dot-spinner">
       <div class="dot-spinner__dot"></div>
@@ -59,10 +97,19 @@ const ViewReportModal = ({ reportId, onClose }) => {
   return (
     <div className={modalStyles['report-modal-overlay']}>
       <div className={modalStyles['report-view-modal-content']}>
-        <button className={modalStyles.closeButton} onClick={onClose}>✕</button>
+      <button className={modalStyles.closeButton} onClick={onClose}>✕</button>
+      <button 
+                           
+                           onClick={handleExportToPDF}>
+                           Export to PDF
+                       </button>
+      <div ref={exportRef} className={styles.exportSection}>
+        
         <div className={styles.tablesContainer}>
-          {/* Report Details */}
+       
           <div className={styles.tableWrapper}>
+         
+            
             <h2>Report Details</h2>
             <table className={styles['report-details']}>
               <thead>
@@ -116,6 +163,7 @@ const ViewReportModal = ({ reportId, onClose }) => {
                 </tr> */}
               </tbody>
             </table>
+            
           </div>
   
           {/* Display Suspension Details Table */}
@@ -169,6 +217,7 @@ const ViewReportModal = ({ reportId, onClose }) => {
             ) : (
               <p>No suspension details found for this report.</p>
             )}
+          </div>
           </div>
         </div>
       </div>

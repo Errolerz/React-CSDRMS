@@ -164,8 +164,21 @@ const ViewSuspensions = () => {
               View
             </button>
 
+            
+
             {loggedInUser.userType === 1 && (
                 <>
+                <button
+             variant="contained" 
+             className={styles['suspension-button']} 
+             onClick={() => {
+              
+                handleViewClick(); // Call existing view function for other userTypes
+              }
+            } 
+            disabled={!selectedSuspension}
+           
+            > view suspension form</button>
                   <button
                     variant="contained"
                     onClick={handleEditClick}

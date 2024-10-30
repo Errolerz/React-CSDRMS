@@ -1,23 +1,90 @@
-import React from "react";
+import React, { useEffect,useRef, useState } from 'react';
+import axios from 'axios';
 import Modal from "@mui/material/Modal";
 import Box from "@mui/material/Box";
 import styles from "./SuspensionModal.module.css"; // Import custom styles for this modal
+import { jsPDF } from 'jspdf';
+import html2canvas from 'html2canvas';
 
 const SuspensionModal = ({ isOpen, onClose, suspension }) => {
   const authToken = localStorage.getItem('authToken');
   const loggedInUser = JSON.parse(authToken);
+  const [principal, setPrincipal] = useState(null); // State to store principal's data
+
+  const exportRef = useRef(); 
+  
+  useEffect(() => {
+    const fetchPrincipal = async () => {
+      try {
+        const response = await axios.get('http://localhost:8080/user/getPrincipal', {
+          headers: { Authorization: `Bearer ${authToken}` }
+        });
+        setPrincipal(response.data);
+      } catch (error) {
+        console.error("Error fetching principal data:", error);
+      }
+    };
+  
+    if (isOpen) {
+      fetchPrincipal(); // Fetch principal data only when modal is open
+    }
+  }, [isOpen, authToken]);
+  
+
+  const handleExportToPDF = async () => {
+    const element = exportRef.current;
+
+    // Capture the element as an image using html2canvas
+    const canvas = await html2canvas(element);
+    const imgData = canvas.toDataURL('image/png');
+
+    // Create jsPDF document with long bond paper size
+    const pdf = new jsPDF({
+        orientation: 'portrait',
+        unit: 'mm',
+        format: [216, 330], // Long bond paper size in mm
+    });
+
+    // Define margins and calculate content dimensions
+    const marginTop = 20; // Top margin in mm
+    const marginLeft = 10; // Left margin in mm
+    const pdfWidth = 216 - 2 * marginLeft; // Width adjusted for margins
+    const pdfHeight = (canvas.height * pdfWidth) / canvas.width; // Maintain aspect ratio
+
+    // Add title and custom header (optional)
+    pdf.setFontSize(16);
+    // pdf.text('Student Suspension', marginLeft, marginTop - 10);
+
+    // Add the image content with margins
+    pdf.addImage(imgData, 'PNG', marginLeft, marginTop, pdfWidth, pdfHeight);
+
+    // Optional footer
+    pdf.setFontSize(10);
+    pdf.text('Generated on: ' + new Date().toLocaleDateString(), marginLeft, 330 - 10); // Bottom left corner
+
+    // Save the PDF
+    pdf.save('suspension-form.pdf');
+};
 
   return (
     <Modal open={isOpen} onClose={onClose}>
+      
       <Box className={styles["suspension-modal-modalContainer"]}>
+      <button 
+                           
+                           onClick={handleExportToPDF}>
+                           Export to PDF
+                       </button>
+      <div ref={exportRef} className={styles.exportSection}>
         <div className={styles["suspension-modal-formContainer"]}>
+        
           <h2 className={styles["suspension-modal-title"]}>Suspension Form</h2>
 
           {/* Date Field */}
           <p><strong>Date: </strong> {new Date().toLocaleDateString()}</p>
 
           {/* Principal's Address */}
-          <p><strong>To:</strong> {loggedInUser.firstname} {loggedInUser.lastname}<br />
+          <p><strong>To:</strong> {principal ? `${principal.firstname} ${principal.lastname}` : "Loading..."}<br />
           Principal<br />
           Cebu Institute of Technology - University<br />
           Cebu City</p>
@@ -56,7 +123,9 @@ const SuspensionModal = ({ isOpen, onClose, suspension }) => {
           </p>
 
         </div>
+        </div>
       </Box>
+    
     </Modal>
   );
 };

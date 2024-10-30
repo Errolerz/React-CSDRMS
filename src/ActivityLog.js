@@ -96,7 +96,7 @@ const ActivityLog = () => {
                         <input
                             type="text"
                             className={styles['search-input']} // Apply CSS class
-                            placeholder="Search users or usertype..."
+                            placeholder="Search by users or usertype..."
                             value={searchQuery}
                             onChange={handleSearchChange}
                         />

@@ -149,6 +149,14 @@ body{
     overflow-y: auto;
 }
 
+.margin-zero {
+    margin-left: 0; /* For userType 5 */
+}
+
+.margin-default {
+    margin-left: 175px; /* Default margin for other user types */
+}
+
 .header-wrapper {
     display: flex;
     align-items: center; /* Aligns vertically centered */

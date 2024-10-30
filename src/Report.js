@@ -202,7 +202,7 @@ const Reports = () => {
     <div className={navStyles.wrapper}>
       <Navigation loggedInUser={loggedInUser} />
 
-      <div className={navStyles.content}>
+      <div className={`${navStyles.content} ${loggedInUser.userType === 5 ? navStyles['margin-zero'] : navStyles['margin-default']}`}>
         <div className={navStyles.TitleContainer}>
           <h2 className={navStyles['h1-title']}>Reports List</h2>
         </div>

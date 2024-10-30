@@ -199,9 +199,9 @@
 }
 
 .action-icon{
-    color: #8A252C;
-    transition: background-color 0.3s, transform 0.3s;
-    font-size: 2.0rem;
+        color: #8A252C;
+        transition: background-color 0.3s, transform 0.3s;
+        font-size: 2.0rem;
 }
 
 .action-icon:hover {

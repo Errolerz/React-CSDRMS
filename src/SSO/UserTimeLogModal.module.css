@@ -162,5 +162,5 @@
 
 .timelog-table th:nth-child(3),
 .timelog-table td:nth-child(3) {   
-    border: none;
+    border-right: none;
 }

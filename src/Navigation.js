@@ -11,7 +11,7 @@ import navStyles from './Navigation.module.css'; // CSS for Navigation
 import JHSLogo from './image-sso-yellow.png';
 import axios from 'axios';
 import NotificationModal from './NotificationModal'; // Import NotificationModal
-import MenuPopupState from './Components/MenuPopupState'; 
+import MenuPopupState from './Components/MenuPopupState';
 import IconButton from '@mui/material/IconButton';
 import AssignmentIcon from '@mui/icons-material/Assignment';
 
@@ -70,16 +70,16 @@ const Navigation = ({ loggedInUser }) => {
               grade: loggedInUser.grade,
               section: loggedInUser.section,
               schoolYear: loggedInUser.schoolYear,
-              complainant: loggedInUser.username
-            }
+              complainant: loggedInUser.username,
+            },
           });
 
           const suspensionsResponse = await axios.get('http://localhost:8080/suspension/getAllSuspensionsByGradeSectionAndSchoolYear', {
             params: {
               grade: loggedInUser.grade,
               section: loggedInUser.section,
-              schoolYear: loggedInUser.schoolYear
-            }
+              schoolYear: loggedInUser.schoolYear,
+            },
           });
 
           setAllReports(reportsResponse.data);
@@ -102,14 +102,13 @@ const Navigation = ({ loggedInUser }) => {
           // Complainant (User type 5 or 6): Fetch suspensions by complainant
           const suspensionsResponse = await axios.get('http://localhost:8080/suspension/getAllSuspensionsByComplainant', {
             params: {
-              username: loggedInUser.username
-            }
+              username: loggedInUser.username,
+            },
           });
 
           setAllSuspensions(suspensionsResponse.data);
           
           const unviewedSuspensions = suspensionsResponse.data.filter((suspension) => !suspension.viewedByComplainant);
-
           unviewedSuspensionsCount = unviewedSuspensions.length;
         }
 
@@ -134,20 +133,19 @@ const Navigation = ({ loggedInUser }) => {
   };
 
   return (
-    <>  
-        {/* Sidebar */}
+    <>
+      {/* Only render the sidenav title and links if the userType is not 5 */}
+      {loggedInUser.userType !== 5 && (
         <div className={navStyles.sidenav}>
-            <div className={navStyles['sidenav-title']}>MENU</div>
-
+          <div className={navStyles['sidenav-title']}>MENU</div>
+          {/* Render sidebar links */}
+          <>
             {/* SSO - usertype 1 */}
             {loggedInUser.userType === 1 && createSidebarLink("/record", "Dashboard", AssessmentIcon)}
             {loggedInUser.userType === 1 && createSidebarLink("/student", "Student", SchoolIcon)}
-            {/* {loggedInUser.userType === 1 && createSidebarLink("/timeLog", "Time Log", AccessTimeFilledIcon)} */}
-            {/*loggedInUser.userType === 1 && createSidebarLink("/notification", "Notification", NotificationsActiveIcon)*/}
             {loggedInUser.userType === 1 && createSidebarLink("/report", "Report", PostAddIcon)}
             {loggedInUser.userType === 1 && createSidebarLink("/viewSuspensions", "Suspension", LocalPoliceIcon)}
             {loggedInUser.userType === 1 && createSidebarLink("/activitylog", "Activity Log", AssignmentIcon)}
-            
 
             {/* Principal - usertype 2 */}
             {loggedInUser.userType === 2 && createSidebarLink("/record", "Dashboard", AssessmentIcon)}
@@ -157,8 +155,7 @@ const Navigation = ({ loggedInUser }) => {
             {/* Adviser - usertype 3 */}
             {loggedInUser.userType === 3 && createSidebarLink("/record", "Dashboard", AssessmentIcon)}
             {loggedInUser.userType === 3 && createSidebarLink("/student", "Student", SchoolIcon)}
-            {/*loggedInUser.userType === 3 && createSidebarLink("/notification", "Notification", NotificationsActiveIcon)*/}
-            {loggedInUser.userType === 3 && createSidebarLink("/report", "Report", PostAddIcon)}            
+            {loggedInUser.userType === 3 && createSidebarLink("/report", "Report", PostAddIcon)}
 
             {/* Admin - usertype 4 */}
             {loggedInUser.userType === 4 && createSidebarLink("/AdminDashboard", "Dashboard", AccountBoxIcon)}
@@ -167,39 +164,41 @@ const Navigation = ({ loggedInUser }) => {
 
             {/* Guidance - usertype 6 */}
             {loggedInUser.userType === 6 && createSidebarLink("/record", "Dashboard", AssessmentIcon)}
-            {loggedInUser.userType === 6 && createSidebarLink("/report", "Report", PostAddIcon)}             
-
+            {loggedInUser.userType === 6 && createSidebarLink("/report", "Report", PostAddIcon)}
+          </>
         </div>
-        
-        {/* Header */}
-        <header className={navStyles.header}>
-            <div className={navStyles.JHSheaderContainer}>
-                <img src={JHSLogo} alt="JHS Logo" className={navStyles.JHSLogo} />
-                <span className={navStyles.JHSTitle}>JHS Success Hub</span>
-            </div>
+      )}
 
-            <div className={navStyles['header-wrapper']}>
-              {/* Notification Icon */}
-              {loggedInUser?.userType !== 4 && (
-                <IconButton onClick={handleNotificationClick}>
-                  <NotificationsActiveIcon className={navStyles['header-icon']} />
-                  {notifications > 0 && <span className={navStyles.badge}>{notifications}</span>} {/* Show badge if there are unviewed notifications */}
-                </IconButton>
-              )}
-              <MenuPopupState />
-            </div>
-        </header>
 
-        {/* Render Notification Modal */}
-        {showNotificationModal && (
-          <NotificationModal 
-            onClose={handleModalClose} 
-            reports={allReports} 
-            suspensions={allSuspensions} 
-            loggedInUser={loggedInUser}
-            refreshNotifications={() => setNotifications(0)} // Refresh notifications count
-          />
-        )}
+      {/* Header */}
+      <header className={navStyles.header}>
+        <div className={navStyles.JHSheaderContainer}>
+          <img src={JHSLogo} alt="JHS Logo" className={navStyles.JHSLogo} />
+          <span className={navStyles.JHSTitle}>JHS Success Hub</span>
+        </div>
+
+        <div className={navStyles['header-wrapper']}>
+          {/* Notification Icon */}
+          {loggedInUser?.userType !== 4 && (
+            <IconButton onClick={handleNotificationClick}>
+              <NotificationsActiveIcon className={navStyles['header-icon']} />
+              {notifications > 0 && <span className={navStyles.badge}>{notifications}</span>} {/* Show badge if there are unviewed notifications */}
+            </IconButton>
+          )}
+          <MenuPopupState />
+        </div>
+      </header>
+
+      {/* Render Notification Modal */}
+      {showNotificationModal && (
+        <NotificationModal 
+          onClose={handleModalClose} 
+          reports={allReports} 
+          suspensions={allSuspensions} 
+          loggedInUser={loggedInUser}
+          refreshNotifications={() => setNotifications(0)} // Refresh notifications count
+        />
+      )}
     </>
   );
 };

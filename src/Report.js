@@ -22,12 +22,13 @@ const Reports = () => {
   const [showSuspensionModal, setShowSuspensionModal] = useState(false);
   const [showViewReportModal, setShowViewReportModal] = useState(false); // State for showing modal
   const [showEditModal, setShowEditModal] = useState(false);
-  const [showCompleteReportModal, setShowCompleteReportModal] = useState(false);
+  // const [showCompleteReportModal, setShowCompleteReportModal] = useState(false);
   const [selectedReportId, setSelectedReportId] = useState(null);
   const [loading, setLoading] = useState(false);
   const [selectedReportStatus, setSelectedReportStatus] = useState({ completed: false, suspended: false });
   const [filterCompleted, setFilterCompleted] = useState('all');
   const [searchTerm, setSearchTerm] = useState(''); // State for search term
+  const [selectedReportUserId, setSelectedReportUserId] = useState(null);
 
 
   useEffect(() => {
@@ -129,10 +130,10 @@ const Reports = () => {
     return suspensions.some((suspension) => suspension.reportId === reportId);
   };
 
-  const handleCompleteModalOpen = (reportId) => {
-    setSelectedReportId(reportId);
-    setShowCompleteReportModal(true);
-  };
+  // const handleCompleteModalOpen = (reportId) => {
+  //   setSelectedReportId(reportId);
+  //   setShowCompleteReportModal(true);
+  // };
 
   const handleAddSuspension = (reportId) => {
     setSelectedReportId(reportId);
@@ -154,6 +155,8 @@ const Reports = () => {
       completed: report.complete,
       suspended: isReportSuspended(report.reportId)
     });
+
+    setSelectedReportUserId(report.userComplainant?.userId);
   };
 
   const handleEdit = (reportId) => {
@@ -295,29 +298,37 @@ const Reports = () => {
             View
           </button>
 
-          {loggedInUser?.userType === 1 && (
-            <>
-              <button
+          <button
                 className={`${styles['report-action-button']} ${styles['report-edit-btn']}`}
                 onClick={() => handleEdit(selectedReportId)}
-                disabled={!selectedReportId}
+                disabled={
+                  !selectedReportId || 
+                  (loggedInUser.userType !== 1 && selectedReportUserId !== loggedInUser.userId)
+                }
               >
-                Edit 
+                Investigate
               </button>
               <button
                 className={`${styles['report-action-button']} ${styles['report-delete-btn']}`}
                 onClick={() => handleDelete(selectedReportId)}
-                disabled={!selectedReportId}
+                disabled={
+                  !selectedReportId || 
+                  (loggedInUser.userType !== 1 && selectedReportUserId !== loggedInUser.userId)
+                }
               >
                 Delete 
               </button>
-              <button
+
+          {loggedInUser?.userType === 1 && (
+            <>
+              
+              {/* <button
                 className={styles['report-action-button']}
                 onClick={() => handleCompleteModalOpen(selectedReportId)}
                 disabled={!selectedReportId || selectedReportStatus.completed}
               >
                 Complete
-              </button>
+              </button> */}
               <button
                 className={`${styles['report-action-button']} ${styles['report-suspension-btn']}`}
                 onClick={() => handleAddSuspension(selectedReportId)}
@@ -363,13 +374,13 @@ const Reports = () => {
           />
         )}
 
-        {showCompleteReportModal && (
+        {/* {showCompleteReportModal && (
         <CompleteReportModal
           reportId={selectedReportId}
           onClose={() => setShowCompleteReportModal(false)}
           refreshReports={fetchReports}
         />
-      )}
+      )} */}
       </div>
     </div>
   );

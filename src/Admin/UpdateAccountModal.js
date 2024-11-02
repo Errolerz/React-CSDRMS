@@ -7,6 +7,9 @@ import styles1 from '../GlobalForm.module.css';
 const UpdateAccountModal = ({ isOpen, onClose, userId, user }) => {
     const authToken = localStorage.getItem('authToken');
     const loggedInUser = authToken ? JSON.parse(authToken) : null;
+    const [grades, setGrades] = useState([]);
+    const [sections, setSections] = useState([]);
+    const [schoolYears, setSchoolYears] = useState([]);
 
     const [userType, setUserType] = useState(null);
     const [updatedUser, setUpdatedUser] = useState({
@@ -20,10 +23,9 @@ const UpdateAccountModal = ({ isOpen, onClose, userId, user }) => {
         grade: null,
         section: ''
     });
-    const [passwordStrength, setPasswordStrength] = useState(0); // Password strength state
+    const [passwordStrength, setPasswordStrength] = useState(0);
 
     useEffect(() => {
-        console.log("User id: ",userId);
         if (isOpen && user) {
             setUpdatedUser({
                 username: user.username,
@@ -37,38 +39,67 @@ const UpdateAccountModal = ({ isOpen, onClose, userId, user }) => {
                 section: user.section || ''
             });
             setUserType(user.userType);
+            fetchDynamicData();
+
+            if (user.grade) {
+                handleGradeChange({ target: { value: user.grade } });
+            }
         }
     }, [isOpen, user]);
 
+    const fetchDynamicData = async () => {
+        try {
+            const gradesResponse = await axios.get('http://localhost:8080/class/allUniqueGrades');
+            setGrades(gradesResponse.data);
+
+            const schoolYearsResponse = await axios.get('http://localhost:8080/schoolYear/getAllSchoolYears');
+            setSchoolYears(schoolYearsResponse.data);
+        } catch (error) {
+            console.error('Error fetching dynamic data:', error);
+        }
+    };
+
+    const handleGradeChange = async (event) => {
+        const selectedGrade = event.target.value;
+        setUpdatedUser((prevUser) => ({ ...prevUser, grade: selectedGrade }));
+        
+        try {
+            const sectionsResponse = await axios.get(`http://localhost:8080/class/sections/${selectedGrade}`);
+            setSections(sectionsResponse.data);
+    
+            // Set the section if it was previously selected
+            if (updatedUser.section) {
+                setUpdatedUser((prevUser) => ({ ...prevUser, section: prevUser.section }));
+            }
+        } catch (error) {
+            console.error('Error fetching sections:', error);
+        }
+    };
+    
     const handleInputChange = (event) => {
         const { name, value } = event.target;
         setUpdatedUser({ ...updatedUser, [name]: value });
 
-        // Update password strength if the password field is changed
         if (name === 'password') {
             setPasswordStrength(calculatePasswordStrength(value));
         }
     };
 
     const handleUpdate = () => {
-        const updatedData = { ...updatedUser, userId }; // Add userId to the updatedData
+        const updatedData = { ...updatedUser, userId };
 
-        // If the password field is empty, remove it from the object to avoid updating
         if (updatedData.password === '') {
             delete updatedData.password;
         } else {
-            // Validate password strength
             const passwordStrength = calculatePasswordStrength(updatedData.password);
             const minimumPasswordStrength = 5;
 
-            // Check if password strength meets the requirement
             if (passwordStrength < minimumPasswordStrength) {
                 alert("Password must be at least 8 characters, 1 uppercase, 1 lowercase, 1 number, and 1 special character.");
-                return; // Prevent form submission
+                return;
             }
         }
 
-        // Use a generic endpoint for updating the user
         axios.put(`http://localhost:8080/user/updateUser/${userId}/${loggedInUser.userId}`, updatedData)
             .then(response => {
                 console.log(response.data);
@@ -77,8 +108,8 @@ const UpdateAccountModal = ({ isOpen, onClose, userId, user }) => {
                 if (updatedUser.username === loggedInUser.username) {
                     localStorage.setItem('authToken', JSON.stringify(updatedData));
                 }
-                
-                onClose(); // Close the modal
+
+                onClose();
                 window.location.reload();
             })
             .catch(error => {
@@ -87,19 +118,15 @@ const UpdateAccountModal = ({ isOpen, onClose, userId, user }) => {
             });
     };
 
-    // Password strength calculation function
     const calculatePasswordStrength = (password) => {
         let strength = 0;
-
-        // Check password length
-        if (password.length >= 8) strength += 1; // Minimum length 8
-        if (password.length >= 12) strength += 1; // More points for longer
-        if (/[A-Z]/.test(password)) strength += 1; // At least one uppercase letter
-        if (/[a-z]/.test(password)) strength += 1; // At least one lowercase letter
-        if (/[0-9]/.test(password)) strength += 1; // At least one digit
-        if (/[\W_]/.test(password)) strength += 1; // At least one special character
-
-        return strength; // Return a value from 0 to 6
+        if (password.length >= 8) strength += 1;
+        if (password.length >= 12) strength += 1;
+        if (/[A-Z]/.test(password)) strength += 1;
+        if (/[a-z]/.test(password)) strength += 1;
+        if (/[0-9]/.test(password)) strength += 1;
+        if (/[\W_]/.test(password)) strength += 1;
+        return strength;
     };
 
     if (!isOpen) return null;
@@ -142,15 +169,30 @@ const UpdateAccountModal = ({ isOpen, onClose, userId, user }) => {
                         <div>
                             <div className={styles1['form-group']}>
                                 <label>School Year:</label>
-                                <input type="text" name="schoolYear" value={updatedUser.schoolYear} onChange={handleInputChange} />
+                                <select name="schoolYear" value={updatedUser.schoolYear} onChange={handleInputChange}>
+                                    <option value="">Select School Year</option>
+                                    {schoolYears.map(sy => (
+                                        <option key={sy.schoolYear_ID} value={sy.schoolYear}>{sy.schoolYear}</option>
+                                    ))}
+                                </select>
                             </div>
                             <div className={styles1['form-group']}>
                                 <label>Grade:</label>
-                                <input type="number" name="grade" value={updatedUser.grade} onChange={handleInputChange} />
+                                <select name="grade" value={updatedUser.grade} onChange={handleGradeChange}>
+                                    <option value="">Select Grade</option>
+                                    {grades.map(grade => (
+                                        <option key={grade} value={grade}>{grade}</option>
+                                    ))}
+                                </select>
                             </div>
                             <div className={styles1['form-group']}>
                                 <label>Section:</label>
-                                <input type="text" name="section" value={updatedUser.section} onChange={handleInputChange} />
+                                <select name="section" value={updatedUser.section} onChange={handleInputChange}>
+                                    <option value="">Select Section</option>
+                                    {sections.map(section => (
+                                        <option key={section} value={section}>{section}</option>
+                                    ))}
+                                </select>
                             </div>
                         </div>
                     )}

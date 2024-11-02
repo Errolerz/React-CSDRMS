@@ -13,6 +13,9 @@ const Class = () => {
 
     const [classes, setClasses] = useState([]);
     const [schoolYears, setSchoolYears] = useState([]);
+    const [startYear, setStartYear] = useState(''); // Starting year
+    const [endYear, setEndYear] = useState('');     // Ending year
+
     const [newGrade, setNewGrade] = useState(null); // Change to null
     const [newSection, setNewSection] = useState("");
     const [newSchoolYear, setNewSchoolYear] = useState("");
@@ -23,8 +26,7 @@ const Class = () => {
 
     const handleOpen = () => setShowAddClass(true);
     const handleClose = () => setShowAddClass(false);
-    const handleOpenSchoolYear = () => setShowAddSchoolYear(true);
-    const handleCloseSchoolYear = () => setShowAddSchoolYear(false);
+   
 
     useEffect(() => {
         document.title = "Admin | Class";
@@ -34,6 +36,15 @@ const Class = () => {
         };
         fetchData();
     }, [loggedInUser]);
+
+    const handleOpenSchoolYear = () => {
+        const currentYear = new Date().getFullYear();
+        setStartYear(currentYear);
+        setEndYear(currentYear + 1);
+        setShowAddSchoolYear(true);
+    };
+    
+    const handleCloseSchoolYear = () => setShowAddSchoolYear(false);
 
     const fetchClasses = async () => {
         try {
@@ -83,29 +94,34 @@ const Class = () => {
 };
 
 
-    const addSchoolYear = async () => {
-        if (!newSchoolYear) {
-            alert("Please fill in all fields");
-            return;
-        }
+const addSchoolYear = async () => {
+    if (!startYear || !endYear) {
+        alert("Please fill in all fields");
+        return;
+    }
 
-        const schoolYearExists = schoolYears.some(schoolYear => schoolYear.schoolYear === newSchoolYear);
-        if (schoolYearExists) {
-            alert("School year already exists");
-            return;
-        }
+    const newSchoolYear = `${startYear}-${endYear}`; // Create school year string from start and end year
 
-        try {
-            await axios.post("http://localhost:8080/schoolYear/addSchoolYear", {
-                schoolYear: newSchoolYear,
-            });
-            await fetchSchoolYears();
-            handleCloseSchoolYear();
-        } catch (error) {
-            console.error("Error adding school year:", error);
-            alert("Failed to add school year");
-        }
-    };
+    // Check if the school year already exists
+    const schoolYearExists = schoolYears.some(schoolYear => schoolYear.schoolYear === newSchoolYear);
+    if (schoolYearExists) {
+        alert("School year already exists");
+        return;
+    }
+
+    try {
+        await axios.post("http://localhost:8080/schoolYear/addSchoolYear", {
+            schoolYear: newSchoolYear,
+        });
+        await fetchSchoolYears(); // Refresh the list of school years
+        setStartYear(''); // Clear input fields after successful addition
+        setEndYear('');
+        handleCloseSchoolYear(); // Close the modal
+    } catch (error) {
+        console.error("Error adding school year:", error);
+        alert("Failed to add school year");
+    }
+};
 
     const deleteClass = async (classId, grade, section) => {
       const confirmDelete = window.confirm("Are you sure you want to delete this class? " +grade+ "-" +section+ "?" );
@@ -289,12 +305,30 @@ const Class = () => {
                             <div className={classStyles['class-group']}>
                                 <label className={classStyles['classgroup-label-year']}>School Year: </label>
                                 <input
-                                    className={classStyles['classgroup-input-year']}                    
-                                    type="year"
-                                    placeholder="Enter School Year"
-                                    value={newSchoolYear}
-                                    onChange={e => setNewSchoolYear(e.target.value)}
+                                    className={classStyles['classgroup-input-year']}
+                                    type="number"
+                                    placeholder="Start Year"
+                                    value={startYear}
+                                    onChange={(e) => {
+                                        const value = parseInt(e.target.value, 10);
+                                        if (value >= 0) { // Ensure non-negative
+                                            setStartYear(value);
+                                            setEndYear(value + 1); // Automatically set end year as start year + 1
+                                        } else {
+                                            setStartYear(''); // Reset if negative
+                                            setEndYear(''); // Clear end year if start year is invalid
+                                        }
+                                    }}
                                 />
+                                <span>-</span>
+                                <input
+                                    className={classStyles['classgroup-input-year']}
+                                    type="number"
+                                    placeholder="End Year"
+                                    value={endYear}
+                                    readOnly // Make endYear read-only to prevent manual edits
+                                />
+
                             </div>
                         </div>
                         <div className={classStyles.buttonGroup}>

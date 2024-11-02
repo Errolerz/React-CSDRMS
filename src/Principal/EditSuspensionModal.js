@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import styles from "./EditSuspensionModal.module.css"; // Import CSS module for styling
 
@@ -8,7 +8,18 @@ const EditSuspensionModal = ({ isOpen, onClose, suspension }) => {
   const [endDate, setEndDate] = useState(suspension.endDate);
   const [returnDate, setReturnDate] = useState(suspension.returnDate);
   const [days, setDays] = useState(suspension.days);
+  const [offense, setOffense] = useState(suspension.offense);
   const [error, setError] = useState(null);
+
+
+  useEffect(() => {
+    setStartDate(suspension.startDate);
+    setEndDate(suspension.endDate);
+    setReturnDate(suspension.returnDate);
+    setDays(suspension.days);
+    setOffense(suspension.offense);
+  }, [suspension]);
+ 
 
   // Function to handle saving edited suspension data
   const handleSave = async () => {
@@ -19,6 +30,7 @@ const EditSuspensionModal = ({ isOpen, onClose, suspension }) => {
         endDate,
         returnDate,
         days,
+        offense,
       };
 
       await axios.put(`http://localhost:8080/suspension/update/${suspension.suspensionId}`, updatedSuspension);
@@ -37,6 +49,16 @@ const EditSuspensionModal = ({ isOpen, onClose, suspension }) => {
       <div className={styles["modal-container"]}>
         <h2>Edit Suspension</h2>
         {error && <p className={styles["error-message"]}>{error}</p>}
+
+
+        <label>
+          Days:
+          <input
+            type="number"
+            value={days}
+            onChange={(e) => setDays(e.target.value)}
+          />
+        </label>
 
         <label>
           Start Date:
@@ -65,12 +87,12 @@ const EditSuspensionModal = ({ isOpen, onClose, suspension }) => {
           />
         </label>
 
+       
         <label>
-          Days:
-          <input
-            type="number"
-            value={days}
-            onChange={(e) => setDays(e.target.value)}
+          Offense:
+          <textarea
+            value={offense}
+            onChange={(e) => setOffense(e.target.value)}
           />
         </label>
 

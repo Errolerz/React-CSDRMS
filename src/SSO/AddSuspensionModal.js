@@ -9,7 +9,8 @@ const AddSuspensionModal = ({ onClose, reportId, refreshReports, refreshSuspensi
     days: '',
     startDate: '',
     endDate: '',
-    returnDate: ''
+    returnDate: '',
+    offense: ''
   });
 
   // Handle input changes for the form
@@ -18,7 +19,7 @@ const handleInputChange = (e) => {
   const { name, value } = e.target;
 
   // Ensure that 'days' is a positive integer
-  if (name === "days" && (value === "" || parseInt(value) >= 1)) {
+  if (name === "offense" || name === "days" && (value === "" || parseInt(value) >= 1)) {
     setSuspensionData((prevData) => ({
       ...prevData,
       [name]: value,
@@ -102,6 +103,17 @@ const handleInputChange = (e) => {
             value={suspensionData.returnDate}
             onChange={handleInputChange}
             className={styles['suspension-input']}
+          />
+        </div>
+
+          <div className={styles['report-group']}>
+          <label>Offense:</label>
+          <textarea
+            type="text"
+            name="offense"
+            value={suspensionData.offense}
+            onChange={handleInputChange}
+            className={styles['suspension-textarea']}
           />
         </div>
 

@@ -19,7 +19,8 @@ const AddStudentModal = ({ open, onClose }) => {
         name: '',
         grade: '',
         section: '',
-        gender: '', // Adding gender field to the state
+        gender: '',
+        contactNumber: '',
         schoolYear: '',
         current: 1
     });
@@ -150,6 +151,18 @@ const AddStudentModal = ({ open, onClose }) => {
                                 <option value="Female">Female</option>
                             </select>
                         </div>
+                        <div className={formStyles['form-group']}>
+                            <label htmlFor="contactNumber">Contact Number:</label>
+                            <input
+                                type="text"
+                                id="contactNumber"
+                                name="contactNumber"
+                                value={studentData.contactNumber}
+                                onChange={handleChange}
+                                placeholder="Enter Contact Number"
+                            />
+                        </div>
+
                         <div className={formStyles['form-group']}>
                             <label htmlFor="schoolYear">School Year:</label>
                             <select

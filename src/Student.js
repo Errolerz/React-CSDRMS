@@ -8,6 +8,7 @@ import navStyles from './Navigation.module.css';
 import Navigation from './Navigation';
 import formStyles from './GlobalForm.module.css'; // Importing GlobalForm styles
 import tableStyles from './GlobalTable.module.css'; // Importing GlobalForm styles
+import EditStudentModal from './EditStudentModal'; // Ensure this path matches the actual file location
 import RecordStudentEditModal from './RecordStudentEditModal';
 import RecordStudentViewModal from './RecordStudentViewModal'; // Import the view modal
 import AddStudentModal from './Adviser/AddStudentModal';
@@ -39,6 +40,9 @@ const Student = () => {
   const [schoolYears, setSchoolYears] = useState([]); // State for school years
   const [students, setStudents] = useState([]); // State for students
 
+  const [showEditStudentModal, setShowEditStudentModal] = useState(false); // Manage EditStudentModal visibility
+  const [studentToEdit, setStudentToEdit] = useState(null);
+
 
   const monitoredRecordsList = [
     'Absent',
@@ -51,6 +55,27 @@ const Student = () => {
     'Sanction',
   ];
 
+  const fetchStudents = async () => {
+    try {
+      let response;
+      const userType = loggedInUser.userType;
+      if (userType === 3) {
+        response = await axios.get('http://localhost:8080/student/getAllStudentsByAdviser', {
+          params: {
+            grade: loggedInUser.grade,
+            section: loggedInUser.section,
+            schoolYear: loggedInUser.schoolYear
+          }
+        });
+      } else {
+        response = await axios.get('http://localhost:8080/student/getAllCurrentStudents');
+      }
+      setStudents(response.data);
+    } catch (error) {
+      console.error('Error fetching students:', error);
+    }
+  };
+
   useEffect(() => {
     const fetchSchoolYears = async () => {
       try {
@@ -60,34 +85,10 @@ const Student = () => {
         console.error('Error fetching school years:', error);
       }
     };
-  
-    const fetchStudents = async () => {
-      try {
-        let response;
-        const userType = loggedInUser.userType;
-        if (userType === 3) {
-          // Fetch students by adviser for user type 3
-          response = await axios.get('http://localhost:8080/student/getAllStudentsByAdviser', {
-            params: {
-              grade: loggedInUser.grade, // Add logic to define selectedGrade
-              section: loggedInUser.section, // Add logic to define selectedSection
-              schoolYear: loggedInUser.schoolYear // Assuming this is the selected school year
-            }
-          });
-        } else {
-          // Fetch all current students for other user types
-          response = await axios.get('http://localhost:8080/student/getAllCurrentStudents');
-        }
-  
-        setStudents(response.data);
-      } catch (error) {
-        console.error('Error fetching students:', error);
-      }
-    };
-  
+    
     fetchSchoolYears();
     fetchStudents();
-  }, []); // Empty dependency array to run on mount
+  }, []);
   
   
 
@@ -191,6 +192,38 @@ const Student = () => {
       }
     }
   };
+
+  const handleEditStudent = (student) => {
+    setStudentToEdit(student); // Set the selected student data
+    setShowEditStudentModal(true); // Show EditStudentModal
+  };
+  
+
+  const handleDeleteStudent = async (studentId) => {
+    // Show confirmation alert before deleting
+    const confirmed = window.confirm('Are you sure you want to delete this student? This action cannot be undone and all its associated suspensions, reports and monitored records will be deleted.');
+    
+    if (confirmed) {
+      try {
+        // Perform DELETE request to the backend API
+        await axios.delete(`http://localhost:8080/student/delete/${studentId}`);
+        
+        // Update state: Remove the deleted student from the list and clear the selected student
+        setStudents(students.filter((student) => student.id !== studentId));
+        setSelectedStudent(null); // Clear the selection if the deleted student was selected
+        
+        // Show a success message
+        alert('Student deleted successfully!');
+      } catch (error) {
+        console.error('Error deleting student:', error);
+        
+        // Show an error message in case of failure
+        alert('Failed to delete student. Please try again.');
+      }
+    }
+  };
+  
+  
   
   
   return (
@@ -202,7 +235,14 @@ const Student = () => {
         </div>  
         <div className={styles['triple-container']}>
           {/* Display selected student details */}
+          
           <div className={styles['details-container']}>
+            {selectedStudent && (
+              <>
+               <button onClick={() => handleEditStudent(selectedStudent)} className={formStyles['green-button']} >Edit</button>
+               <button onClick={() => handleDeleteStudent(selectedStudent.id)} className={formStyles['green-button']}>Delete</button>
+               </>
+            )}       
             <label>Details: </label>
             <table className={styles['details-table']}>
               <tbody>
@@ -230,6 +270,11 @@ const Student = () => {
                   <td><strong>Gender</strong></td>
                   <td><strong>:</strong></td>
                   <td>{selectedStudent?.gender || 'N/A'}</td>
+                </tr>
+                <tr>
+                  <td><strong>Contact Number</strong></td>
+                  <td><strong>:</strong></td>
+                  <td>{selectedStudent?.contactNumber || 'N/A'}</td>
                 </tr>
                 <tr>
                   <td><strong>Adviser</strong></td>
@@ -415,7 +460,14 @@ const Student = () => {
                   ))}
                 </tbody>
               </table>
-            </div>      
+            </div>
+            {showEditStudentModal && (
+              <EditStudentModal
+                student={studentToEdit} // Pass the student to edit
+                onClose={() => setShowEditStudentModal(false)} // Close handler
+                refreshStudents={fetchStudents} // Pass the fetchStudents function to refresh data
+              />
+            )}      
 
             {/* Add the View Modal here */}
             {showViewRecordModal && (

@@ -16,6 +16,7 @@ const EditReportModal = ({ reportId, onClose, refreshReports }) => {
     time: '',
     complaint: '',
     complainant: '',
+    comment: '',
     complete: false,
     received: '',
     viewedByAdviser: false,
@@ -94,8 +95,13 @@ const EditReportModal = ({ reportId, onClose, refreshReports }) => {
 
   // Handle input changes for the report data
   const handleInputChange = (e) => {
-    setReportData({ ...reportData, [e.target.name]: e.target.value });
-  };
+  const { name, value, type, checked } = e.target;
+  setReportData({
+    ...reportData,
+    [name]: type === 'checkbox' ? checked : value,
+  });
+};
+
 
   // Handle monitored record change
   const handleMonitoredRecordChange = (e) => {
@@ -151,7 +157,7 @@ const EditReportModal = ({ reportId, onClose, refreshReports }) => {
   return (
     <div className={styles['edit-report-modal']}>
       <div className={styles['edit-report-modal-content']}>
-        <h2>Edit Report</h2>
+        <h2>Investigate</h2>
 
         <form onSubmit={handleSubmit}>
           {/* Student Search and Select Field */}
@@ -239,8 +245,30 @@ const EditReportModal = ({ reportId, onClose, refreshReports }) => {
             value={reportData.complaint}
             onChange={handleInputChange}
             required
-          />       
+          />
 
+          { loggedInUser.userType === 1 &&(
+            <>
+             <label>Comment:</label>
+             <textarea
+               name="comment"
+               placeholder="Enter comments"
+               value={reportData.comment} // Maps to `comment` in entity
+               onChange={handleInputChange}
+             /> 
+   
+             <label>
+             <input
+               type="checkbox"
+               name="complete"
+               checked={reportData.complete} // Maps to `complete` in entity
+               onChange={handleInputChange}
+             />
+             Complete
+             </label>    
+             </> 
+          )}
+          
           <div className={formStyles['global-buttonGroup']}>
             <button className={formStyles['green-button']} type="submit">Update</button>
             <button onClick={onClose} className={`${formStyles['green-button']} ${formStyles['red-button']}`}>Cancel</button>

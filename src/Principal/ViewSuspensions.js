@@ -22,6 +22,8 @@ const ViewSuspensions = () => {
   const [selectedReportId, setSelectedReportId] = useState(null);
   const [showViewReportModal, setShowViewReportModal] = useState(false); // State for showing modal
 
+  const [filterApproved, setFilterApproved] = useState("all");
+
 
   useEffect(() => {
     const fetchAndMarkSuspensions = async () => {
@@ -72,6 +74,30 @@ const ViewSuspensions = () => {
     setSelectedReportId(null);
   };
 
+  // New function to handle the approval action
+const handleApproveClick = async () => {
+  if (selectedSuspension) {
+    try {
+      const response = await axios.post(`http://localhost:8080/suspension/approveSuspension?suspensionId=${selectedSuspension.suspensionId}`);
+      if (response.data) {
+        alert("Suspension approved successfully.");
+        // Optionally update the suspension's status in the UI after approval
+        setSuspensions(suspensions.map(suspension =>
+          suspension.suspensionId === selectedSuspension.suspensionId
+            ? { ...suspension, approved: true } // Assuming approved status is reflected in `suspension`
+            : suspension
+        ));
+      } else {
+        alert("Failed to approve suspension.");
+      }
+    } catch (error) {
+      console.error("Error approving suspension:", error);
+      setError("Failed to approve suspension. Please try again later.");
+    }
+  }
+};
+
+
 
   const handleDeleteClick = async () => {
     if (selectedSuspension) {
@@ -88,6 +114,12 @@ const ViewSuspensions = () => {
       }
     }
   };
+
+  const filteredSuspensions = suspensions.filter((suspension) => {
+    if (filterApproved === "approved") return suspension.approved === true;
+    if (filterApproved === "unapproved") return suspension.approved === false;
+    return true; // "all" - no filter
+  });
   
   
 
@@ -96,13 +128,28 @@ const ViewSuspensions = () => {
       <Navigation loggedInUser={loggedInUser} />
 
       <div className={navStyles.content}>
+        
         <div className={navStyles.TitleContainer}>
             <h2 className={navStyles['h1-title']}>Suspension List</h2>
+          
         </div>  
         {loading && <p>Loading suspensions...</p>}
         {error && <p>{error}</p>}
         {!loading && !error && (
           <>
+            <div className={styles["filter-container"]}>
+              <label htmlFor="filterApproved">Filter by Approval Status:</label>
+              <select
+                id="filterApproved"
+                value={filterApproved}
+                onChange={(e) => setFilterApproved(e.target.value)}
+                className={styles["filter-select"]}
+              >
+                <option value="all">All</option>
+                <option value="approved">Approved</option>
+                <option value="unapproved">Unapproved</option>
+              </select>
+            </div>
             <div className={tableStyles['table-container']}>
               <table className={tableStyles['global-table']}>
                 <thead>
@@ -119,8 +166,8 @@ const ViewSuspensions = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {suspensions.length > 0 ? (
-                    suspensions.map((suspension) => (
+                  {filteredSuspensions.length > 0 ? (
+                    filteredSuspensions.map((suspension) => (
                       <tr 
                         key={suspension.suspensionId} 
                         onClick={() => handleRowClick(suspension)}
@@ -164,7 +211,16 @@ const ViewSuspensions = () => {
               View
             </button>
 
-            
+            {loggedInUser.userType === 2 && (
+               <button
+                    variant="contained"
+                    onClick={handleApproveClick} // Add approve click handler
+                    className={styles['suspension-button']}
+                    disabled={!selectedSuspension || selectedSuspension.approved} // Disable if no suspension is selected
+                  >
+                    Approve
+                  </button>
+            )}
 
             {loggedInUser.userType === 1 && (
                 <>
@@ -187,6 +243,7 @@ const ViewSuspensions = () => {
                   >
                     Edit
                   </button>
+                  
                   <button
                     variant="contained"
                     onClick={handleDeleteClick}
@@ -195,6 +252,7 @@ const ViewSuspensions = () => {
                   >
                     Delete
                   </button>
+                  
                 </>
               )}
            

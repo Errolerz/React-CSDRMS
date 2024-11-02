@@ -288,6 +288,7 @@ useEffect(() => {
                     <div className={styles.filterContainer}>
                         <div>
                             <label>Filters:
+                            {loggedInUser && loggedInUser.userType !== 3 && (
                                 <select id="schoolYear" value={selectedYear} onChange={handleYearChange}>
                                     <option value="">All School Years</option>
                                     {schoolYears.map(year => (
@@ -296,7 +297,7 @@ useEffect(() => {
                                         </option>
                                     ))}
                                 </select>
-                                
+                            )}
                                 <select
                                     id="grade"
                                     value={selectedGrade}

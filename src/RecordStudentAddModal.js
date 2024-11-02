@@ -23,7 +23,6 @@ const AddRecordModal = ({ student, onClose, refreshRecords }) => {  // Add refre
 
   const handleSubmit = async () => {
     const newRecord = {
-      sid: student.sid,
       id: student.id, // Assuming `id` is available in the student object
       record_date: recordDate,
       incident_date: incidentDate,

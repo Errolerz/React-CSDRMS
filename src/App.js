@@ -18,7 +18,6 @@ import TimeLog from './SSO/TimeLog'
 import ViewSuspensions from './Principal/ViewSuspensions';
 
 import Followup from './Adviser/Followup';
-import UpdateStudent from './Adviser/UpdateStudent';
 import UpdateAccount from './UpdateAccount';
 
 import AdminDashboard from './Admin/AdminDashboard';
@@ -68,7 +67,6 @@ function App() {
           {loggedInUser && loggedInUser.userType === 3 && (
             <>
             <Route path="/Followup" element={<Followup />} />
-            <Route path="/update-student/:sid" element={<UpdateStudent />} />
             <Route path="/feedback" element={<Feedback />} />
             
             </>

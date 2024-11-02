@@ -121,6 +121,8 @@ const RegisterUserModal = ({ isOpen, onClose, role }) => {
                     alert(`${role} with the same school year, grade, and section already exists.`);
                 } else if (errorMessage === "Username already exist") {
                     alert("Username already exists. Please use another one");
+                } else if (errorMessage === "Principal already exists") {
+                    alert("Principal already exists. There should only be one principal");
                 } 
             } else {
                 setError('An unexpected error occurred.');

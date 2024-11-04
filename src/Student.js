@@ -233,14 +233,21 @@ const Student = () => {
         <div className={styles['triple-container']}>
           {/* Display selected student details */}
           
-          <div className={styles['details-container']}>
-            {selectedStudent && (
-              <>
-               <button onClick={() => handleEditStudent(selectedStudent)} className={formStyles['green-button']} >Edit</button>
-               <button onClick={() => handleDeleteStudent(selectedStudent.id)} className={formStyles['green-button']}>Delete</button>
-               </>
-            )}       
-            <label>Details: </label>
+          <div className={styles['details-container']}> 
+            <label style={{ display: 'flex', justifyContent: 'space-between' }}> Details:
+              {selectedStudent && (
+                <div className={formStyles['global-buttonGroup']}>
+                  <EditNoteIcon 
+                    onClick={() => handleEditStudent(selectedStudent)} 
+                    className={formStyles['action-icon']} 
+                  />
+                  <DeleteIcon 
+                    onClick={() => handleDeleteStudent(selectedStudent.id)} 
+                    className={formStyles['actiuon-icon']}
+                  />
+                </div>
+              )}      
+            </label>
             <table className={styles['details-table']}>
               <tbody>
                 <tr>
@@ -251,7 +258,7 @@ const Student = () => {
                 <tr>
                   <td><strong>Name</strong></td>
                   <td><strong>:</strong></td>
-                  <td style={{ width: '350px', whiteSpace: 'nowrap', overflow: 'hidden',  textOverflow:'ellipsis'}}>
+                  <td style={{ width: '75%', whiteSpace: 'nowrap', overflow: 'hidden',  textOverflow:'ellipsis'}}>
                     {selectedStudent?.name || 'N/A'}
                   </td>     
                 </tr>
@@ -282,12 +289,6 @@ const Student = () => {
                 </tr>
               </tbody>
             </table>
-            {selectedStudent && (
-              <>
-               <button style={{marginRight:'14px', marginLeft:'15px'}} onClick={() => handleEditStudent(selectedStudent)} className={formStyles['green-button']} >Edit</button>
-               <button onClick={() => handleDeleteStudent(selectedStudent.id)} className={formStyles['green-button']}>Delete</button>
-               </>
-            )}
           </div>    
 
           {/* Search Bar for Students */}

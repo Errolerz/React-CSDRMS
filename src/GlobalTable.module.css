@@ -1,5 +1,12 @@
 .table-container {
-    max-height: 400px; /* Adjust height as needed */
+    max-height: 380px; /* Adjust height as needed */
+    width: 100%;
+    overflow-y: auto; /* Ensure horizontal scrolling for smaller screens */
+    border: 2px solid #8A252C;
+}
+
+.ActivityLog-container {
+    max-height: 500px; /* Adjust height as needed */
     overflow-y: auto; /* Ensure horizontal scrolling for smaller screens */
     border: 2px solid #8A252C;
 }
@@ -28,17 +35,23 @@
 }
 
 .global-table th, .global-table td {
-    padding: 12px;
-    text-align: center;
-    font-size: 16px; /* Larger font size for readability */
+    padding: 8px;
+    font-size: 17px; /* Larger font size for readability */
     border-bottom: 1px solid #ddd;
 }
 
 .global-table td {
+    padding: 12px 14px;
+    font-size: 14px; /* Larger font size for readability */
     border-right: 1px solid #ccc;
     border-bottom: 1px solid #ccc;
     text-align: center; /* Center align table data */
     cursor: pointer; /* Pointer cursor for rows */
+}
+
+.global-table tr {
+    background-color:#fff;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1); /* Add shadow to create "floating" effect */
 }
 
 .global-table tr:hover {

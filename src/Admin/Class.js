@@ -3,6 +3,7 @@ import Box from "@mui/material/Box";
 import Modal from "@mui/material/Modal";
 import axios from "axios";
 import classStyles from './Class.module.css';
+import formStyles from '../GlobalForm.module.css';
 import navStyles from '../Navigation.module.css';
 import Navigation from '../Navigation';
 import DeleteIcon from '@mui/icons-material/Delete'; // Import DeleteIcon
@@ -205,7 +206,7 @@ const addSchoolYear = async () => {
                                                 <td>
                                                     <DeleteIcon 
                                                         onClick={() => deleteClass(classItem.class_id, classItem.grade, classItem.section)} 
-                                                        style={{ cursor: 'pointer', color: 'red' }} 
+                                                        className={formStyles['action-icon']}
                                                     />
                                                 </td>
                                             </tr>
@@ -237,7 +238,7 @@ const addSchoolYear = async () => {
                                                 <td>
                                                     <DeleteIcon 
                                                         onClick={() => deleteSchoolYear(schoolYear.schoolYear_ID,schoolYear.schoolYear)} 
-                                                        style={{ cursor: 'pointer', color: 'red' }} 
+                                                        className={formStyles['action-icon']}
                                                     />
                                                 </td>
                                             </tr>
@@ -303,7 +304,7 @@ const addSchoolYear = async () => {
                         <h2 className={classStyles.modalHeader}>Add New School Year</h2>
                         <div className={classStyles['class-container']}>
                             <div className={classStyles['class-group']}>
-                                <label className={classStyles['classgroup-label-year']}>School Year: </label>
+                                <label style={{marginRight: '20px'}}>School Year: </label>
                                 <input
                                     className={classStyles['classgroup-input-year']}
                                     type="number"

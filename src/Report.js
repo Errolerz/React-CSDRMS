@@ -250,39 +250,46 @@ const Reports = () => {
           </div>
         ) : (
           <div className={tableStyles['table-container']}>
-            <table className={tableStyles['global-table']}>
-              <thead>
-                <tr>
-                  <th>Date</th>
-                  <th>Monitored Record</th>
-                  <th>Complainant</th>
-                  <th>Student</th>
-                  <th>Adviser</th>
-                  <th>Encoder</th>
-                  <th>Received</th>
-                </tr>
-              </thead>
-              <tbody>
-                {filteredReports.map((report) => (
-                  <tr 
-                    key={report.reportId} 
-                    onClick={() => handleRowClick(report)}
-                    className={selectedReportId === report.reportId ? tableStyles['selected-row'] : ''}
-                  >
-                    <td>{report.date}</td>
-                    <td>{report.record.monitored_record}</td>
-                    <td>
-                    {report.userComplainant.firstname}  {report.userComplainant.lastname}
-                    </td>
-                    <td>{report.record.student.name}</td>
-                    <td>{report.adviser.firstname} {report.adviser.lastname}</td>
-                    <td>{report.encoder}</td>
-                    <td>{report.received ? report.received : 'Pending'}</td>
-                  </tr>
-                ))}
-              </tbody>
-
-            </table>
+              <table className={tableStyles['global-table']}>
+                  <thead>
+                      <tr>
+                          <th>Date</th>
+                          <th>Monitored Record</th>
+                          <th style={{ width: '350px' }}>Student</th>
+                          <th>Adviser</th>
+                          <th>Complainant</th>
+                          <th>Encoder</th>
+                          <th>Received</th> 
+                          <th>Status</th>
+                      </tr>
+                  </thead>
+                  <tbody>
+                      {filteredReports.length === 0 ? (
+                          <tr>
+                              <td colSpan={8} style={{ textAlign: 'center' }}>No reports found.</td>
+                          </tr>
+                      ) : (
+                          filteredReports.map((report) => (
+                            <tr 
+                              key={report.reportId} 
+                              onClick={() => handleRowClick(report)}
+                              className={selectedReportId === report.reportId ? tableStyles['selected-row'] : ''}
+                            >
+                              <td>{report.date}</td>
+                              <td>{report.record.monitored_record}</td>
+                              <td style={{ width: '350px' }}>{report.record.student.name}</td>
+                              <td>{report.adviser.firstname} {report.adviser.lastname}</td>
+                              <td>
+                                  {report.userComplainant.firstname} {report.userComplainant.lastname}
+                              </td>
+                              <td>{report.encoder}</td>
+                              <td>{report.received ? report.received : 'Pending'}</td>
+                              <td>{report.complete ? 'Complete' : 'Incomplete'}</td>
+                            </tr>
+                          ))
+                      )}
+                  </tbody>
+              </table>
           </div>
         )}
 
@@ -298,46 +305,33 @@ const Reports = () => {
             View
           </button>
 
-          <button
+          {loggedInUser?.userType === 1 && (
+            <>
+              <button
                 className={`${styles['report-action-button']} ${styles['report-edit-btn']}`}
                 onClick={() => handleEdit(selectedReportId)}
-                disabled={
-                  !selectedReportId || 
-                  (loggedInUser.userType !== 1 && selectedReportUserId !== loggedInUser.userId)
-                }
+                disabled={!selectedReportId || selectedReportUserId !== loggedInUser.userId}
               >
                 Investigate
               </button>
               <button
                 className={`${styles['report-action-button']} ${styles['report-delete-btn']}`}
                 onClick={() => handleDelete(selectedReportId)}
-                disabled={
-                  !selectedReportId || 
-                  (loggedInUser.userType !== 1 && selectedReportUserId !== loggedInUser.userId)
-                }
+                disabled={!selectedReportId || selectedReportUserId !== loggedInUser.userId}
               >
                 Delete 
               </button>
 
-          {loggedInUser?.userType === 1 && (
-            <>
-              
-              {/* <button
-                className={styles['report-action-button']}
-                onClick={() => handleCompleteModalOpen(selectedReportId)}
-                disabled={!selectedReportId || selectedReportStatus.completed}
-              >
-                Complete
-              </button> */}
               <button
                 className={`${styles['report-action-button']} ${styles['report-suspension-btn']}`}
                 onClick={() => handleAddSuspension(selectedReportId)}
                 disabled={!selectedReportId || selectedReportStatus.suspended || selectedReportStatus.completed}
               >
-                {selectedReportStatus.suspended ? 'Suspended' : 'Add Suspension'}
+                {selectedReportStatus.suspended ? 'Suspended' : 'Suspend'}
               </button>
             </>
           )}
+
         </div>
 
         {showReportModal && (

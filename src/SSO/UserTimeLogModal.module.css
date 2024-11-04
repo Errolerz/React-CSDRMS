@@ -72,7 +72,7 @@
 .filter-timelog-label{
     font-size: 18px;
     font-weight: bold;
-    color: #800000;
+    color: #8A252C;
 }
 
 .select-timelog {
@@ -115,7 +115,7 @@
     max-height: 350px; /* Adjust height as needed */
     max-width: 750px;
     overflow-y: auto; /* Enable vertical scrolling */
-    border: 2px solid #81343a;
+    border: 2px solid #8A252C;
 }
 
 /* Table Styling */
@@ -139,7 +139,7 @@
 }
 
 .timelog-table th {
-    background-color: #81343a; /* Header color */
+    background-color: #8A252C; /* Header color */
     color: #fff;
     text-shadow: 3px 3px 5px #000;  /* Slight shadow for all text */
     font-weight: 600;

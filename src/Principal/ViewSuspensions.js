@@ -2,6 +2,7 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import navStyles from "../Navigation.module.css"; // Import CSS module for Navigation
 import tableStyles from "../GlobalTable.module.css"; // Import GlobalTable CSS module
+import formStyles from "../GlobalForm.module.css";
 import Navigation from '../Navigation'; // Import the Navigation component
 import SuspensionModal from "./SuspensionModal"; // Import the modal component
 import styles from "./ViewSuspensions.module.css"; // Import GlobalTable CSS module
@@ -137,28 +138,30 @@ const handleApproveClick = async () => {
         {error && <p>{error}</p>}
         {!loading && !error && (
           <>
-            <div className={styles["filter-container"]}>
-              <label htmlFor="filterApproved">Filter by Approval Status:</label>
-              <select
-                id="filterApproved"
-                value={filterApproved}
-                onChange={(e) => setFilterApproved(e.target.value)}
-                className={styles["filter-select"]}
-              >
-                <option value="all">All</option>
-                <option value="approved">Approved</option>
-                <option value="unapproved">Unapproved</option>
-              </select>
+            <div className={styles['suspension-filter']}>
+              <label htmlFor="filterApproved">Filter by Approval Status:
+                <select
+                  id="filterApproved"
+                  value={filterApproved}
+                  onChange={(e) => setFilterApproved(e.target.value)}
+                  className={styles["filter-select"]}
+                >
+                  <option value="all">All</option>
+                  <option value="approved">Approved</option>
+                  <option value="unapproved">Unapproved</option>
+                </select>
+              </label>
             </div>
             <div className={tableStyles['table-container']}>
               <table className={tableStyles['global-table']}>
                 <thead>
                   <tr>
                     <th>Report ID</th>
-                    <th>Student</th>
+                    <th style={{ width: '350px' }}>Student</th>
                     <th>Adviser</th>
                     <th>Date Submitted</th>
                     <th>Suspended</th>
+                    <th>Status</th>
                     {/* <th>Start Date</th>
                     <th>End Date</th>
                     <th>Return Date</th>
@@ -174,10 +177,11 @@ const handleApproveClick = async () => {
                         className={selectedSuspension?.suspensionId === suspension.suspensionId ? tableStyles['selected-row'] : ''}
                       >
                         <td>{suspension.reportEntity.reportId}</td>  
-                        <td>{suspension.reportEntity.record.student.name}</td>
+                        <td style={{ width: '350px' }}>{suspension.reportEntity.record.student.name}</td>
                         <td>{suspension.reportEntity.adviser.firstname} {suspension.reportEntity.adviser.lastname}</td>                      
                         <td>{suspension.dateSubmitted}</td>
                         <td>{suspension.days} Days</td>
+                        <td> {suspension.approved ? 'Approved' : 'Not Approved'}</td>
                         {/* <td>{suspension.startDate}</td>
                         <td>{suspension.endDate}</td>
                         <td>{suspension.returnDate}</td>

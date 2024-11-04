@@ -215,6 +215,33 @@ useEffect(() => {
     };
     const handleSectionChange = (e) => setSelectedSection(e.target.value);
 
+    // New: Filter studentRecords by selectedGrade and selectedSection
+    const filteredStudentRecords = records
+        .filter(record => 
+            (!selectedGrade || record.student.grade === parseInt(selectedGrade)) && 
+            (!selectedSection || record.student.section === selectedSection)
+        )
+        .reduce((acc, record) => {
+            const studentName = record.student.name;
+            if (!acc[studentName]) {
+                acc[studentName] = {
+                    Absent: 0,
+                    Tardy: 0,
+                    'Cutting Classes': 0,
+                    'Improper Uniform': 0,
+                    Offense: 0,
+                    Misbehavior: 0,
+                    Clinic: 0,
+                    SanctionFrequency: 0,
+                };
+            }
+            acc[studentName][record.monitored_record]++;
+            if (record.sanction) {
+                acc[studentName].SanctionFrequency++;
+            }
+            return acc;
+        }, {});
+
     const getLineChartData = () => {
         const labels = selectedMonth
             ? Array.from({ length: 31 }, (_, i) => i + 1)
@@ -351,39 +378,90 @@ useEffect(() => {
                         </div>
                     </div>
 
-                    <div className={tableStyles['table-container']}>
-                        <table className={tableStyles['global-table']}>
-                            <thead>
-                                <tr>
-                                    <th>Grade</th>
-                                    <th>Absent</th>
-                                    <th>Tardy</th>
-                                    <th>Cutting Classes</th>
-                                    <th>Improper Uniform</th>
-                                    <th>Offense</th>
-                                    <th>Misbehavior</th>
-                                    <th>Clinic</th>
-                                    <th>Sanction</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {Object.entries(filteredFrequencyData).map(([grade, frequencies]) => (
-                                    <tr key={grade}>
-                                        <td>{grade}</td>
-                                        <td>{frequencies ? frequencies.Absent : 0}</td>
-                                        <td>{frequencies ? frequencies.Tardy : 0}</td>
-                                        <td>{frequencies ? frequencies['Cutting Classes'] : 0}</td>
-                                        <td>{frequencies ? frequencies['Improper Uniform'] : 0}</td>
-                                        <td>{frequencies ? frequencies.Offense : 0}</td>
-                                        <td>{frequencies ? frequencies.Misbehavior : 0}</td>
-                                        <td>{frequencies ? frequencies.Clinic : 0}</td>
-                                        <td>{frequencies ? frequencies.Sanction : 0}</td>
+                    <>                
+                        <h2 className={styles.RecordTitle}>Total Records Overview</h2>
+                        <div className={tableStyles['table-container']}>
+                            <table className={tableStyles['global-table']}>
+                                <thead>
+                                    <tr>
+                                        {selectedGrade && selectedSection ? null :<th>Grade</th>}
+                                        <th>Absent</th>
+                                        <th>Tardy</th>
+                                        <th>Cutting Classes</th>
+                                        <th>Improper Uniform</th>
+                                        <th>Offense</th>
+                                        <th>Misbehavior</th>
+                                        <th>Clinic</th>
+                                        <th>Sanction</th>
                                     </tr>
-                                ))}
-                            </tbody>
-                        </table>
-                    </div>
+                                </thead>
+                                <tbody>
+                                    {Object.entries(filteredFrequencyData).map(([grade, frequencies]) => (
+                                        <tr key={grade}>
+                                            {selectedGrade && selectedSection ? null :<td>{grade}</td>}
+                                            <td>{frequencies ? frequencies.Absent : 0}</td>
+                                            <td>{frequencies ? frequencies.Tardy : 0}</td>
+                                            <td>{frequencies ? frequencies['Cutting Classes'] : 0}</td>
+                                            <td>{frequencies ? frequencies['Improper Uniform'] : 0}</td>
+                                            <td>{frequencies ? frequencies.Offense : 0}</td>
+                                            <td>{frequencies ? frequencies.Misbehavior : 0}</td>
+                                            <td>{frequencies ? frequencies.Clinic : 0}</td>
+                                            <td>{frequencies ? frequencies.Sanction : 0}</td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
+                    </>
 
+                    {selectedSection && (
+                        <>
+                            {/* New Table for Students */}
+                            <h2 className={styles.RecordTitle}>Class Overview</h2>
+                            <div className={tableStyles['table-container']}>
+                                <table className={tableStyles['global-table']}>
+                                    <thead>
+                                        <tr>
+                                            <th style={{ width: '430px' }}>Name</th>
+                                            <th>Absent</th>
+                                            <th>Tardy</th>
+                                            <th>Cutting Classes</th>
+                                            <th>Improper Uniform</th>
+                                            <th>Offense</th>
+                                            <th>Misbehavior</th>
+                                            <th>Clinic</th>
+                                            <th>Sanction</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {Object.entries(filteredStudentRecords).length > 0 ? (
+                                            Object.entries(filteredStudentRecords).map(([studentName, counts]) => (
+                                                <tr key={studentName}>
+                                                    <td style={{ width: '430px' }}>{studentName}</td>
+                                                    <td>{counts.Absent}</td>
+                                                    <td>{counts.Tardy}</td>
+                                                    <td>{counts['Cutting Classes']}</td>
+                                                    <td>{counts['Improper Uniform']}</td>
+                                                    <td>{counts.Offense}</td>
+                                                    <td>{counts.Misbehavior}</td>
+                                                    <td>{counts.Clinic}</td>
+                                                    <td>{counts.SanctionFrequency}</td>
+                                                </tr>
+                                            ))
+                                        ) : (
+                                            <tr>
+                                                <td colSpan="9" style={{ textAlign: 'center' }}>
+                                                    No records found.
+                                                </td>
+                                            </tr>
+                                        )}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </>
+                    )}
+
+                    <h2 className={styles.RecordTitle}>Analytics Overview</h2>
                     <div className={styles.chartContainer}> {/* This will apply the centering styles */}
                         <div className={styles['linechart-Container']}>
                             <Line

@@ -76,9 +76,8 @@
   background-color: #D3D3D3; /* Light Gray */
   color: #fff; /* Muted gray text */
   cursor: not-allowed;
-  border: 1px solid #CCCCCC; /* Light gray border */
   text-shadow: none;
-}
+} 
 
 .report-action-button:disabled:hover {
   background-color: #D3D3D3; /* Keep background unchanged on hover */

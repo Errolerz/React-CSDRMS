@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import styles from './EditStudentModal.module.css'; // Import CSS module
+import styles from './RecordModal.module.css'; // Importing CSS module for the modal
 import formStyles from './GlobalForm.module.css'; // Import global form styles
 
 const EditStudentModal = ({ student, onClose, refreshStudents }) => {
@@ -75,8 +75,8 @@ const EditStudentModal = ({ student, onClose, refreshStudents }) => {
   };
 
   return (
-    <div className={styles['modal-overlay']}>
-      <div className={styles['modal-content']}>
+    <div className={styles['student-modal-overlay']}>
+      <div className={styles['student-add-modal-content']}>
         <h2>Edit Student</h2>
         <form onSubmit={handleSubmit} className={formStyles['form-container']}>
           <div className={formStyles['form-group']}>
@@ -171,7 +171,7 @@ const EditStudentModal = ({ student, onClose, refreshStudents }) => {
               ))}
             </select>
           </div>
-          <div className={formStyles['button-group']}>
+          <div className={formStyles['global-buttonGroup']}>
             <button type="submit" className={formStyles['green-button']}>Save</button>
             <button type="button" onClick={onClose} className={`${formStyles['green-button']} ${formStyles['red-button']}`}>Cancel</button>
           </div>

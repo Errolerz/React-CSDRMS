@@ -101,7 +101,8 @@
 
 /* Keep the background color for headers */
 .record-table th {
-  background-color: #f2f2f2;
+  background-color: #fff;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.1); /* Add shadow to create "floating" effect */
 }
 
 /* Set specific widths for the columns */

@@ -57,7 +57,9 @@
 }
 
 .tableInner td{
+  padding: 12px 14px;
   cursor: pointer;
+  border-right: 1px solid #ccc; /* Border for body cells */
   border-bottom: 1px solid #ccc; /* Border for body cells */
   font-size: 14px;
 }
@@ -133,7 +135,7 @@
 }
 
 .classgroup-input-year {
-  width: 40%; /* Fixed width for input and select boxes */
+  width: 25%; /* Fixed width for input and select boxes */
   padding: 10px; /* Increase padding for better touch targets */
   font-size: 14px; /* Increase font size for better readability */
   border: 1px solid #ddd; /* Add border for inputs */

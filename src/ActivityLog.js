@@ -103,12 +103,12 @@ const ActivityLog = () => {
                     </div>
                 </div>
 
-                <div className={tableStyles['table-container']}>
+                <div className={tableStyles['ActivityLog-container']}>
                     <table className={tableStyles['global-table']}>
                         <thead>
                             <tr>
-                                <th>Name</th>
-                                <th>UserType</th>
+                                <th style={{ width: '200px' }}>Name</th>
+                                <th style={{ width: '150px' }}>UserType</th>
                                 <th>Action</th>
                                 <th>Description</th>
                                 <th>Timestamp</th>

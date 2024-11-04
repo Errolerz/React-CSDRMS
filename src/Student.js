@@ -223,9 +223,6 @@ const Student = () => {
     }
   };
   
-  
-  
-  
   return (
     <div className={navStyles.wrapper}>
       <Navigation loggedInUser={loggedInUser} />
@@ -236,14 +233,23 @@ const Student = () => {
         <div className={styles['triple-container']}>
           {/* Display selected student details */}
           
-          <div className={styles['details-container']}>
-            {selectedStudent && (
-              <>
-               <button onClick={() => handleEditStudent(selectedStudent)} className={formStyles['green-button']} >Edit</button>
-               <button onClick={() => handleDeleteStudent(selectedStudent.id)} className={formStyles['green-button']}>Delete</button>
-               </>
-            )}       
-            <label>Details: </label>
+          <div className={styles['details-container']}>  
+            <label style={{ display: 'flex', justifyContent: 'space-between' }}>
+              Details: 
+              {selectedStudent && (
+                <div className={formStyles['global-buttonGroup']}>
+                  <EditNoteIcon 
+                    onClick={() => handleEditStudent(selectedStudent)} 
+                    className={formStyles['action-icon']}
+                  />
+                  <DeleteIcon 
+                    onClick={() => handleDeleteStudent(selectedStudent.id)} 
+                    className={formStyles['action-icon']}
+                  />
+                </div>
+              )}
+            </label>
+
             <table className={styles['details-table']}>
               <tbody>
                 <tr>
@@ -254,7 +260,9 @@ const Student = () => {
                 <tr>
                   <td><strong>Name</strong></td>
                   <td><strong>:</strong></td>
-                  <td>{selectedStudent?.name || 'N/A'}</td>
+                  <td style={{ width: '350px', whiteSpace: 'nowrap', overflow: 'hidden',  textOverflow:'ellipsis'}}>
+                    {selectedStudent?.name || 'N/A'}
+                  </td>     
                 </tr>
                 <tr>
                   <td><strong>Grade</strong></td>
@@ -272,7 +280,7 @@ const Student = () => {
                   <td>{selectedStudent?.gender || 'N/A'}</td>
                 </tr>
                 <tr>
-                  <td><strong>Contact Number</strong></td>
+                  <td><strong>Contact No.</strong></td>
                   <td><strong>:</strong></td>
                   <td>{selectedStudent?.contactNumber || 'N/A'}</td>
                 </tr>
@@ -414,18 +422,25 @@ const Student = () => {
             </div>
                         
             <div className={tableStyles['table-container']}>
-              <table className={tableStyles['global-table']}>
-                <thead>
+            <table className={tableStyles['global-table']}>
+              <thead>
+                <tr>
+                  <th>Record Date</th>
+                  <th>Incident Date</th>
+                  <th>Monitored Record</th>
+                  {/* <th>Sanction</th> */}
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                {filteredRecords.length === 0 ? (
                   <tr>
-                    <th>Record Date</th>
-                    <th>Incident Date</th>
-                    <th>Monitored Record</th>
-                    {/* <th>Sanction</th> */}
-                    <th>Action</th>
+                    <td colSpan={4} style={{ textAlign: 'center' }}>
+                      No records found.
+                    </td>
                   </tr>
-                </thead>  
-                <tbody>
-                  {filteredRecords.map((record) => (
+                ) : (
+                  filteredRecords.map((record) => (
                     <tr key={record.recordId}>
                       <td>{record.record_date}</td>
                       <td>{record.incident_date}</td>
@@ -438,28 +453,30 @@ const Student = () => {
                             setShowViewRecordModal(true); // Show the view modal
                           }}
                           className={formStyles['action-icon']}
-                          style={{ marginRight: loggedInUser?.userType === 3 ? '0' : '15px' }}  
-                        />   
+                          style={{ marginRight: loggedInUser?.userType === 3 ? '0' : '15px' }}
+                        />
                         {loggedInUser?.userType === 1 && (
                           <>
-                          <EditNoteIcon
-                            onClick={() => {
-                              setRecordToEdit(record); // Set the record to edit
-                              setShowEditRecordModal(true); // Show the edit modal
-                            }}
-                            className={formStyles['action-icon']}
-                          />
-                          <DeleteIcon
-                            onClick={() => handleDeleteRecord(record.recordId)} // Call delete function
-                            className={formStyles['action-icon']}
-                          />        
-                        </>           
+                            <EditNoteIcon
+                              onClick={() => {
+                                setRecordToEdit(record); // Set the record to edit
+                                setShowEditRecordModal(true); // Show the edit modal
+                              }}
+                              className={formStyles['action-icon']}
+                              style={{ marginRight: loggedInUser?.userType === 3 ? '0' : '15px' }}
+                            />
+                            <DeleteIcon
+                              onClick={() => handleDeleteRecord(record.recordId)} // Call delete function
+                              className={formStyles['action-icon']}
+                            />
+                          </>
                         )}
                       </td>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
+                  ))
+                )}
+              </tbody>
+            </table>
             </div>
             {showEditStudentModal && (
               <EditStudentModal

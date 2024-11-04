@@ -237,12 +237,6 @@ const Student = () => {
           {/* Display selected student details */}
           
           <div className={styles['details-container']}>
-            {selectedStudent && (
-              <>
-               <button onClick={() => handleEditStudent(selectedStudent)} className={formStyles['green-button']} >Edit</button>
-               <button onClick={() => handleDeleteStudent(selectedStudent.id)} className={formStyles['green-button']}>Delete</button>
-               </>
-            )}       
             <label>Details: </label>
             <table className={styles['details-table']}>
               <tbody>
@@ -283,6 +277,12 @@ const Student = () => {
                 </tr>
               </tbody>
             </table>
+            {selectedStudent && (
+              <>
+               <button style={{marginRight:'14px', marginLeft:'15px'}} onClick={() => handleEditStudent(selectedStudent)} className={formStyles['green-button']} >Edit</button>
+               <button onClick={() => handleDeleteStudent(selectedStudent.id)} className={formStyles['green-button']}>Delete</button>
+               </>
+            )}
           </div>    
 
           {/* Search Bar for Students */}

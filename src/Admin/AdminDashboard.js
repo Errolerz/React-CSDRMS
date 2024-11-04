@@ -32,6 +32,28 @@ const AdminDashboard = () => {
     fetchUsers();
   }, []);
 
+  useEffect(() => {
+    const handleKeyDown = (event) => {
+      if (event.key === 'Escape') {
+        // Close the respective modals when the 'Esc' key is pressed
+        if (isAddUserModalOpen) setIsAddUserModalOpen(false);
+        if (isConfirmationModalOpen) setIsConfirmationModalOpen(false);
+        if (isUpdateAccountModalOpen) setIsUpdateAccountModalOpen(false);
+      }
+    };
+  
+    // Attach the event listener when any modal is open
+    if (isAddUserModalOpen || isConfirmationModalOpen || isUpdateAccountModalOpen) {
+      window.addEventListener('keydown', handleKeyDown);
+    }
+  
+    // Clean up the event listener when the modals are closed or component unmounts
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [isAddUserModalOpen, isConfirmationModalOpen, isUpdateAccountModalOpen]);
+  
+
   const fetchUsers = async () => {
     try {
       const response = await axios.get('http://localhost:8080/user/getAllUsers');

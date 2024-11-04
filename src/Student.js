@@ -89,6 +89,29 @@ const Student = () => {
     fetchSchoolYears();
     fetchStudents();
   }, []);
+  useEffect(() => {
+    const handleKeyDown = (event) => {
+      if (event.key === 'Escape') {
+        // Close the respective modals when the 'Esc' key is pressed
+        if (showAddStudentModal) setShowAddStudentModal(false);
+        if (showEditRecordModal) setShowEditRecordModal(false);
+        if (showViewRecordModal) setShowViewRecordModal(false);
+        if (showAddRecordModal) setShowAddRecordModal(false);
+        if (showImportModal) setShowImportModal(false);
+        if (showEditStudentModal) setShowEditStudentModal(false);
+      }
+    };
+  
+    // Attach the event listener when any modal is open
+    if (showAddStudentModal || showEditRecordModal || showViewRecordModal || showAddRecordModal || showImportModal || showEditStudentModal) {
+      window.addEventListener('keydown', handleKeyDown);
+    }
+  
+    // Clean up the event listener when the modals are closed or component unmounts
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [showAddStudentModal, showEditRecordModal, showViewRecordModal, showAddRecordModal, showImportModal, showEditStudentModal]);
   
   
 

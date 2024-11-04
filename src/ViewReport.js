@@ -150,8 +150,8 @@ const ViewReportModal = ({ reportId, onClose }) => {
                   </td>
                 </tr>
                 <tr>
-                  <td>Complete:</td>
-                  <td>{report.complete ? 'Yes' : 'No'}</td>
+                  <td>Status:</td>
+                  <td>{report.complete ? 'Complete' : 'Incomplete'}</td>
                 </tr>
                 {/* <tr>
                   <td>Viewed by Adviser:</td>

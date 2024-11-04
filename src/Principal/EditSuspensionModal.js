@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import styles from "./EditSuspensionModal.module.css"; // Import CSS module for styling
+import styles from '../ReportModal.module.css'; // Correctly importing the styles
+import formStyles from '../GlobalForm.module.css';
 
 const EditSuspensionModal = ({ isOpen, onClose, suspension }) => {
   // States to hold edited suspension data
@@ -45,62 +46,67 @@ const EditSuspensionModal = ({ isOpen, onClose, suspension }) => {
   if (!isOpen) return null;
 
   return (
-    <div className={styles["modal-overlay"]}>
-      <div className={styles["modal-container"]}>
+    <div className={styles['report-modal-overlay']}>
+      <div className={styles['suspension-modal-content']}>
         <h2>Edit Suspension</h2>
         {error && <p className={styles["error-message"]}>{error}</p>}
-
-
-        <label>
-          Days:
-          <input
-            type="number"
-            value={days}
-            onChange={(e) => setDays(e.target.value)}
-          />
-        </label>
-
-        <label>
-          Start Date:
-          <input
-            type="date"
-            value={startDate}
-            onChange={(e) => setStartDate(e.target.value)}
-          />
-        </label>
-
-        <label>
-          End Date:
-          <input
-            type="date"
-            value={endDate}
-            onChange={(e) => setEndDate(e.target.value)}
-          />
-        </label>
-
-        <label>
-          Return Date:
-          <input
-            type="date"
-            value={returnDate}
-            onChange={(e) => setReturnDate(e.target.value)}
-          />
-        </label>
-
-       
-        <label>
-          Offense:
-          <textarea
-            value={offense}
-            onChange={(e) => setOffense(e.target.value)}
-          />
-        </label>
-
-        <div className={styles["modal-actions"]}>
-          <button onClick={handleSave} className={styles["save-button"]}>
+  
+        <div className={styles['report-group']}>
+          <label>Days of Suspension:</label>
+            <input
+              type="number"
+              value={days}
+              onChange={(e) => setDays(e.target.value)}
+              className={styles['suspension-input']}
+            />
+        </div>
+  
+        <div className={styles['report-group']}>
+          <label>Start Date:</label>
+            <input
+              type="date"
+              value={startDate}
+              onChange={(e) => setStartDate(e.target.value)}
+              className={styles['suspension-input']}
+            />
+        </div>
+  
+        <div className={styles['report-group']}>
+          <label>End Date:</label>
+            <input
+              type="date"
+              value={endDate}
+              onChange={(e) => setEndDate(e.target.value)}
+              className={styles['suspension-input']}
+            /> 
+        </div>
+  
+        <div className={styles['report-group']}>
+          <label>Return Date:</label>
+            <input
+              type="date"
+              value={returnDate}
+              onChange={(e) => setReturnDate(e.target.value)}
+              className={styles['suspension-input']}
+            />
+        </div>
+  
+        <div className={styles['report-group']}>
+          <label>Offense:</label>
+            <textarea
+              type="text"
+              name="offense"
+              value={offense}
+              onChange={(e) => setOffense(e.target.value)}
+              className={styles['complaint-textarea']}
+            />
+        </div>
+  
+        <div className={formStyles['global-buttonGroup']}>
+          <button onClick={handleSave} className={formStyles['green-button']}>
             Save
           </button>
-          <button onClick={onClose} className={styles["cancel-button"]}>
+          <button onClick={onClose} className={`${formStyles['green-button']} ${formStyles['red-button']}`}>
             Cancel
           </button>
         </div>

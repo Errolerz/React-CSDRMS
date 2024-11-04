@@ -188,3 +188,23 @@
     margin-bottom: 10px;
     text-align: center;
 }
+
+/* Specific styles for the textarea in ReportModal */
+.complaint-textarea {
+    width: 100%;
+    padding: 12px;
+    font-size: 16px;
+    border-radius: 5px; /* Match the border-radius with the input */
+    border: 1px solid #ccc; /* Match the border style with the input */
+    margin-bottom: 10px; /* Add space below */
+    resize: vertical; /* Allow vertical resizing */
+    font-family: Arial, sans-serif;
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+    transition: border-color 0.3s ease;
+    margin-left: auto;
+}
+
+.complaint-textarea:focus {
+    outline: none; /* Remove default outline */
+    box-shadow: 0 0 0 3px rgba(128, 0, 0, 0.2);
+}

@@ -266,7 +266,7 @@ const Student = () => {
                   />
                   <DeleteIcon 
                     onClick={() => handleDeleteStudent(selectedStudent.id)} 
-                    className={formStyles['actiuon-icon']}
+                    className={formStyles['action-icon']}
                   />
                 </div>
               )}      
@@ -296,6 +296,11 @@ const Student = () => {
                   <td>{selectedStudent?.section || 'N/A'}</td>
                 </tr>
                 <tr>
+                  <td><strong>Adviser</strong></td>
+                  <td><strong>:</strong></td>
+                  <td>{adviser ? `${adviser.firstname} ${adviser.lastname}` : 'N/A'}</td>
+                </tr>
+                <tr>
                   <td><strong>Gender</strong></td>
                   <td><strong>:</strong></td>
                   <td>{selectedStudent?.gender || 'N/A'}</td>
@@ -304,11 +309,6 @@ const Student = () => {
                   <td><strong>Contact No.</strong></td>
                   <td><strong>:</strong></td>
                   <td>{selectedStudent?.contactNumber || 'N/A'}</td>
-                </tr>
-                <tr>
-                  <td><strong>Adviser</strong></td>
-                  <td><strong>:</strong></td>
-                  <td>{adviser ? `${adviser.firstname} ${adviser.lastname}` : 'N/A'}</td>
                 </tr>
               </tbody>
             </table>
@@ -447,8 +447,8 @@ const Student = () => {
               <thead>
                 <tr>
                   <th>Record Date</th>
-                  <th>Incident Date</th>
                   <th>Monitored Record</th>
+                  <th style={{ width: '40%'}}>Remarks</th>
                   {/* <th>Sanction</th> */}
                   <th>Action</th>
                 </tr>
@@ -464,8 +464,8 @@ const Student = () => {
                   filteredRecords.map((record) => (
                     <tr key={record.recordId}>
                       <td>{record.record_date}</td>
-                      <td>{record.incident_date}</td>
                       <td>{record.monitored_record}</td>
+                      <td style={{ width: '40%'}}>{record.remarks}</td>
                       {/* <td>{record.sanction}</td> */}
                       <td>
                         <ViewNoteIcon

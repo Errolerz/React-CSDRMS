@@ -7,9 +7,11 @@ import Navigation from '../Navigation'; // Import the Navigation component
 import SuspensionModal from "./SuspensionModal"; // Import the modal component
 import styles from "./ViewSuspensions.module.css"; // Import GlobalTable CSS module
 import EditSuspensionModal from "./EditSuspensionModal"; // Import the edit modal component
-import ViewReportModal from '../ViewReport';
-
-
+import CheckIcon from '@mui/icons-material/CheckBox';
+import CheckOutlinedIcon from '@mui/icons-material/CheckBoxOutlined';
+import EditNoteIcon from '@mui/icons-material/Edit';
+import ViewNoteIcon from '@mui/icons-material/Visibility';
+import DeleteIcon from '@mui/icons-material/Delete'; // Import Delete icon
 
 const ViewSuspensions = () => {
   const authToken = localStorage.getItem('authToken');
@@ -20,8 +22,8 @@ const ViewSuspensions = () => {
   const [selectedSuspension, setSelectedSuspension] = useState(null); // State to store the selected suspension
   const [isModalOpen, setIsModalOpen] = useState(false); // State to control modal visibility
   const [isEditModalOpen, setIsEditModalOpen] = useState(false); // State to control Edit modal visibility
-  const [selectedReportId, setSelectedReportId] = useState(null);
-  const [showViewReportModal, setShowViewReportModal] = useState(false); // State for showing modal
+  // const [selectedReportId, setSelectedReportId] = useState(null);
+  // const [showViewReportModal, setShowViewReportModal] = useState(false); // State for showing modal
 
   const [filterApproved, setFilterApproved] = useState("all");
 
@@ -65,15 +67,15 @@ const ViewSuspensions = () => {
     setIsEditModalOpen(true);
   };
 
-  const handleViewReport = (reportId) => {
-    setSelectedReportId(reportId);
-    setShowViewReportModal(true); // Show the modal
-  };
+  // const handleViewReport = (reportId) => {
+  //   setSelectedReportId(reportId);
+  //   setShowViewReportModal(true); // Show the modal
+  // };
 
-  const closeViewReportModal = () => {
-    setShowViewReportModal(false); // Close modal
-    setSelectedReportId(null);
-  };
+  // const closeViewReportModal = () => {
+  //   setShowViewReportModal(false); // Close modal
+  //   setSelectedReportId(null);
+  // };
 
   // New function to handle the approval action
 const handleApproveClick = async () => {
@@ -162,6 +164,7 @@ const handleApproveClick = async () => {
                     <th>Date Submitted</th>
                     <th>Suspended</th>
                     <th>Status</th>
+                    <th>Action</th>
                     {/* <th>Start Date</th>
                     <th>End Date</th>
                     <th>Return Date</th>
@@ -182,6 +185,74 @@ const handleApproveClick = async () => {
                         <td>{suspension.dateSubmitted}</td>
                         <td>{suspension.days} Days</td>
                         <td> {suspension.approved ? 'Approved' : 'Not Approved'}</td>
+                        <td> 
+                          {loggedInUser.userType === 2 && (
+                            <>
+                              <ViewNoteIcon
+                                variant="contained" 
+                                className={formStyles['action-icon']}
+                                style={{ marginRight: '15px' }}
+                                onClick={() => {
+                                  
+                                    handleViewClick(); // Call existing view function for other userTypes
+                                  }
+                                } 
+                                disabled={!selectedSuspension}
+                              />                            
+                              {/* Show CheckIcon if approved, otherwise show CheckOutlinedIcon */}
+                              {suspension.approved ? (
+                                <CheckIcon
+                                  variant="contained"
+                                  className={formStyles['action-icon']}
+                                  disabled={true} // Always disabled if the suspension is already approved
+                                />
+                              ) : (
+                                <CheckOutlinedIcon
+                                  variant="contained"
+                                  onClick={() => {
+                                    const confirmApproval = window.confirm("Are you sure you want to approve this suspension?");
+                                    if (confirmApproval) {
+                                      handleApproveClick(); // Proceed with approval if confirmed
+                                    }
+                                  }}
+                                  className={formStyles['action-icon']}
+                                  style={{transform: 'none'}}
+                                  disabled={!selectedSuspension} // Disable if no suspension is selected
+                                />
+                              )}
+                            </>
+                          )}
+
+                          {loggedInUser.userType === 1 && (
+                            <>
+                              <ViewNoteIcon
+                                variant="contained" 
+                                className={formStyles['action-icon']}
+                                style={{ marginRight: '15px' }}
+                                onClick={() => {
+                                  
+                                    handleViewClick(); // Call existing view function for other userTypes
+                                  }
+                                } 
+                                disabled={!selectedSuspension}
+                              />
+                              <EditNoteIcon
+                                variant="contained"
+                                onClick={handleEditClick}
+                                className={formStyles['action-icon']}
+                                style={{ marginRight: '15px' }}
+                                disabled={!selectedSuspension} // Disable if no row selected
+                              />
+                              
+                              <DeleteIcon
+                                variant="contained"
+                                onClick={handleDeleteClick}
+                                className={formStyles['action-icon']}
+                                disabled={!selectedSuspension} // Disable if no row selected
+                              />                         
+                            </>
+                          )}
+                        </td>
                         {/* <td>{suspension.startDate}</td>
                         <td>{suspension.endDate}</td>
                         <td>{suspension.returnDate}</td>
@@ -190,7 +261,7 @@ const handleApproveClick = async () => {
                     ))
                   ) : (
                     <tr>
-                      <td colSpan="5">No suspensions found.</td>
+                      <td colSpan="6">No suspensions found.</td>
                     </tr>
                   )}
                 </tbody>
@@ -200,66 +271,20 @@ const handleApproveClick = async () => {
 
             {/* "View" button below the table */}
             <div className={styles["suspension-action-buttons"]}>
-            <button 
-              variant="contained" 
-              onClick={() => {
-                if (loggedInUser.userType === 1) {
-                  handleViewReport(selectedSuspension.reportId); // Call function for userType 1
-                } else {
-                  handleViewClick(); // Call existing view function for other userTypes
-                }
-              }} 
-              className={styles['suspension-button']} 
-              disabled={!selectedSuspension} // Disable when no row is selected
-            >
-              View
-            </button>
-
-            {loggedInUser.userType === 2 && (
-               <button
-                    variant="contained"
-                    onClick={handleApproveClick} // Add approve click handler
-                    className={styles['suspension-button']}
-                    disabled={!selectedSuspension || selectedSuspension.approved} // Disable if no suspension is selected
-                  >
-                    Approve
-                  </button>
-            )}
-
-            {loggedInUser.userType === 1 && (
-                <>
-                <button
-             variant="contained" 
-             className={styles['suspension-button']} 
-             onClick={() => {
-              
-                handleViewClick(); // Call existing view function for other userTypes
-              }
-            } 
-            disabled={!selectedSuspension}
-           
-            > view suspension form</button>
-                  <button
-                    variant="contained"
-                    onClick={handleEditClick}
-                    className={styles['suspension-button']}
-                    disabled={!selectedSuspension} // Disable if no row selected
-                  >
-                    Edit
-                  </button>
-                  
-                  <button
-                    variant="contained"
-                    onClick={handleDeleteClick}
-                    className={styles['suspension-button']}
-                    disabled={!selectedSuspension} // Disable if no row selected
-                  >
-                    Delete
-                  </button>
-                  
-                </>
-              )}
-           
+              {/* <button 
+                variant="contained" 
+                onClick={() => {
+                  if (loggedInUser.userType === 1) {
+                    handleViewReport(selectedSuspension.reportId); // Call function for userType 1
+                  } else {
+                    handleViewClick(); // Call existing view function for other userTypes
+                  }
+                }} 
+                className={styles['suspension-button']} 
+                disabled={!selectedSuspension} // Disable when no row is selected
+              >
+                View
+              </button> */}
             </div>
            
           </>
@@ -283,12 +308,12 @@ const handleApproveClick = async () => {
           />
         )}
 
-          {showViewReportModal && (
+        {/* {showViewReportModal && (
           <ViewReportModal
             reportId={selectedSuspension.reportId}
             onClose={closeViewReportModal}
           />
-        )} 
+        )}  */}
         
       </div>
     </div>

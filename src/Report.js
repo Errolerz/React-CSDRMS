@@ -314,13 +314,6 @@ const Reports = () => {
               >
                 Investigate
               </button>
-              <button
-                className={`${styles['report-action-button']} ${styles['report-delete-btn']}`}
-                onClick={() => handleDelete(selectedReportId)}
-                disabled={!selectedReportId || selectedReportUserId !== loggedInUser.userId}
-              >
-                Delete 
-              </button>
 
               <button
                 className={`${styles['report-action-button']} ${styles['report-suspension-btn']}`}
@@ -328,6 +321,14 @@ const Reports = () => {
                 disabled={!selectedReportId || selectedReportStatus.suspended || selectedReportStatus.completed}
               >
                 {selectedReportStatus.suspended ? 'Suspended' : 'Suspend'}
+              </button>
+
+              <button
+                className={`${styles['report-action-button']} ${styles['report-delete-btn']}`}
+                onClick={() => handleDelete(selectedReportId)}
+                disabled={!selectedReportId || selectedReportUserId !== loggedInUser.userId}
+              >
+                Delete 
               </button>
             </>
           )}

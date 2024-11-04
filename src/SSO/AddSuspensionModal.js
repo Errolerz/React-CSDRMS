@@ -106,14 +106,14 @@ const handleInputChange = (e) => {
           />
         </div>
 
-          <div className={styles['report-group']}>
+        <div className={styles['report-group']}>
           <label>Offense:</label>
           <textarea
             type="text"
             name="offense"
             value={suspensionData.offense}
             onChange={handleInputChange}
-            className={styles['report-modal-textarea']}
+            className={styles['complaint-textarea']}
           />
         </div>
 

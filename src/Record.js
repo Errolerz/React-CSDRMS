@@ -310,7 +310,7 @@ useEffect(() => {
             <div className={navStyles.content}>
                 <div ref={exportRef} className={styles.exportSection}>
                     <div className={navStyles.TitleContainer}>
-                        <h2 className={navStyles['h1-title']}>JHS Monitored Records Analytics</h2>
+                        <h2 className={navStyles['h1-title']}>JHS Monitored Records</h2>
                     </div>         
                     <div className={styles.filterContainer}>
                         <div>

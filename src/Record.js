@@ -422,7 +422,7 @@ useEffect(() => {
                                 <table className={tableStyles['global-table']}>
                                     <thead>
                                         <tr>
-                                            <th style={{ width: '430px' }}>Name</th>
+                                            <th style={{ width: '350px'}}>Name</th>
                                             <th>Absent</th>
                                             <th>Tardy</th>
                                             <th>Cutting Classes</th>
@@ -437,7 +437,7 @@ useEffect(() => {
                                         {Object.entries(filteredStudentRecords).length > 0 ? (
                                             Object.entries(filteredStudentRecords).map(([studentName, counts]) => (
                                                 <tr key={studentName}>
-                                                    <td style={{ width: '430px' }}>{studentName}</td>
+                                                    <td style={{ width: '350px' }}>{studentName}</td>
                                                     <td>{counts.Absent}</td>
                                                     <td>{counts.Tardy}</td>
                                                     <td>{counts['Cutting Classes']}</td>

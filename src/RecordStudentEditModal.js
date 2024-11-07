@@ -4,6 +4,8 @@ import styles from './RecordStudentEditModal.module.css'; // Import your CSS mod
 import formStyles from './GlobalForm.module.css';
 
 const RecordStudentEditModal = ({ record, onClose }) => {
+  const authToken = localStorage.getItem('authToken');
+  const loggedInUser = JSON.parse(authToken);
   const monitoredRecords = [
     'Absent',
     'Tardy',
@@ -42,7 +44,7 @@ const RecordStudentEditModal = ({ record, onClose }) => {
     };
 
     try {
-      await axios.put(`http://localhost:8080/student-record/update/${record.recordId}`, updatedRecord);
+      await axios.put(`http://localhost:8080/student-record/update/${record.recordId}/${loggedInUser.userId}`, updatedRecord);
       alert('Record updated successfully!');
       onClose(); // Close modal after submission
     } catch (error) {

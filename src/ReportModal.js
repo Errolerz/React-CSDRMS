@@ -62,9 +62,7 @@ const handleCreateReport = async () => {
       date: new Date().toISOString().split('T')[0], // Automatically set today's date
       time: new Date().toLocaleTimeString(), // Automatically set current time
       complainant: loggedInUser.username, // Set the logged-in user's username as the complainant
-      encoder: loggedInUser.firstname + ' ' + loggedInUser.lastname,
-      viewedByAdviser: loggedInUser.userType === 3 && loggedInUser.grade === newReport.grade && loggedInUser.section === newReport.section && loggedInUser.schoolYear === newReport.schoolYear, // Set viewedByAdviser to true if user is Adviser for the student
-      viewedBySso: loggedInUser.userType === 1,      // Set viewedBySso to true if user is SSO
+      encoder: loggedInUser.userId
     };
 
 

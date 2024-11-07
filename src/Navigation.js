@@ -16,12 +16,13 @@ import IconButton from '@mui/material/IconButton';
 import AssignmentIcon from '@mui/icons-material/Assignment';
 
 const Navigation = ({ loggedInUser }) => {
-  const { uid } = loggedInUser;
+  const { userId } = loggedInUser;
   const navigate = useNavigate();
-  const [notifications, setNotifications] = useState(0); // To store the count of unviewed notifications
-  const [allReports, setAllReports] = useState([]); // To store all reports
-  const [allSuspensions, setAllSuspensions] = useState([]); // To store all suspensions
+  const [unviewedCount, setUnviewedCount] = useState(0); // To store count of unviewed notifications
+  const [notifications, setNotifications] = useState([]); // All notifications for display
+  
   const [showNotificationModal, setShowNotificationModal] = useState(false); // State to control modal visibility
+  
 
   const createSidebarLink = (to, text, IconComponent) => (
     <Link to={to} className={navStyles['styled-link']}>
@@ -32,95 +33,27 @@ const Navigation = ({ loggedInUser }) => {
 
   useEffect(() => {
     const fetchNotifications = async () => {
-      let unviewedReportsCount = 0;
-      let unviewedSuspensionsCount = 0;
-
       try {
-        // Fetch based on userType
-        if (loggedInUser?.userType === 1) {
-          // SSO: Fetch all reports and suspensions
-          const reportsResponse = await axios.get('http://localhost:8080/report/getAllReports');
-          const suspensionsResponse = await axios.get('http://localhost:8080/suspension/getAllSuspensions');
+        const response = await axios.get(`http://localhost:8080/notifications/user/${userId}`);
+        const notificationsData = response.data;
 
-          setAllReports(reportsResponse.data);
-          setAllSuspensions(suspensionsResponse.data);
-
-          // Filter unviewed reports and suspensions
-          const unviewedReports = reportsResponse.data.filter((report) => !report.viewedBySso);
-          const unviewedSuspensions = suspensionsResponse.data.filter((suspension) => !suspension.viewedBySso);
-
-          // Count unviewed reports and suspensions
-          unviewedReportsCount = unviewedReports.length;
-          unviewedSuspensionsCount = unviewedSuspensions.length;
-
-        } else if (loggedInUser?.userType === 2) {
-          // Principal: Fetch all suspensions
-          const suspensionsResponse = await axios.get('http://localhost:8080/suspension/getAllSuspensions');
-          
-          setAllSuspensions(suspensionsResponse.data);
-          
-          // Filter unviewed suspensions
-          const unviewedSuspensions = suspensionsResponse.data.filter((suspension) => !suspension.viewedByPrincipal);
-          unviewedSuspensionsCount = unviewedSuspensions.length;
-
-        } else if (loggedInUser?.userType === 3) {
-          // Adviser: Fetch reports and suspensions by section and school year
-          const reportsResponse = await axios.get('http://localhost:8080/report/getAllReportsForAdviser', {
-            params: {
-              grade: loggedInUser.grade,
-              section: loggedInUser.section,
-              schoolYear: loggedInUser.schoolYear,
-              complainant: loggedInUser.username,
-            },
-          });
-
-          const suspensionsResponse = await axios.get('http://localhost:8080/suspension/getAllSuspensionsByGradeSectionAndSchoolYear', {
-            params: {
-              grade: loggedInUser.grade,
-              section: loggedInUser.section,
-              schoolYear: loggedInUser.schoolYear,
-            },
-          });
-
-          setAllReports(reportsResponse.data);
-          setAllSuspensions(suspensionsResponse.data);
-
-          // Filter unviewed reports and suspensions
-          const unviewedReports = reportsResponse.data.filter(
-            (report) =>
-              report.record.student.grade === loggedInUser.grade &&
-              report.record.student.section === loggedInUser.section &&
-              report.record.student.schoolYear === loggedInUser.schoolYear &&
-              !report.viewedByAdviser
-          );
-          const unviewedSuspensions = suspensionsResponse.data.filter((suspension) => !suspension.viewedByAdviser);
-
-          unviewedReportsCount = unviewedReports.length;
-          unviewedSuspensionsCount = unviewedSuspensions.length;
-
-        } else if (loggedInUser?.userType === 5 || loggedInUser?.userType === 6) {
-          // Complainant (User type 5 or 6): Fetch suspensions by complainant
-          const suspensionsResponse = await axios.get('http://localhost:8080/suspension/getAllSuspensionsByComplainant', {
-            params: {
-              username: loggedInUser.username,
-            },
-          });
-
-          setAllSuspensions(suspensionsResponse.data);
-          
-          const unviewedSuspensions = suspensionsResponse.data.filter((suspension) => !suspension.viewedByComplainant);
-          unviewedSuspensionsCount = unviewedSuspensions.length;
-        }
-
-        // Calculate the total unviewed notifications
-        setNotifications(unviewedReportsCount + unviewedSuspensionsCount);
+        notificationsData.sort((a, b) => b.userNotificationId - a.userNotificationId);
+        // Filter unviewed notifications and set count
+       
+        const unviewedNotifications = notificationsData.filter(notification => !notification.viewed);
+       
+        setUnviewedCount(unviewedNotifications.length);
+  
+        // Set all notifications for modal display
+        setNotifications(notificationsData);
       } catch (error) {
         console.error('Error fetching notifications:', error);
       }
     };
-
+  
     fetchNotifications();
-  }, [loggedInUser]);
+  }, [userId]);
+  
 
   // Handle opening the notification modal
   const handleNotificationClick = () => {
@@ -182,7 +115,7 @@ const Navigation = ({ loggedInUser }) => {
           {loggedInUser?.userType !== 4 && (
             <IconButton onClick={handleNotificationClick}>
               <NotificationsActiveIcon className={navStyles['header-icon']} />
-              {notifications > 0 && <span className={navStyles.badge}>{notifications}</span>} {/* Show badge if there are unviewed notifications */}
+              {unviewedCount > 0 && <span className={navStyles.badge}>{unviewedCount}</span>}
             </IconButton>
           )}
           <MenuPopupState />
@@ -193,10 +126,9 @@ const Navigation = ({ loggedInUser }) => {
       {showNotificationModal && (
         <NotificationModal 
           onClose={handleModalClose} 
-          reports={allReports} 
-          suspensions={allSuspensions} 
+          notifications={notifications} 
           loggedInUser={loggedInUser}
-          refreshNotifications={() => setNotifications(0)} // Refresh notifications count
+          refreshNotifications={() => setUnviewedCount(0)} // Refresh unviewed count
         />
       )}
     </>

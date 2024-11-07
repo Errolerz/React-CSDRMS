@@ -59,7 +59,7 @@ const AddStudentModal = ({ open, onClose }) => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        fetch('http://localhost:8080/student/insertStudent', {
+        fetch(`http://localhost:8080/student/insertStudent/${loggedInUser.userId}`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'

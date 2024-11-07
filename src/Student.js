@@ -206,7 +206,7 @@ const Student = () => {
     const confirmed = window.confirm('Are you sure you want to delete this record?'); // Confirmation alert
     if (confirmed) {
       try {
-        await axios.delete(`http://localhost:8080/student-record/delete/${recordId}`); // Call your delete API
+        await axios.delete(`http://localhost:8080/student-record/delete/${recordId}/${loggedInUser.userId}`); // Call your delete API
         setRecords(records.filter((record) => record.recordId !== recordId)); // Remove the deleted record from state
         alert('Record deleted successfully!'); // Optionally, show a success message
       } catch (error) {
@@ -229,7 +229,7 @@ const Student = () => {
     if (confirmed) {
       try {
         // Perform DELETE request to the backend API
-        await axios.delete(`http://localhost:8080/student/delete/${studentId}`);
+        await axios.delete(`http://localhost:8080/student/delete/${studentId}/${loggedInUser.userId}`);
         
         // Update state: Remove the deleted student from the list and clear the selected student
         setStudents(students.filter((student) => student.id !== studentId));

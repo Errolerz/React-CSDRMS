@@ -33,9 +33,6 @@ const ViewSuspensions = () => {
       setLoading(true);
       setError(null);
       try {
-        if (loggedInUser.userType === 2) {
-          await axios.post('http://localhost:8080/suspension/markAsViewedForPrincipal'); // Mark as viewed
-        }
         const response = await axios.get('http://localhost:8080/suspension/getAllSuspensions');
   
         const sortedSuspensions = response.data.sort((a, b) => b.suspensionId - a.suspensionId);
@@ -81,7 +78,7 @@ const ViewSuspensions = () => {
 const handleApproveClick = async () => {
   if (selectedSuspension) {
     try {
-      const response = await axios.post(`http://localhost:8080/suspension/approveSuspension?suspensionId=${selectedSuspension.suspensionId}`);
+      const response = await axios.post(`http://localhost:8080/suspension/approveSuspension/${loggedInUser.userId}?suspensionId=${selectedSuspension.suspensionId}`);
       if (response.data) {
         alert("Suspension approved successfully.");
         // Optionally update the suspension's status in the UI after approval
@@ -108,7 +105,7 @@ const handleApproveClick = async () => {
       if (!confirmDelete) return; // Exit if user cancels
   
       try {
-        await axios.delete(`http://localhost:8080/suspension/delete/${selectedSuspension.suspensionId}`);
+        await axios.delete(`http://localhost:8080/suspension/delete/${selectedSuspension.suspensionId}/${loggedInUser.userId}`);
         setSuspensions(suspensions.filter(suspension => suspension.suspensionId !== selectedSuspension.suspensionId));
         setSelectedSuspension(null); // Deselect after deletion
       } catch (error) {

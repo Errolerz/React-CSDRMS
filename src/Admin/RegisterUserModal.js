@@ -5,6 +5,8 @@ import styles from './RegisterUserModal.module.css';
 import formStyles from '../GlobalForm.module.css';
 
 const RegisterUserModal = ({ isOpen, onClose, role }) => {
+    const authToken = localStorage.getItem('authToken');
+  const loggedInUser = JSON.parse(authToken);
     const [userData, setUserData] = useState({
         userId: '',
         username: '',
@@ -105,7 +107,7 @@ const RegisterUserModal = ({ isOpen, onClose, role }) => {
         
         try {
             // Directly register using the endpoint provided
-            const response = await axios.post(`http://localhost:8080/user/registerUser`, userData);
+            const response = await axios.post(`http://localhost:8080/user/registerUser/${loggedInUser.userId}`, userData);
             console.log(response.data);
             alert(`${role} is successfully registered.`);
             setError('');

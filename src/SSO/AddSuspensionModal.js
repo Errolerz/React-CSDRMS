@@ -47,7 +47,7 @@ const handleInputChange = (e) => {
 
       };
 
-      await axios.post('http://localhost:8080/suspension/insertSuspension', suspensionPayload);
+      await axios.post(`http://localhost:8080/suspension/insertSuspension/${loggedInUser.userId}`, suspensionPayload);
       
       refreshSuspensions(); // Call the suspension refresh function passed from parent
       refreshReports(); // Optionally refresh reports to reflect any report changes

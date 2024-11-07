@@ -24,9 +24,22 @@ const SuspensionModal = ({ isOpen, onClose, suspension }) => {
         console.error("Error fetching principal data:", error);
       }
     };
+
+    const markAsViewedForPrincipal = async () => {
+      try {
+        await axios.post(`http://localhost:8080/suspension/markAsViewedForPrincipal/${suspension.suspensionId}/${loggedInUser.userId}`, null, {
+          headers: { Authorization: `Bearer ${authToken}` }
+        });
+      } catch (error) {
+        console.error("Error marking suspension as viewed for principal:", error);
+      }
+    };
   
     if (isOpen) {
       fetchPrincipal(); // Fetch principal data only when modal is open
+      if (loggedInUser.userType === 2 && suspension.viewedByPrincipal === false) {
+        markAsViewedForPrincipal();
+      }
     }
   }, [isOpen, authToken]);
   

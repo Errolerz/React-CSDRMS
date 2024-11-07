@@ -4,6 +4,8 @@ import styles from './RecordModal.module.css'; // Importing CSS module for the m
 import formStyles from './GlobalForm.module.css'; // Importing GlobalForm styles
 
 const AddRecordModal = ({ student, onClose, refreshRecords }) => {  // Add refreshRecords as a prop
+  const authToken = localStorage.getItem('authToken');
+  const loggedInUser = JSON.parse(authToken);
   const [recordDate, setRecordDate] = useState('');
   const [incidentDate, setIncidentDate] = useState('');
   const [time, setTime] = useState('');
@@ -32,7 +34,7 @@ const AddRecordModal = ({ student, onClose, refreshRecords }) => {  // Add refre
     };
 
     try {
-      await axios.post('http://localhost:8080/student-record/insertRecord', newRecord);
+      await axios.post(`http://localhost:8080/student-record/insertRecord/${loggedInUser.userId}`, newRecord);
       alert('Record added successfully');
       refreshRecords(); // Call the refresh function to fetch updated records
       onClose(); // Close the modal after submission

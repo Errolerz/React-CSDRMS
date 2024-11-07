@@ -5,6 +5,8 @@ import formStyles from '../GlobalForm.module.css';
 
 const EditSuspensionModal = ({ isOpen, onClose, suspension }) => {
   // States to hold edited suspension data
+  const authToken = localStorage.getItem('authToken');
+  const loggedInUser = JSON.parse(authToken);
   const [startDate, setStartDate] = useState(suspension.startDate);
   const [endDate, setEndDate] = useState(suspension.endDate);
   const [returnDate, setReturnDate] = useState(suspension.returnDate);
@@ -34,7 +36,7 @@ const EditSuspensionModal = ({ isOpen, onClose, suspension }) => {
         offense,
       };
 
-      await axios.put(`http://localhost:8080/suspension/update/${suspension.suspensionId}`, updatedSuspension);
+      await axios.put(`http://localhost:8080/suspension/update/${suspension.suspensionId}/${loggedInUser.userId}`, updatedSuspension);
       window.location.reload();
       onClose(); // Close modal after save
     } catch (error) {

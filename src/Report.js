@@ -310,7 +310,7 @@ const Reports = () => {
               <button
                 className={`${styles['report-action-button']} ${styles['report-edit-btn']}`}
                 onClick={() => handleEdit(selectedReportId)}
-                disabled={!selectedReportId || selectedReportUserId !== loggedInUser.userId}
+                disabled={!selectedReportId}
               >
                 Investigate
               </button>

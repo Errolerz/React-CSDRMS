@@ -4,6 +4,8 @@ import styles from './RecordModal.module.css'; // Importing CSS module for the m
 import formStyles from './GlobalForm.module.css'; // Import global form styles
 
 const EditStudentModal = ({ student, onClose, refreshStudents }) => {
+  const authToken = localStorage.getItem('authToken');
+  const loggedInUser = JSON.parse(authToken);
   const [formData, setFormData] = useState({
     sid: student.sid || '',
     name: student.name || '',
@@ -65,7 +67,7 @@ const EditStudentModal = ({ student, onClose, refreshStudents }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.put(`http://localhost:8080/student/update/${student.id}`, formData); // Update API endpoint
+      await axios.put(`http://localhost:8080/student/update/${student.id}/${loggedInUser.userId}`, formData); // Update API endpoint
       refreshStudents(); // Refresh the student list after update
       onClose(); // Close modal on success
     } catch (error) {

@@ -73,7 +73,7 @@ const AdminDashboard = () => {
   const confirmDelete = async () => {
     if (selectedUser) {
       try {
-        await axios.delete(`http://localhost:8080/user/deleteUser/${selectedUser.username}`);
+        await axios.delete(`http://localhost:8080/user/deleteUser/${selectedUser.username}/${loggedInUser.userId}`);
         setUsers(prevUsers => prevUsers.filter(user => user.username !== selectedUser.username));
         setSelectedUser(null);
       } catch (error) {

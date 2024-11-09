@@ -11,12 +11,13 @@ const EditReportModal = ({ reportId, onClose, refreshReports }) => {
     record: {
       id: '', // Student ID will now be stored here
       monitored_record: '',
+      sanction: '',
     },
     date: '',
     time: '',
     complaint: '',
     complainant: '',
-    comment: '',
+    investigationDetails: '',
     complete: false,
     received: '',
     viewedByAdviser: false,
@@ -95,12 +96,26 @@ const EditReportModal = ({ reportId, onClose, refreshReports }) => {
 
   // Handle input changes for the report data
   const handleInputChange = (e) => {
-  const { name, value, type, checked } = e.target;
-  setReportData({
-    ...reportData,
-    [name]: type === 'checkbox' ? checked : value,
-  });
-};
+    const { name, value, type, checked } = e.target;
+  
+    // Check if the input belongs to `record`
+    if (name === 'sanction' || name === 'monitored_record') {
+      setReportData({
+        ...reportData,
+        record: {
+          ...reportData.record,
+          [name]: value,
+        },
+      });
+    } else {
+      // General case for other fields outside `record`
+      setReportData({
+        ...reportData,
+        [name]: type === 'checkbox' ? checked : value,
+      });
+    }
+  };
+  
 
 
   // Handle monitored record change
@@ -126,8 +141,7 @@ const EditReportModal = ({ reportId, onClose, refreshReports }) => {
 
     const updatedReportData = {
       ...reportData,
-      viewedByAdviser,
-      viewedBySso,
+      encoder: loggedInUser.userId,
     };
 
     try {
@@ -249,13 +263,22 @@ const EditReportModal = ({ reportId, onClose, refreshReports }) => {
 
           { loggedInUser.userType === 1 &&(
             <>
-             <label>Comment:</label>
+             <label>Investigation Details:</label>
              <textarea
-               name="comment"
-               placeholder="Enter comments"
-               value={reportData.comment} // Maps to `comment` in entity
+               name="investigationDetails"
+               placeholder="Enter Investigation Details"
+               value={reportData.investigationDetails} // Maps to `investigationDetails` in entity
                onChange={handleInputChange}
              /> 
+
+          <label>Sanction:</label>
+          <textarea
+            name="sanction"
+            placeholder="Enter sanction"
+            value={reportData.record.sanction}
+            onChange={handleInputChange}
+          />
+
    
              <label>
              <input
@@ -270,7 +293,7 @@ const EditReportModal = ({ reportId, onClose, refreshReports }) => {
           )}
           
           <div className={formStyles['global-buttonGroup']}>
-            <button className={formStyles['green-button']} type="submit">Update</button>
+            <button className={formStyles['green-button']} type="submit">{loggedInUser?.userType === 1 ? 'Investigate' : 'Edit'}</button>
             <button onClick={onClose} className={`${formStyles['green-button']} ${formStyles['red-button']}`}>Cancel</button>
           </div>
 

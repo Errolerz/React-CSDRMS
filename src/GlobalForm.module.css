@@ -32,7 +32,7 @@
     color: #8A252C;
 }
 
-.form-group-remarks {
+.form-group-details {
     display: flex;
     flex: 1; /* Allow label to take up space */
     align-items: normal;

@@ -107,7 +107,7 @@ const RegisterUserModal = ({ isOpen, onClose, role }) => {
         
         try {
             // Directly register using the endpoint provided
-            const response = await axios.post(`http://localhost:8080/user/registerUser/${loggedInUser.userId}`, userData);
+            const response = await axios.post(`http://localhost:8080/user/registerUser`, userData);
             console.log(response.data);
             alert(`${role} is successfully registered.`);
             setError('');

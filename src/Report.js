@@ -259,7 +259,8 @@ const Reports = () => {
                           <th>Adviser</th>
                           <th>Complainant</th>
                           <th>Encoder</th>
-                          <th>Received</th> 
+                          <th>Sanction</th>
+                          {/* <th>Received</th>  */}
                           <th>Status</th>
                       </tr>
                   </thead>
@@ -282,8 +283,12 @@ const Reports = () => {
                               <td>
                                   {report.userComplainant.firstname} {report.userComplainant.lastname}
                               </td>
-                              <td>{report.encoder}</td>
-                              <td>{report.received ? report.received : 'Pending'}</td>
+                              <td>
+                                {report.userEncoder ? `${report.userEncoder.firstname} ${report.userEncoder.lastname}` : 'N/A'}
+                              </td>
+                              <td>{report.record.sanction}</td>
+
+                              {/* <td>{report.received ? report.received : 'Pending'}</td> */}
                               <td>{report.complete ? 'Complete' : 'Incomplete'}</td>
                             </tr>
                           ))
@@ -305,15 +310,17 @@ const Reports = () => {
             View
           </button>
 
-          {loggedInUser?.userType === 1 && (
-            <>
-              <button
+          <button
                 className={`${styles['report-action-button']} ${styles['report-edit-btn']}`}
                 onClick={() => handleEdit(selectedReportId)}
-                disabled={!selectedReportId}
+                disabled={!selectedReportId || (loggedInUser?.userType === 3 && selectedReportUserId !== loggedInUser.userId)}
               >
-                Investigate
+                 {loggedInUser?.userType === 1 ? 'Investigate' : 'Edit'}
               </button>
+
+          {loggedInUser?.userType === 1 && (
+            <>
+              
 
               <button
                 className={`${styles['report-action-button']} ${styles['report-suspension-btn']}`}

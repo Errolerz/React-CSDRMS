@@ -8,9 +8,7 @@ import html2canvas from 'html2canvas';
 
 const ViewReportModal = ({ reportId, onClose }) => {
   const [report, setReport] = useState(null);
-  const [suspension, setSuspension] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [suspensionLoading, setSuspensionLoading] = useState(true);
   const exportRef = useRef();
 
   useEffect(() => {
@@ -25,20 +23,10 @@ const ViewReportModal = ({ reportId, onClose }) => {
       }
     };
 
-    const fetchSuspension = async () => {
-      try {
-        const response = await axios.get(`http://localhost:8080/suspension/getSuspensionByReport/${reportId}`);
-        setSuspension(response.data);
-        setSuspensionLoading(false);
-      } catch (error) {
-        console.error('Error fetching suspension:', error);
-        setSuspensionLoading(false);
-      }
-    };
 
     if (reportId) {
       fetchReport();
-      fetchSuspension();
+      // fetchSuspension();
     }
   }, [reportId]);
 
@@ -150,73 +138,35 @@ const ViewReportModal = ({ reportId, onClose }) => {
                   </td>
                 </tr>
                 <tr>
+                <td>
+                    Sanction
+                  </td>
+                  <td>
+                  {report.record.sanction} 
+                  </td>
+                </tr>
+                <tr>
                   <td>Status:</td>
                   <td>{report.complete ? 'Complete' : 'Incomplete'}</td>
                 </tr>
-                {/* <tr>
-                  <td>Viewed by Adviser:</td>
-                  <td>{report.viewedByAdviser ? 'Yes' : 'No'}</td>
-                </tr>
-                <tr>
-                  <td>Viewed by SSO:</td>
-                  <td>{report.viewedBySso ? 'Yes' : 'No'}</td>
-                </tr> */}
               </tbody>
             </table>
             
           </div>
-  
-          {/* Display Suspension Details Table */}
           <div className={styles['tableWrapper-second']}>
-            <h2>Suspension Details</h2>
-            {suspensionLoading ? (
-              <p>Loading suspension details...</p>
-            ) : suspension ? (
-              <table className={styles['suspension-details-table']}>
-                <thead>
-                  <tr>
-                    <th>Field</th>
-                    <th>Details</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td>Date Submitted:</td>
-                    <td>{suspension.dateSubmitted}</td>
-                  </tr>
-                  <tr>
-                    <td>Days Suspended:</td>
-                    <td>{suspension.days}</td>
-                  </tr>
-                  <tr>
-                    <td>Start Date:</td>
-                    <td>{suspension.startDate}</td>
-                  </tr>
-                  <tr>
-                    <td>End Date:</td>
-                    <td>{suspension.endDate}</td>
-                  </tr>
-                  <tr>
-                    <td>Return Date:</td>
-                    <td>{suspension.returnDate}</td>
-                  </tr>
-                  {/* <tr>
-                    <td>Viewed by Principal:</td>
-                    <td>{suspension.viewedByPrincipal ? 'Yes' : 'No'}</td>
-                  </tr>
-                  <tr>
-                    <td>Viewed by Adviser:</td>
-                    <td>{suspension.viewedByAdviser ? 'Yes' : 'No'}</td>
-                  </tr>
-                  <tr>
-                    <td>Viewed by SSO:</td>
-                    <td>{suspension.viewedBySso ? 'Yes' : 'No'}</td>
-                  </tr> */}
-                </tbody>
-              </table>
-            ) : (
-              <p>No suspension details found for this report.</p>
-            )}
+            <h2>Sanction Details</h2>
+            <table className={styles['report-details']}>
+            <thead>
+            <tr>
+              <th>
+                Sanction
+              </th>
+              </tr>
+            </thead>
+                  <td>
+                  {report.record.sanction} 
+                  </td> 
+            </table>
           </div>
           </div>
         </div>

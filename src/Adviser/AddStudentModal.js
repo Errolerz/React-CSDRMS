@@ -20,7 +20,10 @@ const AddStudentModal = ({ open, onClose }) => {
         grade: '',
         section: '',
         gender: '',
+        email: '',
+        homeAddress: '',
         contactNumber: '',
+        emergencyNumber: '',
         schoolYear: '',
         current: 1
     });
@@ -152,6 +155,28 @@ const AddStudentModal = ({ open, onClose }) => {
                             </select>
                         </div>
                         <div className={formStyles['form-group']}>
+                            <label htmlFor="email">Email Address:</label>
+                            <input
+                                type="email"
+                                id="email"
+                                name="email"
+                                value={studentData.email}
+                                onChange={handleChange}
+                                placeholder="Enter Email"
+                            />
+                        </div>
+                        <div className={formStyles['form-group']}>
+                            <label htmlFor="homeAddress">Home Address:</label>
+                            <input
+                                type="text"
+                                id="homeAddress"
+                                name="homeAddress"
+                                value={studentData.homeAddress}
+                                onChange={handleChange}
+                                placeholder="Enter Home Address"
+                            />
+                        </div>
+                        <div className={formStyles['form-group']}>
                             <label htmlFor="contactNumber">Contact Number:</label>
                             <input
                                 type="text"
@@ -162,6 +187,20 @@ const AddStudentModal = ({ open, onClose }) => {
                                 placeholder="Enter Contact Number"
                             />
                         </div>
+
+                        <div className={formStyles['form-group']}>
+                            <label htmlFor="contactNumber">Emergency Number:</label>
+                            <input
+                                type="text"
+                                id="emergencyNumber"
+                                name="emergencyNumber"
+                                value={studentData.emergencyNumber}
+                                onChange={handleChange}
+                                placeholder="Enter Emegency Number"
+                            />
+                        </div>
+
+
 
                         <div className={formStyles['form-group']}>
                             <label htmlFor="schoolYear">School Year:</label>

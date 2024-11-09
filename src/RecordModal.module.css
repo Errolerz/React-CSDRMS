@@ -121,7 +121,7 @@
 }
 
 .record-table th:nth-child(4) {
-  width: 25%; /* Set a larger width for the Remarks column */
+  width: 25%; /* Set a larger width for the Details column */
 }
 
 .record-table th:nth-child(5) {

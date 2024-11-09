@@ -15,7 +15,7 @@ const RecordStudentViewModal = ({ record, onClose }) => {
                                 <th>Record Date</th>
                                 <th>Incident Date</th>
                                 <th>Monitored Record</th>
-                                <th>Remarks</th>
+                                <th>Case Details</th>
                                 <th>Sanction</th>
                             </tr>
                         </thead>
@@ -24,7 +24,7 @@ const RecordStudentViewModal = ({ record, onClose }) => {
                                 <td>{record.record_date}</td>
                                 <td>{record.incident_date}</td>
                                 <td>{record.monitored_record}</td>
-                                <td>{record.remarks}</td>
+                                <td>{record.details}</td>
                                 <td>{record.sanction}</td>
                             </tr>
                         </tbody>

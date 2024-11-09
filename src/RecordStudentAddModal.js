@@ -10,7 +10,7 @@ const AddRecordModal = ({ student, onClose, refreshRecords }) => {  // Add refre
   const [incidentDate, setIncidentDate] = useState('');
   const [time, setTime] = useState('');
   const [monitoredRecord, setMonitoredRecord] = useState('');
-  const [remarks, setRemarks] = useState('');
+  const [details, setDetails] = useState('');
 
   const monitoredRecordsList = [
     'Absent',
@@ -30,7 +30,7 @@ const AddRecordModal = ({ student, onClose, refreshRecords }) => {  // Add refre
       incident_date: incidentDate,
       time: time,
       monitored_record: monitoredRecord,
-      remarks: remarks,
+      details: details,
     };
 
     try {
@@ -97,10 +97,10 @@ const AddRecordModal = ({ student, onClose, refreshRecords }) => {  // Add refre
           </div>
 
           <div className={formStyles['form-group']}>
-            <div className={formStyles['form-group-remarks']}>Remarks:</div>
+            <div className={formStyles['form-group-details']}>Details:</div>
             <textarea
-              value={remarks}
-              onChange={(e) => setRemarks(e.target.value)}
+              value={details}
+              onChange={(e) => setDetails(e.target.value)}
               className={formStyles['form-group-textarea']}  />
           </div>
 

@@ -6,34 +6,45 @@ const AddSuspensionModal = ({ onClose, reportId, refreshReports, refreshSuspensi
   const authToken = localStorage.getItem("authToken");
   const loggedInUser = authToken ? JSON.parse(authToken) : null;
   const [suspensionData, setSuspensionData] = useState({
+    reportEntity: {
+        investigationDetails: ''
+    },
     days: '',
     startDate: '',
     endDate: '',
-    returnDate: '',
-    offense: ''
+    returnDate: ''
   });
 
-  // Handle input changes for the form
-  // Handle input changes for the form
+ // Handle input changes for the form
 const handleInputChange = (e) => {
   const { name, value } = e.target;
 
-  // Ensure that 'days' is a positive integer
-  if (name === "offense" || name === "days" && (value === "" || parseInt(value) >= 1)) {
-    setSuspensionData((prevData) => ({
-      ...prevData,
-      [name]: value,
-    }));
-  }
-
-  // For other fields like date, just update the state
-  if (name !== "days") {
-    setSuspensionData((prevData) => ({
-      ...prevData,
-      [name]: value,
-    }));
-  }
+  setSuspensionData((prevData) => {
+    if (name === "investigationDetails") {
+      // Update nested 'investigationDetails' inside 'reportEntity'
+      return {
+        ...prevData,
+        reportEntity: {
+          ...prevData.reportEntity,
+          investigationDetails: value,
+        },
+      };
+    } else if (name === "days") {
+      // Update 'days' if it's a positive integer or empty
+      return {
+        ...prevData,
+        days: value === "" || parseInt(value) >= 1 ? value : prevData.days,
+      };
+    } else {
+      // For other fields (e.g., dates)
+      return {
+        ...prevData,
+        [name]: value,
+      };
+    }
+  });
 };
+
 
 
   // Handle adding suspension
@@ -43,10 +54,8 @@ const handleInputChange = (e) => {
         ...suspensionData,
         reportId, // Use the reportId passed as a prop
         dateSubmitted: new Date().toISOString().split('T')[0], // Set the current date
-        viewedBySso: loggedInUser.userType === 1,
-
       };
-
+      console.log('Suspension Payload:', suspensionPayload);
       await axios.post(`http://localhost:8080/suspension/insertSuspension/${loggedInUser.userId}`, suspensionPayload);
       
       refreshSuspensions(); // Call the suspension refresh function passed from parent
@@ -107,11 +116,11 @@ const handleInputChange = (e) => {
         </div>
 
         <div className={styles['report-group']}>
-          <label>Offense:</label>
-          <textarea
+          <label>Investigation Details:</label>
+          <input
             type="text"
-            name="offense"
-            value={suspensionData.offense}
+            name="investigationDetails"
+            value={suspensionData.reportEntity.investigationDetails}
             onChange={handleInputChange}
             className={styles['complaint-textarea']}
           />

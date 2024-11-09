@@ -306,9 +306,24 @@ const Student = () => {
                   <td>{selectedStudent?.gender || 'N/A'}</td>
                 </tr>
                 <tr>
+                  <td><strong>Email Address</strong></td>
+                  <td><strong>:</strong></td>
+                  <td>{selectedStudent?.email || 'N/A'}</td>
+                </tr>
+                <tr>
+                  <td><strong>Home Address</strong></td>
+                  <td><strong>:</strong></td>
+                  <td>{selectedStudent?.homeAddress || 'N/A'}</td>
+                </tr>
+                <tr>
                   <td><strong>Contact No.</strong></td>
                   <td><strong>:</strong></td>
                   <td>{selectedStudent?.contactNumber || 'N/A'}</td>
+                </tr>
+                <tr>
+                  <td><strong>Emergency No.</strong></td>
+                  <td><strong>:</strong></td>
+                  <td>{selectedStudent?.emergencyNumber || 'N/A'}</td>
                 </tr>
               </tbody>
             </table>
@@ -448,7 +463,7 @@ const Student = () => {
                 <tr>
                   <th>Record Date</th>
                   <th>Monitored Record</th>
-                  <th style={{ width: '40%'}}>Remarks</th>
+                  <th style={{ width: '40%'}}>Case Details</th>
                   {/* <th>Sanction</th> */}
                   <th>Action</th>
                 </tr>
@@ -465,7 +480,7 @@ const Student = () => {
                     <tr key={record.recordId}>
                       <td>{record.record_date}</td>
                       <td>{record.monitored_record}</td>
-                      <td style={{ width: '40%'}}>{record.remarks}</td>
+                      <td style={{ width: '40%'}}>{record.details}</td>
                       {/* <td>{record.sanction}</td> */}
                       <td>
                         <ViewNoteIcon

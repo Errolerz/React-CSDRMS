@@ -12,7 +12,10 @@ const EditStudentModal = ({ student, onClose, refreshStudents }) => {
     grade: student.grade || '',
     section: student.section || '',
     gender: student.gender || '',
+    email: student.email || '',
+    homeAddress: student.homeAddress || '',
     contactNumber: student.contactNumber || '',
+    emergencyNumber: student.emergencyNumber || '',
     schoolYear: student.schoolYear || '',
     current: student.current || 1,
   });
@@ -69,6 +72,7 @@ const EditStudentModal = ({ student, onClose, refreshStudents }) => {
     try {
       await axios.put(`http://localhost:8080/student/update/${student.id}/${loggedInUser.userId}`, formData); // Update API endpoint
       refreshStudents(); // Refresh the student list after update
+      window.location.reload();
       onClose(); // Close modal on success
     } catch (error) {
       console.error('Error updating student:', error);
@@ -146,6 +150,28 @@ const EditStudentModal = ({ student, onClose, refreshStudents }) => {
             </select>
           </div>
           <div className={formStyles['form-group']}>
+                <label htmlFor="email">Email Address:</label>
+                <input
+                    type="email"
+                    id="email"
+                    name="email"
+                    value={formData.email}
+                    onChange={handleChange}
+                    placeholder="Enter Email"
+                />
+            </div>
+            <div className={formStyles['form-group']}>
+                <label htmlFor="homeAddress">Home Address:</label>
+                <input
+                    type="text"
+                    id="homeAddress"
+                    name="homeAddress"
+                    value={formData.homeAddress}
+                    onChange={handleChange}
+                    placeholder="Enter Home Address"
+                />
+            </div>
+          <div className={formStyles['form-group']}>
             <label htmlFor="contactNumber">Contact Number:</label>
             <input
               type="text"
@@ -155,6 +181,17 @@ const EditStudentModal = ({ student, onClose, refreshStudents }) => {
               onChange={handleChange}
               placeholder="Enter Contact Number"
             />
+          </div>
+          <div className={formStyles['form-group']}>
+              <label htmlFor="contactNumber">Emergency Number:</label>
+              <input
+                  type="text"
+                  id="emergencyNumber"
+                  name="emergencyNumber"
+                  value={formData.emergencyNumber}
+                  onChange={handleChange}
+                  placeholder="Enter Emegency Number"
+              />
           </div>
           <div className={formStyles['form-group']}>
             <label htmlFor="schoolYear">School Year:</label>

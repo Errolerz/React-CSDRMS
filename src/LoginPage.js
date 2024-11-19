@@ -24,16 +24,16 @@ const LoginPage = () => {
             case 1:
             case 2:
             case 3:
-              navigate('/record', { state: { userObject } });
+              navigate('/dashboard', { state: { userObject } });
               break;
             case 4:
               navigate('/UserManagement', { state: { userObject } });
               break;
             case 5:
-              navigate('/report', { state: { userObject } }); // Redirect for userType 5
+              navigate('/record', { state: { userObject } }); // Redirect for userType 5
               break;
             case 6:
-              navigate('/record', { state: { userObject } }); // Redirect for userType 5
+              navigate('/dashboard', { state: { userObject } }); // Redirect for userType 5
               break;  
             default:
               navigate('/');
@@ -80,16 +80,16 @@ const LoginPage = () => {
         case 1:
         case 2:
         case 3:
-          navigate('/record', { state: { userObject } });
+          navigate('/dashboard', { state: { userObject } });
           break;
         case 4:
           navigate('/UserManagement', { state: { userObject } });
           break;
         case 5:
-          navigate('/report', { state: { userObject } }); // Redirect for userType 5
+          navigate('/record', { state: { userObject } }); // Redirect for userType 5
           break;
         case 6:
-          navigate('/record', { state: { userObject } }); // Redirect for userType 6
+          navigate('/dashboard', { state: { userObject } }); // Redirect for userType 6
           break;  
         default:
           alert('Incorrect Username or Password');

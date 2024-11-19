@@ -12,20 +12,40 @@ const RecordStudentViewModal = ({ record, onClose }) => {
                     <table className={styles['record-table']}>
                         <thead>
                             <tr>
-                                <th>Record Date</th>
-                                <th>Incident Date</th>
-                                <th>Monitored Record</th>
-                                <th>Case Details</th>
-                                <th>Sanction</th>
+                            <th>Record ID</th>
+                
+                            <th>Record Date</th>
+                            <th>Incident Date</th>
+                            <th>Time</th>
+                            <th>Monitored Record</th>
+                            <th>Remarks</th>
+                            <th>Sanction</th>
+                            <th>Complainant</th>
+                            <th>Case Details</th>
+                            <th>Complete</th>
+                            <th>Encoder</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr>
-                                <td>{record.record_date}</td>
-                                <td>{record.incident_date}</td>
-                                <td>{record.monitored_record}</td>
-                                <td>{record.details}</td>
-                                <td>{record.sanction}</td>
+                            <td>{record.recordId}</td>
+                 
+                            <td>{record.record_date}</td>
+                            <td>{record.incident_date}</td>
+                            <td>{record.time}</td>
+                            <td>{record.monitored_record}</td>
+                            <td>{record.remarks}</td>
+                            <td>{record.sanction}</td>
+                            <td>{record.complainant ? record.complainant : 'N/A'}</td>
+                            <td>{record.caseDetails}</td>
+                            <td>
+                            {record.complete === 0
+                                ? 'Incomplete'
+                                : record.complete === 1
+                                ? 'Complete'
+                                : 'N/A'}
+                            </td>
+                            <td>{record.encoder.firstname} {record.encoder.lastname}</td>
                             </tr>
                         </tbody>
                     </table>

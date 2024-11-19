@@ -6,9 +6,6 @@ const AddSuspensionModal = ({ onClose, reportId, refreshReports, refreshSuspensi
   const authToken = localStorage.getItem("authToken");
   const loggedInUser = authToken ? JSON.parse(authToken) : null;
   const [suspensionData, setSuspensionData] = useState({
-    reportEntity: {
-        investigationDetails: ''
-    },
     days: '',
     startDate: '',
     endDate: '',

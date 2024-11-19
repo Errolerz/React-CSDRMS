@@ -74,21 +74,21 @@ const Navigation = ({ loggedInUser }) => {
           {/* Render sidebar links */}
           <>
             {/* SSO - usertype 1 */}
-            {loggedInUser.userType === 1 && createSidebarLink("/record", "Dashboard", AssessmentIcon)}
+            {loggedInUser.userType === 1 && createSidebarLink("/dashboard", "Dashboard", AssessmentIcon)}
             {loggedInUser.userType === 1 && createSidebarLink("/student", "Student", SchoolIcon)}
-            {loggedInUser.userType === 1 && createSidebarLink("/report", "Report", PostAddIcon)}
-            {loggedInUser.userType === 1 && createSidebarLink("/viewSuspensions", "Suspension", LocalPoliceIcon)}
+            {loggedInUser.userType === 1 && createSidebarLink("/record", "Record", PostAddIcon)}
+            {loggedInUser.userType === 1 && createSidebarLink("/suspension", "Suspension", LocalPoliceIcon)}
             {loggedInUser.userType === 1 && createSidebarLink("/activitylog", "Activity Log", AssignmentIcon)}
 
             {/* Principal - usertype 2 */}
-            {loggedInUser.userType === 2 && createSidebarLink("/record", "Dashboard", AssessmentIcon)}
-            {loggedInUser.userType === 2 && createSidebarLink("/viewSuspensions", "Suspension", LocalPoliceIcon)}
-            {loggedInUser.userType === 2 && createSidebarLink("/report", "Report", PostAddIcon)}
+            {loggedInUser.userType === 2 && createSidebarLink("/dashboard", "Dashboard", AssessmentIcon)}
+            {loggedInUser.userType === 2 && createSidebarLink("/suspension", "Suspension", LocalPoliceIcon)}
+            {loggedInUser.userType === 2 && createSidebarLink("/record", "Record", PostAddIcon)}
 
             {/* Adviser - usertype 3 */}
-            {loggedInUser.userType === 3 && createSidebarLink("/record", "Dashboard", AssessmentIcon)}
+            {loggedInUser.userType === 3 && createSidebarLink("/dashboard", "Dashboard", AssessmentIcon)}
             {loggedInUser.userType === 3 && createSidebarLink("/student", "Student", SchoolIcon)}
-            {loggedInUser.userType === 3 && createSidebarLink("/report", "Report", PostAddIcon)}
+            {loggedInUser.userType === 3 && createSidebarLink("/record", "Record", PostAddIcon)}
 
             {/* Admin - usertype 4 */}
             {loggedInUser.userType === 4 && createSidebarLink("/UserManagement", "Users", AccountBoxIcon)}
@@ -96,8 +96,8 @@ const Navigation = ({ loggedInUser }) => {
             {loggedInUser.userType === 4 && createSidebarLink("/activitylog", "Activity Log", AssignmentIcon)}
 
             {/* Guidance - usertype 6 */}
-            {loggedInUser.userType === 6 && createSidebarLink("/record", "Dashboard", AssessmentIcon)}
-            {loggedInUser.userType === 6 && createSidebarLink("/report", "Report", PostAddIcon)}
+            {loggedInUser.userType === 6 && createSidebarLink("/dashboard", "Dashboard", AssessmentIcon)}
+            {loggedInUser.userType === 6 && createSidebarLink("/record", "Record", PostAddIcon)}
           </>
         </div>
       )}

@@ -273,7 +273,7 @@ const Reports = () => {
                           filteredReports.map((report) => (
                             <tr 
                               key={report.reportId} 
-                              onClick={() => handleRowClick(report)}
+                               onClick={() => handleRowClick(report)}
                               className={selectedReportId === report.reportId ? tableStyles['selected-row'] : ''}
                             >
                               <td>{report.date}</td>

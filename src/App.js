@@ -2,23 +2,25 @@ import React, { useContext } from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom'; // Import BrowserRouter, Route, and Routes
 import LoginPage from './LoginPage';
 import './App.css';
-
 import Notification from './Notification';
+import Dashboard from './Record/Dashboard';
 import Record from './Record/Record';
-import Report from './Report';
+import Report from './ReportBackup';
 import Student from './Student'
 // import ViewReport from './ViewReport'; 
 
+
 import AddStudentRecord from './SSO/AddStudentRecord';
 
+
 import Suspension from './Suspension/Suspension';
+
 
 import UpdateAccount from './UpdateAccount';
 
 // Admin Pages
 import UserManagement from './UserManagement/UserManagement';
 import Class from './Class/Class';
-
 import ActivityLog from './ActivityLog';
 
 
@@ -38,7 +40,7 @@ function App() {
 
           {loggedInUser && (
             <>
-             <Route path="/record" element={<Record />} />
+             <Route path="/dashboard" element={<Dashboard />} />
              <Route path="/UpdateAccount" element={<UpdateAccount />} /> 
             </>
 
@@ -52,7 +54,7 @@ function App() {
 
           {(loggedInUser && (loggedInUser.userType === 1 ||  loggedInUser.userType === 2))&& (
             <>
-             <Route path="/suspension" element={<Suspension />} />
+              <Route path="/suspension" element={<Suspension />} />
              <Route path="/activitylog" element={<PrivateRoute element={<ActivityLog />} />} />
             </>
 
@@ -60,6 +62,8 @@ function App() {
 
           {loggedInUser && loggedInUser.userType === 3 && (
             <>
+           
+            
             </>
           )}
 
@@ -83,6 +87,7 @@ function App() {
 
           {(loggedInUser && (loggedInUser.userType !== 4)) && (
             <>
+            <Route path="/record" element={<Record />} />
             <Route path="/report" element={<Report />} />
             {/* <Route path="/view-report/:reportId" element={<ViewReport />} />  */}
             </>

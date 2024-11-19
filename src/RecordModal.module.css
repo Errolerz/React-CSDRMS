@@ -142,3 +142,26 @@
   cursor: pointer;
   color: #333;
 }
+
+.dropdown {
+  list-style-type: none;
+  padding: 0;
+  margin: 5px 0 0 0;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  max-height: 150px;
+  max-width: 360px;  
+  overflow-y: auto;
+  margin-left: 21.7%;
+}
+
+.dropdownItem {
+  padding: 10px;
+  cursor: pointer;
+  background-color: #fff;
+}
+
+.dropdownItem:hover {
+  background-color: #f1f1f1;
+}
+

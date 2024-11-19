@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import styles from './Record.module.css'; // Importing CSS module
+import styles from './Record/Record.module.css'; // Importing CSS module
 import axios from 'axios';
 
 const RecordFilter = ({

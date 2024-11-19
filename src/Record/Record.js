@@ -15,10 +15,10 @@ import {
 } from 'chart.js';
 
 import styles from './Record.module.css';
-import navStyles from './Navigation.module.css'; 
-import Navigation from './Navigation';
-import tableStyles from './GlobalTable.module.css';
-import formStyles from './GlobalForm.module.css'
+import navStyles from '../Navigation.module.css'; 
+import Navigation from '../Navigation';
+import tableStyles from '../GlobalTable.module.css';
+import formStyles from '../GlobalForm.module.css'
 
 ChartJS.register(LineElement, PointElement, LinearScale, Title, Tooltip, Legend, CategoryScale);
 
@@ -79,48 +79,52 @@ const Record = () => {
         pdf.save('student-records.pdf');
     };
 
-// Fetch initial data (records, classes, school years, unique grades)
-useEffect(() => {
-    const fetchData = async () => {
-        try {
-            let recordRes;
+    // Fetch initial data (records, classes, school years, unique grades)
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                let recordRes;
 
-            // Check if the logged-in user is an adviser
-            if (loggedInUser.userType === 3) {
-                // Fetch records based on adviser parameters
-                recordRes = await axios.get('http://localhost:8080/student-record/getStudentRecordsByAdviser', {
-                    params: {
-                        grade: loggedInUser.grade,
-                        section: loggedInUser.section,
-                        schoolYear: loggedInUser.schoolYear,
-                    },
-                });
-            } else {
-                // Fetch all records for other user types
-                recordRes = await axios.get('http://localhost:8080/student-record/getAllStudentRecords');
+                // Check if the logged-in user is an adviser
+                if (loggedInUser.userType === 3) {
+                    // Fetch records based on adviser parameters
+                    recordRes = await axios.get('http://localhost:8080/student-record/getStudentRecordsByAdviser', {
+                        params: {
+                            grade: loggedInUser.grade,
+                            section: loggedInUser.section,
+                            schoolYear: loggedInUser.schoolYear,
+                        },
+                    });
+                } else {
+                    // Fetch all records for other user types
+                    recordRes = await axios.get('http://localhost:8080/student-record/getAllStudentRecords');
+                }
+
+                const [classRes, yearRes, gradeRes] = await Promise.all([
+                    axios.get('http://localhost:8080/class/getAllClasses'),
+                    axios.get('http://localhost:8080/schoolYear/getAllSchoolYears'),
+                    axios.get('http://localhost:8080/class/allUniqueGrades'),
+                ]);
+
+                setRecords(recordRes.data);
+                setClassData(classRes.data);
+                setSchoolYears(yearRes.data);
+                setUniqueGrades(gradeRes.data); // Set unique grades
+            } catch (err) {
+                setError(err.message || 'Error fetching data.');
+            } finally {
+                setLoading(false);
             }
+        };
 
-            const [classRes, yearRes, gradeRes] = await Promise.all([
-                axios.get('http://localhost:8080/class/getAllClasses'),
-                axios.get('http://localhost:8080/schoolYear/getAllSchoolYears'),
-                axios.get('http://localhost:8080/class/allUniqueGrades'),
-            ]);
-
-            setRecords(recordRes.data);
-            setClassData(classRes.data);
-            setSchoolYears(yearRes.data);
-            setUniqueGrades(gradeRes.data); // Set unique grades
-        } catch (err) {
-            setError(err.message || 'Error fetching data.');
-        } finally {
-            setLoading(false);
-        }
-    };
-
-    fetchData();
-}, []); // Add loggedInUser as a dependency
-
-
+        fetchData();
+    }, [
+        loggedInUser.grade, 
+        loggedInUser.schoolYear, 
+        loggedInUser.section, 
+        loggedInUser.userType
+    ]); // Add the missing dependencies
+    
     // Fetch sections for a specific grade when selectedGrade changes
     useEffect(() => {
         const fetchSections = async () => {

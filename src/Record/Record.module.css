@@ -166,17 +166,3 @@
   background-color: #f9f9f9; /* Light background for contrast */  
 }
 
-
-/* Header styles */
-.view-student-record-header {
-  margin-bottom: 15px;
-  font-size: 24px;
-  font-weight: bold;
-}
-
-.view-student-record-subheader {
-  margin-bottom: 10px;
-  font-size: 20px;
-  font-weight: bold;
-}
-

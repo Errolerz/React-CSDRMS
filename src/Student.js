@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import axios from 'axios';
 import RecordFilter from './RecordFilter'; // Import RecordFilter component
 import AddRecordModal from './RecordStudentAddModal'; // Import AddRecordModal component
 import ImportModal from './RecordStudentImportModal'; // Import ImportModal component
-import styles from './Record.module.css'; // Importing CSS module
+import styles from './Record/Record.module.css'; // Importing CSS module
 import navStyles from './Navigation.module.css'; 
 import Navigation from './Navigation';
 import formStyles from './GlobalForm.module.css'; // Importing GlobalForm styles
@@ -55,7 +55,7 @@ const Student = () => {
     'Sanction',
   ];
 
-  const fetchStudents = async () => {
+  const fetchStudents = useCallback(async () => {
     try {
       let response;
       const userType = loggedInUser.userType;
@@ -74,7 +74,7 @@ const Student = () => {
     } catch (error) {
       console.error('Error fetching students:', error);
     }
-  };
+  }, [loggedInUser]);
 
   useEffect(() => {
     const fetchSchoolYears = async () => {
@@ -88,7 +88,8 @@ const Student = () => {
     
     fetchSchoolYears();
     fetchStudents();
-  }, []);
+  }, [fetchStudents]); // Add fetchStudents to the dependency array if it's declared outside the effect
+  
   useEffect(() => {
     const handleKeyDown = (event) => {
       if (event.key === 'Escape') {

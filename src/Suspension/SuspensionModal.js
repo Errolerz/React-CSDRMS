@@ -41,7 +41,14 @@ const SuspensionModal = ({ isOpen, onClose, suspension }) => {
         markAsViewedForPrincipal();
       }
     }
-  }, [isOpen, authToken]);
+  }, [
+    isOpen, 
+    authToken, 
+    loggedInUser.userId, 
+    loggedInUser.userType, 
+    suspension.suspensionId, 
+    suspension.viewedByPrincipal
+  ]); // Add the missing dependencies
   
 
   const handleExportToPDF = async () => {

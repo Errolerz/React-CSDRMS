@@ -2,26 +2,23 @@ import React, { useContext } from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom'; // Import BrowserRouter, Route, and Routes
 import LoginPage from './LoginPage';
 import './App.css';
-/*import Student from './Student';*/
+
 import Notification from './Notification';
-import Record from './Record';
+import Record from './Record/Record';
 import Report from './Report';
 import Student from './Student'
 // import ViewReport from './ViewReport'; 
 
-import Feedback from './SSO/Feedback';
-import Case from './SSO/Case';
 import AddStudentRecord from './SSO/AddStudentRecord';
-import Sanction from './SSO/Sanction';
-import TimeLog from './SSO/TimeLog'
 
-import ViewSuspensions from './Principal/ViewSuspensions';
+import Suspension from './Suspension/Suspension';
 
-import Followup from './Adviser/Followup';
 import UpdateAccount from './UpdateAccount';
 
+// Admin Pages
 import UserManagement from './UserManagement/UserManagement';
 import Class from './Class/Class';
+
 import ActivityLog from './ActivityLog';
 
 
@@ -49,16 +46,13 @@ function App() {
 
           {loggedInUser && loggedInUser.userType === 1 && (
             <>
-           <Route path="/case" element={<Case />} />
-           <Route path="/sanctions" element={<Sanction />} />
-           <Route path="/timelog" element={<TimeLog />} />
             </>
 
           )}
 
           {(loggedInUser && (loggedInUser.userType === 1 ||  loggedInUser.userType === 2))&& (
             <>
-             <Route path="/viewSuspensions" element={<ViewSuspensions />} />
+             <Route path="/suspension" element={<Suspension />} />
              <Route path="/activitylog" element={<PrivateRoute element={<ActivityLog />} />} />
             </>
 
@@ -66,9 +60,6 @@ function App() {
 
           {loggedInUser && loggedInUser.userType === 3 && (
             <>
-            <Route path="/Followup" element={<Followup />} />
-            <Route path="/feedback" element={<Feedback />} />
-            
             </>
           )}
 

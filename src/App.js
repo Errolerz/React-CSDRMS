@@ -20,8 +20,8 @@ import ViewSuspensions from './Principal/ViewSuspensions';
 import Followup from './Adviser/Followup';
 import UpdateAccount from './UpdateAccount';
 
-import AdminDashboard from './Admin/AdminDashboard';
-import Class from './Admin/Class';
+import UserManagement from './UserManagement/UserManagement';
+import Class from './Class/Class';
 import ActivityLog from './ActivityLog';
 
 
@@ -74,7 +74,7 @@ function App() {
 
           {loggedInUser && loggedInUser.userType === 4 && (
             <>
-              <Route path="/AdminDashboard" element={<PrivateRoute element={<AdminDashboard />} />} />
+              <Route path="/UserManagement" element={<PrivateRoute element={<UserManagement />} />} />
               <Route path="/Class" element={<PrivateRoute element={<Class />} />} />
               <Route path="/activitylog" element={<PrivateRoute element={<ActivityLog />} />} />
             </>

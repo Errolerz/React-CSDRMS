@@ -27,7 +27,7 @@ const LoginPage = () => {
               navigate('/record', { state: { userObject } });
               break;
             case 4:
-              navigate('/AdminDashboard', { state: { userObject } });
+              navigate('/UserManagement', { state: { userObject } });
               break;
             case 5:
               navigate('/report', { state: { userObject } }); // Redirect for userType 5
@@ -83,7 +83,7 @@ const LoginPage = () => {
           navigate('/record', { state: { userObject } });
           break;
         case 4:
-          navigate('/AdminDashboard', { state: { userObject } });
+          navigate('/UserManagement', { state: { userObject } });
           break;
         case 5:
           navigate('/report', { state: { userObject } }); // Redirect for userType 5

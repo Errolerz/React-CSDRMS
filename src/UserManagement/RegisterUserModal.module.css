@@ -23,28 +23,6 @@
     border: 2px solid #000;
 }
 
-.modal-close-button {
-    position: absolute;
-    top: 20px;
-    right: 20px;
-    background: none;
-    border: none;
-    font-size: 16px;
-    cursor: pointer;
-    color: #8A252C;
-    transition: color 0.3s, transform 0.3s;
-    border-radius: 4px;
-    padding: 7px 15px;
-    font-size: 18px;
-    font-weight: bold;
-}
-
-.modal-close-button:hover {
-    color: #8A252C; /* Change color on hover */
-    background-color: #ccc; 
-    transform: scale(1.1); /* Slightly enlarge the button on hover */
-}
-
 .password-strength-container {
     margin-left: 48%;
     width: 50%;

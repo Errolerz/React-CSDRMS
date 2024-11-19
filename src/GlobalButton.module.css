@@ -1,0 +1,76 @@
+.global-buttonGroup {
+    display: flex;
+    gap: 25px;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;
+}
+
+.green-button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    font-weight: bold;
+    cursor: pointer;
+    background-color: #4caf50;
+    color: white;
+    font-size: 14px;
+    transition: background-color 0.3s, transform 0.3s;
+    text-shadow: 1px 1px 3px #000;  /* Slight shadow for all text */
+}
+
+.green-button:hover {
+    background-color: #45a049;
+    transform: scale(1.05);
+}
+
+.red-button {
+    background-color: #e53935;
+    text-shadow: 1px 1px 3px #000;  /* Slight shadow for all text */
+}
+
+.red-button:hover {
+    background-color: #e53935;
+}
+
+.maroon-button {
+    background-color: #861b1c;
+    text-shadow: 1px 1px 3px #000;  /* Slight shadow for all text */
+}
+
+.maroon-button:hover {
+    background-color: #6d3f3e;
+
+}
+
+.orange-button {
+    background-color: #FF9800;
+    text-shadow: 1px 1px 3px #000;  /* Slight shadow for all text */
+}
+
+.orange-button:hover {
+    background-color: #FB8C00;
+
+}
+
+.yellow-button {
+    background-color: #e8bd26;
+    text-shadow: 1px 1px 3px #000;  /* Slight shadow for all text */
+}
+
+.yellow-button:hover {
+    background-color: #C69A1E;
+    transform: scale(1.05);
+}
+
+.action-icon{
+        color: #8A252C;
+        transition: background-color 0.3s, transform 0.3s;
+        font-size: 2.0rem;
+}
+
+.action-icon:hover {
+    transform: scale(1.25);
+    cursor: pointer;
+}

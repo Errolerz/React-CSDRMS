@@ -6,6 +6,7 @@ import formStyles from './GlobalForm.module.css';
 import Navigation from './Navigation';
 import tableStyles from './GlobalTable.module.css';
 import UserTimeLogModal from './SSO/UserTimeLogModal';
+import SearchIcon from '@mui/icons-material/Search';
 import ViewNoteIcon from '@mui/icons-material/Visibility';
 
 const ActivityLog = () => {
@@ -18,6 +19,17 @@ const ActivityLog = () => {
     const [users, setUsers] = useState([]);
     const [searchQuery, setSearchQuery] = useState('');
     const [selectedUser, setSelectedUser] = useState(null);
+
+    useEffect(() => {
+        if (loggedInUser.userType === 1) {
+            document.title = 'SSO | Activity Log';
+        } else if (loggedInUser.userType === 4) {
+            document.title = 'Admin | Activity Log';
+        } else {
+            document.title = 'Activity Log';
+        }
+    }, [loggedInUser]);
+    
 
     useEffect(() => {
         const fetchActivityLogs = async () => {
@@ -92,18 +104,22 @@ const ActivityLog = () => {
             <div className={navStyles.content}>     
                 <div className={navStyles.TitleContainer}>
                     <h2 className={navStyles['h1-title']}>Activity Log</h2>   
-                    <div className={styles['search-bar']}>
+                </div>
+
+                <div className={styles['separator']}>
+                    <div className={styles['search-container']}>
+                        <SearchIcon className={styles['search-icon']} />
                         <input
-                            type="text"
-                            className={styles['search-input']} // Apply CSS class
-                            placeholder="Search by users or usertype..."
-                            value={searchQuery}
-                            onChange={handleSearchChange}
+                        type="search"
+                        className={styles['search-input']}
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                        placeholder="Search by Name or UserType"
                         />
                     </div>
                 </div>
-
-                <div className={tableStyles['ActivityLog-container']}>
+                
+                <div className={tableStyles['table-container']}>
                     <table className={tableStyles['global-table']}>
                         <thead>
                             <tr>

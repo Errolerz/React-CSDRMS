@@ -1,12 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import ReactDOM from 'react-dom';
 import axios from 'axios';
 import styles from './RegisterUserModal.module.css';
 import formStyles from '../GlobalForm.module.css';
 
 const RegisterUserModal = ({ isOpen, onClose, role }) => {
-    const authToken = localStorage.getItem('authToken');
-  const loggedInUser = JSON.parse(authToken);
     const [userData, setUserData] = useState({
         userId: '',
         username: '',
@@ -138,7 +135,6 @@ const RegisterUserModal = ({ isOpen, onClose, role }) => {
     return (
         <div className={styles['modal-overlay']} onClick={onClose}>
             <div className={styles['modal-content']} onClick={e => e.stopPropagation()}>
-                <button className={styles['modal-close-button']} onClick={onClose}>X</button>
                 <h2>Register {role}</h2>
                 <form onSubmit={handleSubmit} className={formStyles['form-container']}>
                     {message && <p className={formStyles.success}>{message}</p>}
@@ -260,8 +256,15 @@ const RegisterUserModal = ({ isOpen, onClose, role }) => {
                             </div>
                         </>
                     )}
-                     <div className={formStyles['global-buttonGroup']}>
-                    <button type="submit" className={formStyles['global-button']}>Register</button>
+                    <div className={formStyles['global-buttonGroup']}>
+                        <button 
+                            type="submit" 
+                            className={formStyles['green-button']}>Register
+                        </button>
+                        <button 
+                            onClick={onClose} 
+                            className={`${formStyles['green-button']} ${formStyles['red-button']}`}>Cancel
+                        </button>
                     </div>
                 </form>
             </div>

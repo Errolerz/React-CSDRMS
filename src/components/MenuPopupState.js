@@ -6,7 +6,7 @@ import MenuItem from '@mui/material/MenuItem';
 import PopupState, { bindTrigger, bindMenu } from 'material-ui-popup-state';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle'; // Profile icon
 import IconButton from '@mui/material/IconButton'; // Profile icon
-import UpdateAccountModal from '../Admin/UpdateAccountModal'; // Import the UpdateAccountModal
+import UpdateAccountModal from '../UserManagement/UpdateAccountModal'; // Import the UpdateAccountModal
 import navStyles from '../Navigation.module.css'; // Import the CSS module
 
 const MenuPopupState = () => {

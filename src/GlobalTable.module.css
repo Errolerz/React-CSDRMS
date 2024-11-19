@@ -1,12 +1,6 @@
 .table-container {
-    max-height: 380px; /* Adjust height as needed */
+    max-height: 450px; /* Adjust height as needed */
     width: 100%;
-    overflow-y: auto; /* Ensure horizontal scrolling for smaller screens */
-    border: 2px solid #8A252C;
-}
-
-.ActivityLog-container {
-    max-height: 500px; /* Adjust height as needed */
     overflow-y: auto; /* Ensure horizontal scrolling for smaller screens */
     border: 2px solid #8A252C;
 }

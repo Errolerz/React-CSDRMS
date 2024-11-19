@@ -1,12 +1,16 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import styles from './AdminDashboard.module.css';
-import navStyles from '../Navigation.module.css'; // CSS for Navigation
+import styles from './UserManagement.module.css';
+import navStyles from '../Navigation.module.css';
 import Navigation from '../Navigation'; // Importing the updated Navigation component
 import AddUserModal from './AddUserModal';  
 import ConfirmationModal from './ConfirmationModal';  
 import UpdateAccountModal from './UpdateAccountModal'; 
+import SearchIcon from '@mui/icons-material/Search';
+import AddIcon from '@mui/icons-material/AddCircleOutline';
+import EditNoteIcon from '@mui/icons-material/Edit';
+import DeleteIcon from '@mui/icons-material/Delete'; // Import Delete icon
 
 const AdminDashboard = () => {
   // State variables
@@ -27,10 +31,11 @@ const AdminDashboard = () => {
       navigate('/login');
       return;
     }
-
-    document.title = "Admin | Dashboard";
+  
+    document.title = "Admin | User Management";
     fetchUsers();
-  }, []);
+  }, [authToken, loggedInUser, navigate]); // Add missing dependencies
+  
 
   useEffect(() => {
     const handleKeyDown = (event) => {
@@ -121,17 +126,27 @@ const AdminDashboard = () => {
       {/* Main Content */}
       <div className={navStyles.content}>   
         <div className={navStyles.TitleContainer}>
-          <h2 className={navStyles['h1-title']}>User Management</h2>
-          <div className={styles['filter-search-bar']}>
+          <h2 className={navStyles['h1-title']}>User Management</h2>  
+        </div>
+        <div className={styles['separator']}>
+          <div className={styles['search-container']}>
+            <SearchIcon className={styles['search-icon']} />
             <input
               type="search"
-              className={styles['searchRec']}
+              className={styles['search-input']}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Search Users..."
+              placeholder="Search Users"
             />
-          </div>  
-        </div>
+          </div>
+
+          <button
+            className={`${styles['action-btn']} ${styles['add-btn']}`}
+            onClick={handleAddUser}
+          >
+            <AddIcon /> Add User
+          </button>        
+        </div>        
         <div className={styles['user-center-container']}>
           <div className={styles['table-container']}>
             <table className={styles['user-table']}>
@@ -141,25 +156,39 @@ const AdminDashboard = () => {
                   <th>Name</th>
                   <th>Email</th>
                   <th>User Type</th>
+                  <th>Actions</th>
                 </tr>
               </thead>
               <tbody>
                 {filteredUsers.length > 0 ? (
                   filteredUsers.map(user => (
-                    <tr
-                      key={user.username}
-                      onClick={() => setSelectedUser(user)}
-                      className={selectedUser?.username === user.username ? styles['selected-row'] : ''}
-                    >
+                    <tr>
                       <td>{user.username}</td>
                       <td>{`${user.firstname} ${user.lastname}`}</td>
                       <td>{user.email}</td>
                       <td>{getUserTypeString(user.userType)}</td>
+                      <td className={styles['icon-cell']}>
+                        <EditNoteIcon 
+                            style={{ marginRight: '15px' }}                    
+                            className={styles['action-icon']} 
+                            onClick={() => {
+                                setSelectedUser(user);
+                                handleUpdateUser();
+                            }}
+                        />
+                        <DeleteIcon
+                            className={styles['action-icon']} 
+                            onClick={() => {
+                                setSelectedUser(user);
+                                handleDeleteUser();
+                            }}
+                        />                        
+                    </td>
                     </tr>
                   ))
                 ) : (
                   <tr>
-                    <td colSpan="4" className={styles['no-results']} style={{ textAlign: 'center', fontSize: '1.5rem' }}>
+                    <td colSpan="5" className={styles['no-results']} style={{ textAlign: 'center', fontSize: '1.5rem' }}>
                       No Results Found...
                     </td>
                   </tr>
@@ -167,30 +196,6 @@ const AdminDashboard = () => {
               </tbody>
             </table>
           </div>
-        </div>
-
-        {/* Action Buttons and Search */}
-        <div className={styles['action-buttons']}>
-          <button
-            className={`${styles['action-btn']} ${styles['admin-add-btn']}`}
-            onClick={handleAddUser}
-          >
-            Add
-          </button>
-          <button
-            className={`${styles['action-btn']} ${styles['edit-btn']}`}
-            onClick={handleUpdateUser}
-            disabled={!selectedUser}
-          >
-            Edit
-          </button>
-          <button
-            className={`${styles['action-btn']} ${styles['delete-btn']}`}
-            onClick={handleDeleteUser}
-            disabled={!selectedUser}
-          >
-            Delete
-          </button>
         </div>
 
         {/* Modals */}

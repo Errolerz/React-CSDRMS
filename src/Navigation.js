@@ -91,7 +91,7 @@ const Navigation = ({ loggedInUser }) => {
             {loggedInUser.userType === 3 && createSidebarLink("/report", "Report", PostAddIcon)}
 
             {/* Admin - usertype 4 */}
-            {loggedInUser.userType === 4 && createSidebarLink("/AdminDashboard", "Dashboard", AccountBoxIcon)}
+            {loggedInUser.userType === 4 && createSidebarLink("/UserManagement", "Users", AccountBoxIcon)}
             {loggedInUser.userType === 4 && createSidebarLink("/Class", "Class", SchoolIcon)}
             {loggedInUser.userType === 4 && createSidebarLink("/activitylog", "Activity Log", AssignmentIcon)}
 

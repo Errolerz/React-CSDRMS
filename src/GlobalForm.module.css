@@ -118,26 +118,7 @@
     gap: 25px;
     justify-content: center;
     align-items: center;
-    /* margin-top: 5px; */
-}
-
-.global-button {
-    background-color: #861b1c; /* Button color */
-    font-weight: bold;
-    color: #fff; /* White text color */
-    border: none; /* Remove button border */
-    border-radius: 20px; /* Add border radius to button */
-    padding: 12px 20px; /* Increase padding for better touch targets */
-    font-size: 16px; /* Increase font size for better readability */
-    cursor: pointer; /* Show pointer cursor on hover */
-    transition: transform 0.3s ease, background-color 0.3s ease-in-out;
-    animation: fadeInLeft 0.8s ease-in-out;
-    text-shadow: 1px 1px 3px #000;  /* Slight shadow for all text */
-}
-
-.global-button:hover {
-    background-color: #6d3f3e; 
-    transform: scale(1.05); /* Slightly enlarge on hover */ 
+    margin-top: 20px;
 }
 
 .green-button {

@@ -38,7 +38,7 @@
   border-radius: 20px; /* Optional: Slightly rounds the corners of the container */
   background-color: #f9f9f9; /* Optional: Light background color */
   width: 900px;
-  height: 380px;
+  /*height: 380px;*/
 }
 
 .search-container {

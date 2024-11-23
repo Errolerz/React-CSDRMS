@@ -257,10 +257,10 @@ const Student = () => {
         <div className={styles['triple-container']}>
           {/* Display selected student details */}
           
-          <div className={styles['details-container']}> 
-            <label style={{ display: 'flex', justifyContent: 'space-between' }}> Details:
+          <div className={styles['details-container']} sx={{mt:"0"}}> 
+            <label style={{ display: 'flex', justifyContent: 'space-between' ,alignItems:"center"}}> Details:
               {selectedStudent && (
-                <div className={formStyles['global-buttonGroup']}>
+                <div className={formStyles['global-buttonGroup']} style={{marginTop:"0"}}>
                   <EditNoteIcon 
                     onClick={() => handleEditStudent(selectedStudent)} 
                     className={formStyles['action-icon']} 

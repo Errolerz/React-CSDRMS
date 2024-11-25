@@ -1,9 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+
+import styles from './Record.module.css';
 import navStyles from '../Navigation.module.css';
 import tableStyles from '../GlobalTable.module.css';
 import Navigation from '../Navigation';
-import AddRecordModal from '../RecordStudentAddModal';
+
+import AddRecordModal from '../Student/RecordStudentAddModal';
 import RecordStudentEditModal from '../RecordStudentEditModal';
 import RecordStudentViewModal from '../RecordStudentViewModal';
 
@@ -120,13 +123,20 @@ const Record = () => {
     <div className={navStyles.wrapper}>
       <Navigation loggedInUser={loggedInUser} />
       <div className={navStyles.content}>
-        <h2>All Records</h2>
-        <select onChange={(e) => setFilterType(e.target.value)} value={filterType}>
-          <option value="All">All Records</option>
-          <option value="Reported">Reported</option>
-          <option value="Non-Reported">Non-Reported</option>
-        </select>
+        <div className={navStyles.TitleContainer}>
+          <h2 className={navStyles['h1-title']}>All Records</h2>
+        </div>
 
+        <div className={styles.filterContainer}>
+         <label>Filter by Record or Case:
+            <select onChange={(e) => setFilterType(e.target.value)} value={filterType}>
+              <option value="All">All Records</option>
+              <option value="Reported">Reported</option>
+              <option value="Non-Reported">Non-Reported</option>
+            </select>
+          </label>
+        </div>
+        
         <div className={tableStyles['table-container']}>
           <table className={tableStyles['global-table']}>
             <thead>

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import styles from './RecordModal.module.css'; // Import the updated CSS
-import formStyles from './GlobalForm.module.css'; // Importing GlobalForm styles
+import styles from '../RecordModal.module.css'; // Import the updated CSS
+import formStyles from '../GlobalForm.module.css'; // Importing GlobalForm styles
 
 const ImportModal = ({ onClose, schoolYears }) => {
   const [file, setFile] = useState(null);

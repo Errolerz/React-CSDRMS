@@ -1,17 +1,21 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import axios from 'axios';
+
 import RecordFilter from './RecordFilter'; // Import RecordFilter component
 import AddRecordModal from './RecordStudentAddModal'; // Import AddRecordModal component
 import ImportModal from './RecordStudentImportModal'; // Import ImportModal component
-import styles from './Record/Record.module.css'; // Importing CSS module
-import navStyles from './Navigation.module.css'; 
-import Navigation from './Navigation';
-import formStyles from './GlobalForm.module.css'; // Importing GlobalForm styles
-import tableStyles from './GlobalTable.module.css'; // Importing GlobalForm styles
+
+import styles from '../Record/Record.module.css'; // Importing CSS module
+import navStyles from '../Navigation.module.css'; 
+import formStyles from '../GlobalForm.module.css'; // Importing GlobalForm styles
+import tableStyles from '../GlobalTable.module.css'; // Importing GlobalForm styles
+import Navigation from '../Navigation';
+
 import EditStudentModal from './EditStudentModal'; // Ensure this path matches the actual file location
-import RecordStudentEditModal from './RecordStudentEditModal';
-import RecordStudentViewModal from './RecordStudentViewModal'; // Import the view modal
-import AddStudentModal from './Adviser/AddStudentModal';
+import RecordStudentEditModal from '../RecordStudentEditModal';
+import RecordStudentViewModal from '../RecordStudentViewModal'; // Import the view modal
+import AddStudentModal from './AddStudentModal';
+
 import EditNoteIcon from '@mui/icons-material/Edit';
 import ViewNoteIcon from '@mui/icons-material/Visibility';
 import DeleteIcon from '@mui/icons-material/Delete'; // Import Delete icon

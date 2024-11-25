@@ -14,7 +14,7 @@ import {
     CategoryScale,
 } from 'chart.js';
 
-import styles from './Record.module.css';
+import styles from '../Dashboard/Dashboard.module.css';
 import navStyles from '../Navigation.module.css'; 
 import Navigation from '../Navigation';
 import tableStyles from '../GlobalTable.module.css';
@@ -316,7 +316,7 @@ const Record = () => {
                     <div className={navStyles.TitleContainer}>
                         <h2 className={navStyles['h1-title']}>JHS Monitored Records</h2>
                     </div>         
-                    <div className={styles.filterContainer}>
+                    <div className={styles.filters}>
                         <div>
                             <label>Filters:
                             {loggedInUser && loggedInUser.userType !== 3 && (
@@ -383,7 +383,7 @@ const Record = () => {
                     </div>
 
                     <>                
-                        <h2 className={styles.RecordTitle}>Total Records Overview</h2>
+                        <h2 className={styles['Dashboard-title']}>Total Records Overview</h2>
                         <div className={tableStyles['table-container']}>
                             <table className={tableStyles['global-table']}>
                                 <thead>

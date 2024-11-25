@@ -3,10 +3,10 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom'; // Im
 import LoginPage from './LoginPage';
 import './App.css';
 import Notification from './Notification';
-import Dashboard from './Record/Dashboard';
+import Dashboard from './Dashboard/Dashboard';
 import Record from './Record/Record';
-import Report from './ReportBackup';
-import Student from './Student'
+
+import Student from './Student/Student'
 // import ViewReport from './ViewReport'; 
 
 
@@ -88,7 +88,6 @@ function App() {
           {(loggedInUser && (loggedInUser.userType !== 4)) && (
             <>
             <Route path="/record" element={<Record />} />
-            <Route path="/report" element={<Report />} />
             {/* <Route path="/view-report/:reportId" element={<ViewReport />} />  */}
             </>
 

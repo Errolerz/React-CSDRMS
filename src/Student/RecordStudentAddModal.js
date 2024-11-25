@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import styles from './RecordModal.module.css';
-import formStyles from './GlobalForm.module.css';
+import styles from '../RecordModal.module.css';
+import formStyles from '../GlobalForm.module.css';
 
 const AddRecordModal = ({ student, onClose, refreshRecords }) => {
   const authToken = localStorage.getItem('authToken');
@@ -214,7 +214,7 @@ const AddRecordModal = ({ student, onClose, refreshRecords }) => {
           </div>
 
           <div className={formStyles['form-group']}>
-            <label>Report?</label>
+            <label>Is this a Report?</label>
             <select
               value={report === null ? '' : report ? 'yes' : 'no'}  // Default value is empty
               onChange={handleReportChange}

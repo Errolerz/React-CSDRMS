@@ -258,7 +258,7 @@ const handleApproveClick = async () => {
                     ))
                   ) : (
                     <tr>
-                      <td colSpan="6">No suspensions found.</td>
+                      <td colSpan="7">No suspensions found.</td>
                     </tr>
                   )}
                 </tbody>

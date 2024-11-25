@@ -1,23 +1,3 @@
-/* General styles */
-.wrapper {
-    display: flex;
-    flex-direction: row;
-    background: #f7f9fc; /* Light background for a clean look */
-    min-height: 100vh; /* Ensure it covers the full viewport height */
-    font-family: 'Arial', sans-serif; /* Modern, clean font */
-}
-
-/* Content styles */
-.content {
-    flex-grow: 1;
-    padding: 20px;
-    background: #ecf0f1;
-    animation: slideIn 1s ease-in-out;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
 .searchStud {
     width: 410px;
     padding: 15px;

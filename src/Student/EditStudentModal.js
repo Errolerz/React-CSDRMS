@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import styles from './RecordModal.module.css'; // Importing CSS module for the modal
-import formStyles from './GlobalForm.module.css'; // Import global form styles
+import styles from '../RecordModal.module.css'; // Importing CSS module for the modal
+import formStyles from '../GlobalForm.module.css'; // Import global form styles
 
 const EditStudentModal = ({ student, onClose, refreshStudents }) => {
   const authToken = localStorage.getItem('authToken');

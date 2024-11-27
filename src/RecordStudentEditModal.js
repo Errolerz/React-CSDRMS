@@ -22,8 +22,17 @@ const RecordStudentEditModal = ({ record, onClose }) => {
   const [remarks, setRemarks] = useState(record?.remarks || ''); 
   const [sanction, setSanction] = useState(record?.sanction || '');
   const [complainant, setComplainant] = useState(record?.complainant || '');
-  const [caseDetails, setCaseDetails] = useState(record?.caseDetails || '');
+  const [complaint, setComplaint] = useState(record?.complaint || '');
+  const [investigationDetails, setInvestigationDetails] = useState(record?.investigationDetails || '');
   const [complete, setComplete] = useState(record?.complete || false);
+  const [isSuspension, setIsSuspension] = useState(false); // State for suspension toggle
+const [suspensionDetails, setSuspensionDetails] = useState({
+  days: '',
+  startDate: '',
+  endDate: '',
+  returnDate: '',
+});
+
 
   // Effect to update local state when record prop changes
   useEffect(() => {
@@ -32,36 +41,67 @@ const RecordStudentEditModal = ({ record, onClose }) => {
       setRemarks(record.remarks);
       setSanction(record.sanction);
       setComplainant(record.complainant || '');
-      setCaseDetails(record.caseDetails || '');
+      setComplaint(record.complaint || '');
+      setInvestigationDetails(record.investigationDetails || ''); 
     }
   }, [record]);
 
+  const handleSuspensionChange = (e) => {
+    const { name, value } = e.target;
+    setSuspensionDetails((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+  
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+  
     if (!selectedRecord) {
       alert('Please select a monitored record.');
       return;
     }
 
-    // Prepare the updated record
-    const updatedRecord = {
-      ...record,
-      monitored_record: selectedRecord,
-      remarks: remarks,
-      sanction: sanction,
-      complainant: complainant,  
-      caseDetails: caseDetails, 
-    };
+    const dateSubmitted = new Date().toISOString().slice(0, 10);
 
-    try {
-      await axios.put(`http://localhost:8080/record/update/${record.recordId}/${loggedInUser.userId}`, updatedRecord);
-      alert('Record updated successfully!');
-      onClose(); // Close modal after submission
-    } catch (error) {
-      console.error('Error updating record:', error);
-      alert('Failed to update record.');
-    }
+        if (isSuspension) {
+        try {
+          const suspension = {
+            ...suspensionDetails,
+            recordId: record.recordId, // Include recordId
+            dateSubmitted, // Include dateSubmitted
+          };
+
+          await axios.post(`http://localhost:8080/suspension/insertSuspension/${loggedInUser.userId}`, suspension);
+          alert('Suspension added successfully!');
+        } catch (error) {
+          console.error('Error adding suspension:', error);
+          alert('Failed to add suspension.');
+        }
+      }
+
+      // Prepare the updated record
+      const updatedRecord = {
+        ...record,
+        monitored_record: selectedRecord,
+        remarks: remarks,
+        sanction: sanction,
+        complainant: complainant,
+        complaint: complaint,
+        investigationDetails: investigationDetails,
+      };
+  
+      try {
+        await axios.put(`http://localhost:8080/record/update/${record.recordId}/${loggedInUser.userId}`, updatedRecord);
+        alert('Record updated successfully!');
+        onClose(); // Close modal after submission
+      } catch (error) {
+        console.error('Error updating record:', error);
+        alert('Failed to update record.');
+      }
   };
+  
 
   return (
     <div className={styles.modalOverlay}>
@@ -89,14 +129,64 @@ const RecordStudentEditModal = ({ record, onClose }) => {
                 value={remarks} 
                 onChange={(e) => setRemarks(e.target.value)} // Handling changes in remarks
               />
-            <label>Sanction:</label>
-            <textarea 
-              type="text" 
-              value={sanction} 
-              onChange={(e) => setSanction(e.target.value)} 
-            />
             </>
           )}
+
+          <label>Is Suspension?</label>
+          <select
+            value={isSuspension ? 'Yes' : 'No'}
+            onChange={(e) => setIsSuspension(e.target.value === 'Yes')}
+            className={styles.select}
+          >
+            <option value="No">No</option>
+            <option value="Yes">Yes</option>
+          </select>
+
+          {!isSuspension ? (
+            <>
+              <label>Sanction:</label>
+              <textarea
+                type="text"
+                value={sanction}
+                onChange={(e) => setSanction(e.target.value)}
+              />
+            </>
+          ) : (
+            <>
+              <label>Suspension Days:</label>
+              <input
+                type="number"
+                name="days"
+                value={suspensionDetails.days}
+                onChange={handleSuspensionChange}
+              />
+
+              <label>Start Date:</label>
+              <input
+                type="date"
+                name="startDate"
+                value={suspensionDetails.startDate}
+                onChange={handleSuspensionChange}
+              />
+
+              <label>End Date:</label>
+              <input
+                type="date"
+                name="endDate"
+                value={suspensionDetails.endDate}
+                onChange={handleSuspensionChange}
+              />
+
+              <label>Return Date:</label>
+              <input
+                type="date"
+                name="returnDate"
+                value={suspensionDetails.returnDate}
+                onChange={handleSuspensionChange}
+              />
+            </>
+          )}
+
 
 
           {record.complainant && (
@@ -107,11 +197,16 @@ const RecordStudentEditModal = ({ record, onClose }) => {
                 value={complainant}
                 onChange={(e) => setComplainant(e.target.value)}
               />
-              <label>Case Details:</label>
+              <label>Complaint:</label>
               <textarea
-                value={caseDetails}
-                onChange={(e) => setCaseDetails(e.target.value)}
+                value={complaint}
+                onChange={(e) => setComplaint(e.target.value)}
               />
+              <label>Investigation Details:</label>
+                <textarea
+                  value={investigationDetails}
+                  onChange={(e) => setInvestigationDetails(e.target.value)}
+                />
                <label>Complete:</label>
                 <input 
                   type="checkbox" 

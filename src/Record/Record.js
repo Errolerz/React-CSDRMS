@@ -185,12 +185,21 @@ const Record = () => {
                       View
                     </button>
 
-                    <button
-                      className={tableStyles['edit-button']}
-                      onClick={() => openEditModal(record)}
-                    >
-                      Edit
-                    </button>
+                    {record.complainant && record.complainant !== 'N/A' ? (
+                        <button
+                          className={tableStyles['investigate-button']} // Use a specific style if desired
+                          onClick={() => openEditModal(record)} // Repurposed for investigating
+                        >
+                          Investigate
+                        </button>
+                      ) : (
+                        <button
+                          className={tableStyles['edit-button']}
+                          onClick={() => openEditModal(record)}
+                        >
+                          Edit
+                        </button>
+                      )}
                     <button
                       className={tableStyles['delete-button']}
                       onClick={() => handleDelete(record.recordId)}

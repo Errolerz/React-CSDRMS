@@ -16,7 +16,7 @@ const AddRecordModal = ({ student, onClose, refreshRecords }) => {
   const [time, setTime] = useState('');
   const [monitoredRecord, setMonitoredRecord] = useState('');
   const [complainant, setComplainant] = useState(`${loggedInUser.firstname} ${loggedInUser.lastname}`);
-  const [caseDetails, setCaseDetails] = useState('');
+  const [complaint, setComplaint] = useState('');
   const [remarks, setRemarks] = useState('');
   const [complete, setComplete] = useState('');
 
@@ -47,26 +47,21 @@ const AddRecordModal = ({ student, onClose, refreshRecords }) => {
       }
     };
     fetchStudents();
+    if (loggedInUser.userType !== 1) {
+      setReport(true);
+      setComplainant(`${loggedInUser.firstname} ${loggedInUser.lastname}`);
+      setComplete(0); // Assuming '0' means incomplete or pending
+    }
+
   }, []);
 
   const handleSubmit = async () => {
 
-    if (report && (!complainant || !caseDetails)) {
+    if (report && (!complainant || !complaint)) {
       alert('Please fill in all required fields for the report.');
       return;
     }
 
-    let updatedCaseDetails = null;
-
-  if (report) {
-    // If "Yes" is selected, add "Complaint: " prefix
-    updatedCaseDetails = caseDetails.trim()
-      ? `Complaint: ${caseDetails}`
-      : caseDetails;
-  }
-
-  // Set the investigation details state (optional if needed elsewhere in the app)
-  setCaseDetails(updatedCaseDetails);
 
     const newRecord = {
       id: student?.id || selectedStudent?.id, // Use selected student if `student` is null
@@ -76,8 +71,9 @@ const AddRecordModal = ({ student, onClose, refreshRecords }) => {
       incident_date: incidentDate,
       time: time,
       monitored_record: monitoredRecord,
+      remarks: remarks,
       complainant: complainant,
-      caseDetails: updatedCaseDetails,
+      complaint: complaint,
       complete: complete,
     };
 
@@ -213,6 +209,7 @@ const AddRecordModal = ({ student, onClose, refreshRecords }) => {
             </select>
           </div>
 
+          {loggedInUser.userType === 1 && (
           <div className={formStyles['form-group']}>
             <label>Is this a Report?</label>
             <select
@@ -225,18 +222,10 @@ const AddRecordModal = ({ student, onClose, refreshRecords }) => {
               <option value="yes">Yes</option>
             </select>
           </div>
+          )}
 
           {report !== null && report ? (
             <>
-              <div className={formStyles['form-group']}>
-                <label>Complaint:</label>
-                <textarea
-                  value={caseDetails}
-                  onChange={(e) => setCaseDetails(e.target.value)}
-                  className={formStyles['form-group-textarea']}
-                />
-              </div>
-
               <div className={formStyles['form-group']}>
                 <label>Complainant:</label>
                 <input
@@ -244,6 +233,14 @@ const AddRecordModal = ({ student, onClose, refreshRecords }) => {
                   value={complainant}
                   onChange={(e) => setComplainant(e.target.value)}
                   className={formStyles['input']}
+                />
+              </div>
+              <div className={formStyles['form-group']}>
+                <label>Complaint:</label>
+                <textarea
+                  value={complaint}
+                  onChange={(e) => setComplaint(e.target.value)}
+                  className={formStyles['form-group-textarea']}
                 />
               </div>
             </>

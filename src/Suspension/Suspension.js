@@ -5,6 +5,7 @@ import tableStyles from "../GlobalTable.module.css"; // Import GlobalTable CSS m
 import formStyles from "../GlobalForm.module.css";
 import Navigation from '../Navigation'; // Import the Navigation component
 import SuspensionModal from "./SuspensionModal"; // Import the modal component
+import RecordStudentViewModal from '../RecordStudentViewModal';
 import styles from "./Suspension.module.css"; // Import GlobalTable CSS module
 import EditSuspensionModal from "./EditSuspensionModal"; // Import the edit modal component
 import CheckIcon from '@mui/icons-material/CheckBox';
@@ -22,8 +23,8 @@ const ViewSuspensions = () => {
   const [selectedSuspension, setSelectedSuspension] = useState(null); // State to store the selected suspension
   const [isModalOpen, setIsModalOpen] = useState(false); // State to control modal visibility
   const [isEditModalOpen, setIsEditModalOpen] = useState(false); // State to control Edit modal visibility
-  // const [selectedReportId, setSelectedReportId] = useState(null);
-  // const [showViewReportModal, setShowViewReportModal] = useState(false); // State for showing modal
+  const [selectedRecord, setSelectedRecord] = useState(null);
+  const [showViewRecordModal, setShowViewRecordModal] = useState(false); // State for showing modal
 
   const [filterApproved, setFilterApproved] = useState("all");
 
@@ -51,8 +52,8 @@ const ViewSuspensions = () => {
 
 
   // Handle row click to select suspension
-  const handleRowClick = (suspension) => {
-    setSelectedSuspension(suspension);
+  const handleRowClick = (record) => {
+    setSelectedRecord(record);
   };
 
   // Open the modal and view the selected suspension
@@ -64,15 +65,21 @@ const ViewSuspensions = () => {
     setIsEditModalOpen(true);
   };
 
-  // const handleViewReport = (reportId) => {
-  //   setSelectedReportId(reportId);
-  //   setShowViewReportModal(true); // Show the modal
-  // };
+  const openViewRecordModal = (record) => {
+    console.log("Record:", record);
+    if (!record) {
+        console.error("Cannot open modal: Record is undefined or null");
+        return;
+    }
+    setSelectedRecord(record);
+    setShowViewRecordModal(true);
+};
 
-  // const closeViewReportModal = () => {
-  //   setShowViewReportModal(false); // Close modal
-  //   setSelectedReportId(null);
-  // };
+
+  const closeViewRecordModal = () => {
+    setShowViewRecordModal(false); // Close modal
+    setSelectedRecord(null)
+  };
 
   // New function to handle the approval action
 const handleApproveClick = async () => {
@@ -155,12 +162,12 @@ const handleApproveClick = async () => {
               <table className={tableStyles['global-table']}>
                 <thead>
                   <tr>
-                    <th>Report ID</th>
+                    <th>Record ID</th>
                     <th style={{ width: '350px' }}>Student</th>
                     <th>Adviser</th>
                     <th>Date Submitted</th>
                     <th>Suspended</th>
-                    <th>Status</th>
+                  
                     <th>Action</th>
                     {/* <th>Start Date</th>
                     <th>End Date</th>
@@ -173,12 +180,11 @@ const handleApproveClick = async () => {
                     filteredSuspensions.map((suspension) => (
                       <tr 
                         key={suspension.suspensionId} 
-                        onClick={() => handleRowClick(suspension)}
+                        onClick={() => handleRowClick(suspension.record)}
                         className={selectedSuspension?.suspensionId === suspension.suspensionId ? tableStyles['selected-row'] : ''}
                       >
-                        <td>{suspension.reportEntity.reportId}</td>  
-                        <td style={{ width: '350px' }}>{suspension.reportEntity.record.student.name}</td>
-                        <td>{suspension.reportEntity.adviser.firstname} {suspension.reportEntity.adviser.lastname}</td>                      
+                        <td>{suspension.record.recordId}</td>  
+                        <td style={{ width: '350px' }}>{suspension.record.student.name}</td>               
                         <td>{suspension.dateSubmitted}</td>
                         <td>{suspension.days} Days</td>
                         <td> {suspension.approved ? 'Approved' : 'Not Approved'}</td>
@@ -191,7 +197,7 @@ const handleApproveClick = async () => {
                                 style={{ marginRight: '15px' }}
                                 onClick={() => {
                                   
-                                    handleViewClick(); // Call existing view function for other userTypes
+                                    openViewRecordModal(suspension.record); // Call existing view function for other userTypes
                                   }
                                 } 
                                 disabled={!selectedSuspension}
@@ -228,7 +234,7 @@ const handleApproveClick = async () => {
                                 style={{ marginRight: '15px' }}
                                 onClick={() => {
                                   
-                                    handleViewClick(); // Call existing view function for other userTypes
+                                   openViewRecordModal(suspension.record) // Call existing view function for other userTypes
                                   }
                                 } 
                                 disabled={!selectedSuspension}
@@ -305,12 +311,17 @@ const handleApproveClick = async () => {
           />
         )}
 
-        {/* {showViewReportModal && (
-          <ViewReportModal
-            reportId={selectedSuspension.reportId}
-            onClose={closeViewReportModal}
-          />
-        )}  */}
+            {showViewRecordModal && (
+              <>
+              {console.log("Rendering Modal with Selected Record:", selectedRecord)}
+              <RecordStudentViewModal
+                record={selectedRecord}
+                onClose={closeViewRecordModal}
+              />
+              </>
+            )}
+
+
         
       </div>
     </div>

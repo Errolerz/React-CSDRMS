@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 
-import styles from './ActivityLog.module.css'; // Import your CSS module here
+import Navigation from '../Navigation';
 import navStyles from '../Navigation.module.css'; 
 import formStyles from '../GlobalForm.module.css';
 import tableStyles from '../GlobalTable.module.css';
-import Navigation from '../Navigation';
+import styles from './ActivityLog.module.css'; // Import your CSS module here
 
 import UserTimeLogModal from './UserTimeLogModal';
 

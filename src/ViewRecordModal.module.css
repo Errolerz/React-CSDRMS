@@ -1,0 +1,142 @@
+/* Overlay: Semi-transparent background */
+.record-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.7); /* Darker for focus */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+/* Modal Container */
+.record-modal-content {
+  background-color: #ffffff; /* Clean white background */
+  padding: 30px;
+  width: 50%;
+  max-width: 700px;
+  border-radius: 15px; /* Softer rounded corners */
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3); /* Elegant shadow */
+  position: relative;
+  overflow: auto;
+  display: flex;
+  flex-direction: column;
+  animation: fadeInScale 0.3s ease-in-out; /* Smooth fade-in with scaling */
+  border: 2px solid #000; /* Primary color border */
+}
+
+/* Modal Fade-In Animation */
+@keyframes fadeInScale {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Close Button */
+.closeButton {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  border: none;
+  font-size: 24px;
+  color: #000; /* Primary color */
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: transform 0.2s ease, background-color 0.2s ease;
+}
+
+.closeButton:hover {
+  transform: scale(1.1);
+  color: #000; /* Slightly darker primary color on hover */
+}
+
+/* Modal Title */
+.modal-title {
+  font-size: 24px;
+  font-weight: bold;
+  text-align: center;
+  color: #000; /* Primary color */
+  padding-bottom: 10px;
+  text-transform: capitalize;
+}
+
+/* Table Styles */
+.details-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 16px;
+  color: #444;
+}
+
+.details-table td {
+  padding: 14px 17px;
+  vertical-align: middle;
+  text-align: left;
+}
+
+.details-table td:first-child {
+  font-weight: bold; /* Bold for labels */
+  color: #8A252C; /* Primary color for emphasis */
+  width: 35%; /* Allocate space for label */
+  border: 0.5px solid #ccc;
+  border-right: none;
+}
+
+.details-table td:nth-child(2) {
+  width: 5%;
+  text-align: center;
+  font-weight: bold;
+  color: #8A252C; /* Primary color for colon separator */
+  border: 0.5px solid #ccc;
+  border-left: none;
+}
+
+.details-table td:nth-child(3) {
+  color: #555; /* White text for contrast */
+  padding: 15px; /* Add padding for better spacing */
+  text-align: left; /* Align text neatly */
+  border: 0.5px solid #ccc;
+}
+
+
+.details-table td:last-child {
+  width: 60%;
+  color: #333; /* Neutral dark text */
+  word-wrap: break-word;
+  word-break: break-word;
+  white-space: pre-wrap;
+  border-radius: 4px;
+  padding: 12px 15px; /* Consistent padding */
+}
+
+/* Responsive Design for Small Screens */
+@media (max-width: 768px) {
+  .record-modal-content {
+    width: 90%;
+    max-height: 85vh;
+  }
+
+  .details-table td:first-child,
+  .details-table td:last-child {
+    display: block;
+    width: 100%;
+    text-align: left;
+  }
+
+  .details-table td:nth-child(2) {
+    display: none; /* Hide the colon separator */
+  }
+}

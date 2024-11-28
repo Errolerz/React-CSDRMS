@@ -22,7 +22,7 @@ const Record = () => {
   const [showAddModal, setShowAddModal] = useState(false); // State for Add modal visibility
   const [showEditModal, setShowEditModal] = useState(false); // State for Edit modal visibility
   const [selectedRecord, setSelectedRecord] = useState(null); // State for selected record
-  const [filterType, setFilterType] = useState('All'); // 'All', 'Reported', 'Non-Reported'
+  const [filterType, setFilterType] = useState('All'); // 'All', 'Case', 'Non-Case'
 
   const authToken = localStorage.getItem('authToken');
   const loggedInUser = authToken ? JSON.parse(authToken) : null;
@@ -69,17 +69,14 @@ const Record = () => {
   };
 
   const filterRecords = () => {
-    if (filterType === 'Reported') {
-      return records.filter(record => record.complainant && record.complainant !== 'N/A');
-    } else if (filterType === 'Non-Reported') {
-      return records.filter(record => !record.complainant || record.complainant === 'N/A');
+    if (filterType === 'Case') {
+      return records.filter(record => record.type === 2); // Filter for cases (type 2)
+    } else if (filterType === 'Non-Case') {
+      return records.filter(record => record.type === 1); // Filter for records (type 1)
     }
     return records; // 'All' case, no filtering
   };
   
-  
-  
-
   const openAddModal = () => {
     setShowAddModal(true);
   };
@@ -136,9 +133,9 @@ const Record = () => {
         <div className={styles.filterContainer}>
          <label>Filter by Record or Case:
             <select onChange={(e) => setFilterType(e.target.value)} value={filterType}>
-              <option value="All">All Records</option>
-              <option value="Reported">Reported</option>
-              <option value="Non-Reported">Non-Reported</option>
+              <option value="All">All</option>
+              <option value="Case">Case</option>
+              <option value="Non-Case">Non-Case</option>
             </select>
           </label>
           <div>
@@ -202,19 +199,11 @@ const Record = () => {
                       style={{ marginRight: loggedInUser?.userType === 3 ? '0' : '15px' }}
                     />
 
-                    {record.complainant && record.complainant !== 'N/A' ? (
-                      <EditNoteIcon
-                        className={buttonStyles['action-icon']}
-                        onClick={() => openEditModal(record)} // Repurposed for investigating
-                        style={{ marginRight: loggedInUser?.userType === 3 ? '0' : '15px' }}
-                      />
-                    ) : (
-                      <EditNoteIcon
-                        className={buttonStyles['action-icon']}
-                        onClick={() => openEditModal(record)}
-                        style={{ marginRight: loggedInUser?.userType === 3 ? '0' : '15px' }}
-                      />
-                    )}
+                    <EditNoteIcon
+                      className={buttonStyles['action-icon']}
+                      onClick={() => openEditModal(record)}
+                      style={{ marginRight: loggedInUser?.userType === 3 ? '0' : '15px' }}
+                    />
                     <DeleteIcon
                       className={buttonStyles['action-icon']}
                       onClick={() => handleDelete(record.recordId)}
@@ -236,6 +225,7 @@ const Record = () => {
         <RecordStudentEditModal
           record={selectedRecord}
           onClose={closeEditModal}
+          refreshRecords={fetchRecords}
         />
       )}
     </div>

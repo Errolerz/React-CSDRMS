@@ -114,8 +114,8 @@ const SuspensionModal = ({ isOpen, onClose, suspension }) => {
 
           <p>
             I would like to submit the recommendation for the suspension of 
-            <strong> {suspension.reportEntity.record.student.name} </strong> 
-            of <strong>{suspension.reportEntity.record.student.grade} - {suspension.reportEntity.record.student.section}</strong> for 
+            <strong> {suspension.record.student.name} </strong> 
+            of <strong>{suspension.record.student.grade} - {suspension.record.student.section}</strong> for 
             <strong> {suspension.days}</strong> days, starting 
             <strong> {suspension.startDate}</strong> until 
             <strong> {suspension.endDate}</strong>.
@@ -128,7 +128,7 @@ const SuspensionModal = ({ isOpen, onClose, suspension }) => {
 
           {/* Offense */}
           <p><strong>OFFENSE(S) COMMITTED:</strong></p>
-          <p> <strong>{suspension.reportEntity.record.investigationDetails}</strong></p>
+          <p> <strong>{suspension.record.investigationDetails}</strong></p>
 
           {/* Closing */}
           <p>

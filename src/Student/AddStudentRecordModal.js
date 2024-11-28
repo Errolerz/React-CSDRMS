@@ -56,37 +56,47 @@ const AddRecordModal = ({ student, onClose, refreshRecords }) => {
   }, []);
 
   const handleSubmit = async () => {
-
     if (report && (!complainant || !complaint)) {
       alert('Please fill in all required fields for the report.');
       return;
     }
-
-
+  
+    // If report is selected, clear remarks field and set to null
+    if (report) {
+      setRemarks(null);  // Reset remarks when "Yes" for report
+    }
+  
+    // Explicitly set remarks to null if it's an empty string
+    const finalRemarks = remarks === "" ? null : remarks;
+  
+    const type = report ? 2 : 1;
+  
     const newRecord = {
-      id: student?.id || selectedStudent?.id, // Use selected student if `student` is null
+      id: student?.id || selectedStudent?.id,
       encoderId: loggedInUser.userId,
-      name: student?.name || selectedStudent?.name, // Use selected student name
+      name: student?.name || selectedStudent?.name,
       record_date: recordDate,
       incident_date: incidentDate,
       time: time,
       monitored_record: monitoredRecord,
-      remarks: remarks,
+      remarks: finalRemarks,  // Use the final value of remarks
       complainant: complainant,
       complaint: complaint,
+      type: type,
       complete: complete,
     };
-
+  
     try {
       await axios.post(`http://localhost:8080/record/insert/${loggedInUser.userId}`, newRecord);
       alert('Record added successfully');
-      refreshRecords(); // Fetch updated records
-      onClose(); // Close modal
+      refreshRecords();
+      onClose();
     } catch (error) {
       console.error('Error adding record:', error);
       alert('Error adding record');
     }
   };
+  
 
   // Filter students based on search query
   const filteredStudents = students.filter((s) =>

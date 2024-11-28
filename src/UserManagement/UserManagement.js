@@ -1,14 +1,18 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+
 import styles from './UserManagement.module.css';
 import navStyles from '../Navigation.module.css';
+import buttonStyles from '../GlobalButton.module.css';
+
 import Navigation from '../Navigation'; // Importing the updated Navigation component
 import AddUserModal from './AddUserModal';  
 import ConfirmationModal from './ConfirmationModal';  
 import UpdateAccountModal from './UpdateAccountModal'; 
+
 import SearchIcon from '@mui/icons-material/Search';
-import AddIcon from '@mui/icons-material/AddCircleOutline';
+import AddIcon from '@mui/icons-material/PersonAdd';
 import EditNoteIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete'; // Import Delete icon
 
@@ -141,7 +145,7 @@ const AdminDashboard = () => {
           </div>
 
           <button
-            className={`${styles['action-btn']} ${styles['add-btn']}`}
+            className={`${buttonStyles['action-button']} ${buttonStyles['maroon-button']}`}
             onClick={handleAddUser}
           >
             <AddIcon /> Add User

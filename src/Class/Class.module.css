@@ -166,6 +166,7 @@
 .action-btn svg {
   font-size: 1.5rem; /* Adjust size */
   margin-right: 0.5rem; /* Space between icon and text */
+  filter: drop-shadow(1px 1px 3px #000); /* Adjust the values as needed */
 }
 
 .button {

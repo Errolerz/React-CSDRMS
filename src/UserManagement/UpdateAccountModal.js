@@ -198,8 +198,10 @@
                             </div>
                         )}
                         <div className={buttonStyles['global-buttonGroup']}>
-                            <button type="button" className={buttonStyles['green-button']} onClick={handleUpdate}>Update</button>
-                            <button type="button" className={`${buttonStyles['green-button']} ${buttonStyles['red-button']}`} 
+                            <button type="button" className={`${buttonStyles['action-button']} ${buttonStyles['green-button']}`} 
+                                onClick={handleUpdate}>Update
+                            </button>
+                            <button type="button" className={`${buttonStyles['action-button']} ${buttonStyles['red-button']}`} 
                                 onClick={onClose}>Cancel
                             </button>
                         </div>

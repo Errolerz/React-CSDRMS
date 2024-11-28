@@ -4,11 +4,17 @@ import axios from 'axios';
 import styles from './Record.module.css';
 import navStyles from '../Navigation.module.css';
 import tableStyles from '../GlobalTable.module.css';
+import buttonStyles from '../GlobalButton.module.css';
 import Navigation from '../Navigation';
 
-import AddRecordModal from '../Student/RecordStudentAddModal';
+import AddRecordModal from '../Student/AddStudentRecordModal';
 import RecordStudentEditModal from '../RecordStudentEditModal';
-import RecordStudentViewModal from '../RecordStudentViewModal';
+import ViewRecordModal from '../ViewRecordModal';
+
+import AddIcon from '@mui/icons-material/AddCircleOutline';
+import ViewNoteIcon from '@mui/icons-material/Visibility';
+import EditNoteIcon from '@mui/icons-material/Edit';
+import DeleteIcon from '@mui/icons-material/Delete';  
 
 const Record = () => {
   const [records, setRecords] = useState([]);
@@ -135,23 +141,31 @@ const Record = () => {
               <option value="Non-Reported">Non-Reported</option>
             </select>
           </label>
+          <div>
+            <button
+              className={`${buttonStyles['action-button']} ${buttonStyles['gold-button']}`}
+              onClick={openAddModal}
+            >
+              <AddIcon /> Add Record
+            </button>
+          </div>
         </div>
         
         <div className={tableStyles['table-container']}>
           <table className={tableStyles['global-table']}>
             <thead>
               <tr>
-                <th>Record ID</th>
-                
-                <th>Record Date</th>
+                {/* <th>Record ID</th> 
                 <th>Incident Date</th>
-                <th>Time</th>
+                <th>Time</th> */}
+                <th>Name</th>                
+                <th>Record Date</th>                
                 <th>Monitored Record</th>
-                <th>Remarks</th>
-                <th>Sanction</th>
-                <th>Complainant</th>
+                {/* <th>Remarks</th>
+                <th>Sanction</th> 
+                <th>Complainant</th>*/}
                 <th>Case Details</th>
-                <th>Complete</th>
+                <th>Status</th>
                 <th>Encoder</th>
                 <th>Actions</th>
               </tr>
@@ -159,17 +173,21 @@ const Record = () => {
             <tbody>
               {filterRecords().map((record) => (
                 <tr key={record.recordId}>
-                  <td>{record.recordId}</td>
-                 
-                  <td>{record.record_date}</td>
+                  {/* <td>{record.recordId}</td>
                   <td>{record.incident_date}</td>
-                  <td>{record.time}</td>
+                  <td>{record.time}</td> */}
+                  <td>{record.student.name}</td>                  
+                  <td>{record.record_date}</td>
                   <td>{record.monitored_record}</td>
-                  <td>{record.remarks}</td>
-                  <td>{record.sanction}</td>
-                  <td>{record.complainant ? record.complainant : 'N/A'}</td>
+                  {/* <td>{record.remarks}</td>
+                  <td>{record.sanction}</td> */}
+                  {/* <td>{record.complainant ? record.complainant : 'N/A'}</td> */}
                   <td>{record.caseDetails}</td>
-                  <td>
+                  <td
+                    style={{
+                      color: record.complete === 0 ? '#e53935' : record.complete === 1 ? '#4caf50' : '#000',
+                    }}
+                  >
                     {record.complete === 0
                       ? 'Incomplete'
                       : record.complete === 1
@@ -178,49 +196,38 @@ const Record = () => {
                   </td>
                   <td>{record.encoder.firstname} {record.encoder.lastname}</td>
                   <td>
-                    <button
-                      className={tableStyles['view-button']}
+                    <ViewNoteIcon
+                      className={buttonStyles['action-icon']}
                       onClick={() => openViewModal(record)}
-                    >
-                      View
-                    </button>
+                      style={{ marginRight: loggedInUser?.userType === 3 ? '0' : '15px' }}
+                    />
 
                     {record.complainant && record.complainant !== 'N/A' ? (
-                        <button
-                          className={tableStyles['investigate-button']} // Use a specific style if desired
-                          onClick={() => openEditModal(record)} // Repurposed for investigating
-                        >
-                          Investigate
-                        </button>
-                      ) : (
-                        <button
-                          className={tableStyles['edit-button']}
-                          onClick={() => openEditModal(record)}
-                        >
-                          Edit
-                        </button>
-                      )}
-                    <button
-                      className={tableStyles['delete-button']}
+                      <EditNoteIcon
+                        className={buttonStyles['action-icon']}
+                        onClick={() => openEditModal(record)} // Repurposed for investigating
+                        style={{ marginRight: loggedInUser?.userType === 3 ? '0' : '15px' }}
+                      />
+                    ) : (
+                      <EditNoteIcon
+                        className={buttonStyles['action-icon']}
+                        onClick={() => openEditModal(record)}
+                        style={{ marginRight: loggedInUser?.userType === 3 ? '0' : '15px' }}
+                      />
+                    )}
+                    <DeleteIcon
+                      className={buttonStyles['action-icon']}
                       onClick={() => handleDelete(record.recordId)}
-                    >
-                      Delete
-                    </button>
+                    />
                   </td>
                 </tr>
               ))}
             </tbody>
           </table>
         </div>
-        <button
-          className={`${tableStyles['global-button']} ${tableStyles['add-record-button']}`}
-          onClick={openAddModal}
-        >
-          Add New Record
-        </button>
       </div>
       {showViewModal && selectedRecord && (
-        <RecordStudentViewModal record={selectedRecord} onClose={closeViewModal} />
+        <ViewRecordModal record={selectedRecord} onClose={closeViewModal} />
       )}
       {showAddModal && (
         <AddRecordModal onClose={closeAddModal} refreshRecords={fetchRecords} />

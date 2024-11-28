@@ -1,7 +1,9 @@
 import React, { useContext } from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom'; // Import BrowserRouter, Route, and Routes
-import LoginPage from './LoginPage';
+
 import './App.css';
+
+import LoginPage from './LoginPage/LoginPage';
 import Notification from './Notification';
 import Dashboard from './Dashboard/Dashboard';
 import Record from './Record/Record';
@@ -9,23 +11,18 @@ import Record from './Record/Record';
 import Student from './Student/Student'
 // import ViewReport from './ViewReport'; 
 
-
-import AddStudentRecord from './SSO/AddStudentRecord';
-
-
 import Suspension from './Suspension/Suspension';
-
 
 import UpdateAccount from './UpdateAccount';
 
 // Admin Pages
 import UserManagement from './UserManagement/UserManagement';
 import Class from './Class/Class';
-import ActivityLog from './ActivityLog';
+import ActivityLog from './ActivityLog/ActivityLog';
 
 
 import PrivateRoute from './PrivateRoute';
-import { AuthContext, AuthProvider } from './AuthContext';
+import { AuthContext, AuthProvider } from './LoginPage/AuthContext';
 import PageNotFound from './PageNotFound';
 
 
@@ -80,7 +77,7 @@ function App() {
             <Route path="/notification" element={<Notification />} />
             <Route path="/student" element={<Student />}  />
             {/*<Route path="/student" element={<PrivateRoute element={<Student />} />}  /> */}
-            <Route path="/add-record/:sid" element={<AddStudentRecord />} /> 
+            {/* <Route path="/add-record/:sid" element={<AddStudentRecord />} />  */}
             </>
 
           )}

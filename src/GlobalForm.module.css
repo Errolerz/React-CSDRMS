@@ -133,6 +133,8 @@
     font-size: 14px;
     transition: background-color 0.3s, transform 0.3s;
     text-shadow: 1px 1px 3px #000;  /* Slight shadow for all text */
+    display: flex;
+    align-items: center;
 }
 
 .green-button:hover {

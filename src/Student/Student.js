@@ -2,22 +2,26 @@ import React, { useEffect, useState, useCallback } from 'react';
 import axios from 'axios';
 
 import RecordFilter from './RecordFilter'; // Import RecordFilter component
-import AddRecordModal from './RecordStudentAddModal'; // Import AddRecordModal component
-import ImportModal from './RecordStudentImportModal'; // Import ImportModal component
+import AddRecordModal from './AddStudentRecordModal'; // Import AddRecordModal component
+import ImportModal from './StudentImportModal'; // Import ImportModal component
 
 import styles from '../Record/Record.module.css'; // Importing CSS module
 import navStyles from '../Navigation.module.css'; 
 import formStyles from '../GlobalForm.module.css'; // Importing GlobalForm styles
+import buttonStyles from '../GlobalButton.module.css'; // Importing GlobalForm styles
 import tableStyles from '../GlobalTable.module.css'; // Importing GlobalForm styles
 import Navigation from '../Navigation';
 
 import EditStudentModal from './EditStudentModal'; // Ensure this path matches the actual file location
 import RecordStudentEditModal from '../RecordStudentEditModal';
-import RecordStudentViewModal from '../RecordStudentViewModal'; // Import the view modal
+import RecordStudentViewModal from '../ViewRecordModal'; // Import the view modal
 import AddStudentModal from './AddStudentModal';
 
-import EditNoteIcon from '@mui/icons-material/Edit';
+import AddStudentIcon from '@mui/icons-material/PersonAdd';
+import ImportIcon from '@mui/icons-material/FileDownload';
+import AddIcon from '@mui/icons-material/AddCircleOutline';
 import ViewNoteIcon from '@mui/icons-material/Visibility';
+import EditNoteIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete'; // Import Delete icon
 
 
@@ -257,6 +261,22 @@ const Student = () => {
       <div className={navStyles.content}>  
         <div className={navStyles.TitleContainer}>
           <h2 className={navStyles['h1-title']}>Student Overview</h2>
+          <div className={buttonStyles['button-group']}>
+            {loggedInUser?.userType !== 3 && (
+              <button onClick={() => setShowAddStudentModal(true)} 
+                className={`${buttonStyles['action-button']} ${buttonStyles['gold-button']}`}>
+                <AddStudentIcon />Add Student
+              </button>
+            )}     
+
+            {/* Button to open Import Modal */}
+            {loggedInUser?.userType !== 3 && (
+              <button onClick={() => setShowImportModal(true)} 
+                className={`${buttonStyles['action-button']} ${buttonStyles['maroon-button']}`}>
+                <ImportIcon />Import Student
+              </button>
+            )}    
+          </div>                
         </div>  
         <div className={styles['triple-container']}>
           {/* Display selected student details */}
@@ -364,47 +384,6 @@ const Student = () => {
               placeholder="Enter student name or ID"
             />
 
-            {/* Import Modal */}
-            {showImportModal && (
-              <ImportModal
-                onClose={() => setShowImportModal(false)}
-                schoolYears={schoolYears}
-              />
-            )}
-
-            {showAddStudentModal && ( 
-              <AddStudentModal
-                open={showAddStudentModal}
-                onClose={() => setShowAddStudentModal(false)}
-              />    
-            )}
-          
-            {/* Add Record Modal */}
-            {showAddRecordModal && (
-              <AddRecordModal
-                student={selectedStudent}
-                onClose={() => setShowAddRecordModal(false)}
-                refreshRecords={() => fetchStudentRecords(selectedStudent.sid)} // Pass the refresh function
-              />
-            )}        
-            
-            {/* Button to open Import Modal */}
-            {loggedInUser?.userType !== 3 && (
-              <button onClick={() => setShowImportModal(true)} 
-                className={`${formStyles['green-button']} ${formStyles['maroon-button']}`} 
-                style={{ marginLeft: '20px' }}>
-                Import Students
-              </button>
-            )}      
-
-            {loggedInUser?.userType !== 3 && (
-              <button onClick={() => setShowAddStudentModal(true)} 
-                className={formStyles['green-button']} 
-                style={{ marginLeft: '10px' }}>
-                Add Student
-              </button>
-            )}           
-
             {/* Only show the student list if the searchQuery is not empty and filtered students exist */}
             {searchQuery && (
               <div>
@@ -427,6 +406,30 @@ const Student = () => {
             
           </div>    
         </div>   
+
+        {/* Import Modal */}
+        {showImportModal && (
+          <ImportModal
+            onClose={() => setShowImportModal(false)}
+            schoolYears={schoolYears}
+          />
+        )}
+
+        {showAddStudentModal && ( 
+          <AddStudentModal
+            open={showAddStudentModal}
+            onClose={() => setShowAddStudentModal(false)}
+          />    
+        )}
+      
+        {/* Add Record Modal */}
+        {showAddRecordModal && (
+          <AddRecordModal
+            student={selectedStudent}
+            onClose={() => setShowAddRecordModal(false)}
+            refreshRecords={() => fetchStudentRecords(selectedStudent.sid)} // Pass the refresh function
+          />
+        )}                
 
         {/* Display records if student is selected */}
         {selectedStudent && (
@@ -454,10 +457,10 @@ const Student = () => {
               <h2>Detailed Records</h2>
               {selectedStudent && loggedInUser?.userType === 1 && (
                 <button
-                  className={`${formStyles['green-button']} ${formStyles['orange-button']}`} 
+                  className={`${buttonStyles['action-button']} ${buttonStyles['gold-button']}`} 
                   onClick={() => setShowAddRecordModal(true)}
                 >
-                  Add Record
+                  <AddIcon /> Add Record
                 </button>
               )}
             </div>

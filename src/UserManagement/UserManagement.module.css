@@ -150,21 +150,22 @@ h2 {
     color: #fff;
     transition: background-color 0.3s, transform 0.3s;
     font-weight: bold;
+    display: flex;
+    align-items: center;
+    text-shadow: 1px 1px 3px #000;  /* Slight shadow for all text */
 }
 
 /* Example styling */
 .action-btn svg {
     font-size: 1.5rem; /* Adjust size */
     margin-right: 0.5rem; /* Space between icon and text */
+    filter: drop-shadow(1px 1px 3px #000); /* Adjust the values as needed */
 }
   
 
 .add-btn {
     /* background-color: #4caf50; */
     background-color: #861b1c;
-    text-shadow: 1px 1px 3px #000;  /* Slight shadow for all text */
-    display: flex;
-    align-items: center;
 }
 
 .add-btn:hover {

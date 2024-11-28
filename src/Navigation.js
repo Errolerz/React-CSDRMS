@@ -1,17 +1,19 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import axios from 'axios';
+
+import navStyles from './Navigation.module.css'; // CSS for Navigation
+import NotificationModal from './NotificationModal'; // Import NotificationModal
+import MenuPopupState from './Components/MenuPopupState';
+
+import JHSLogo from './LoginPage/image-sso-yellow.png';
+
 import SchoolIcon from '@mui/icons-material/School';
 import AccountBoxIcon from '@mui/icons-material/AccountBox';
 import NotificationsActiveIcon from '@mui/icons-material/NotificationsActive';
 import PostAddIcon from '@mui/icons-material/PostAdd';
 import AssessmentIcon from '@mui/icons-material/Assessment';
-import AccessTimeFilledIcon from '@mui/icons-material/AccessTimeFilled';
 import LocalPoliceIcon from '@mui/icons-material/LocalPolice';
-import navStyles from './Navigation.module.css'; // CSS for Navigation
-import JHSLogo from './image-sso-yellow.png';
-import axios from 'axios';
-import NotificationModal from './NotificationModal'; // Import NotificationModal
-import MenuPopupState from './Components/MenuPopupState';
 import IconButton from '@mui/material/IconButton';
 import AssignmentIcon from '@mui/icons-material/Assignment';
 

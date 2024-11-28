@@ -1,0 +1,80 @@
+.student-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.student-import-modal-content {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    width: 330px;
+    max-width: 100%;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.student-add-modal-content {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    width: 450px;
+    max-width: 100%;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.student-modal-header {
+    margin-top: 0;
+}
+
+.student-modal-select {
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.student-modal-file-input {
+    margin: 10px 0;
+}
+
+.closeButton {
+  background: none;
+  border: none;
+  font-size: 24px;
+  position: absolute;
+  top: 10px;
+  right: 10px; /* Keep the button inside the modal */
+  cursor: pointer;
+  color: #333;
+}
+
+.dropdown {
+  list-style-type: none;
+  padding: 0;
+  margin: 5px 0 0 0;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  max-height: 150px;
+  max-width: 360px;  
+  overflow-y: auto;
+  margin-left: 21.7%;
+}
+
+.dropdownItem {
+  padding: 10px;
+  cursor: pointer;
+  background-color: #fff;
+}
+
+.dropdownItem:hover {
+  background-color: #f1f1f1;
+}
+

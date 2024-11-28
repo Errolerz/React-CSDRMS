@@ -5,7 +5,7 @@ import tableStyles from "../GlobalTable.module.css"; // Import GlobalTable CSS m
 import formStyles from "../GlobalForm.module.css";
 import Navigation from '../Navigation'; // Import the Navigation component
 import SuspensionModal from "./SuspensionModal"; // Import the modal component
-import RecordStudentViewModal from '../RecordStudentViewModal';
+import ViewRecordModal from '../ViewRecordModal';
 import styles from "./Suspension.module.css"; // Import GlobalTable CSS module
 import EditSuspensionModal from "./EditSuspensionModal"; // Import the edit modal component
 import CheckIcon from '@mui/icons-material/CheckBox';
@@ -314,7 +314,7 @@ const handleApproveClick = async () => {
             {showViewRecordModal && (
               <>
               {console.log("Rendering Modal with Selected Record:", selectedRecord)}
-              <RecordStudentViewModal
+              <ViewRecordModal
                 record={selectedRecord}
                 onClose={closeViewRecordModal}
               />

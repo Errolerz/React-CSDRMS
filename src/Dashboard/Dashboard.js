@@ -18,7 +18,9 @@ import styles from '../Dashboard/Dashboard.module.css';
 import navStyles from '../Navigation.module.css'; 
 import Navigation from '../Navigation';
 import tableStyles from '../GlobalTable.module.css';
-import formStyles from '../GlobalForm.module.css'
+import buttonStyles from '../GlobalButton.module.css'
+
+import ExportIcon from '@mui/icons-material/FileUpload';
 
 ChartJS.register(LineElement, PointElement, LinearScale, Title, Tooltip, Legend, CategoryScale);
 
@@ -375,9 +377,9 @@ const Record = () => {
                         </div>
                         <div>
                             <button 
-                                className={`${formStyles['green-button']} ${formStyles['maroon-button']}`} 
+                                className={`${buttonStyles['action-button']} ${buttonStyles['maroon-button']}`} 
                                 onClick={handleExportToPDF}>
-                                Export to PDF
+                                <ExportIcon /> Export to PDF
                             </button>
                         </div>
                     </div>

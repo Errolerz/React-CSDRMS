@@ -1,11 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+
 import styles from './ActivityLog.module.css'; // Import your CSS module here
-import navStyles from './Navigation.module.css'; 
-import formStyles from './GlobalForm.module.css';
-import Navigation from './Navigation';
-import tableStyles from './GlobalTable.module.css';
-import UserTimeLogModal from './SSO/UserTimeLogModal';
+import navStyles from '../Navigation.module.css'; 
+import formStyles from '../GlobalForm.module.css';
+import tableStyles from '../GlobalTable.module.css';
+import Navigation from '../Navigation';
+
+import UserTimeLogModal from './UserTimeLogModal';
+
 import SearchIcon from '@mui/icons-material/Search';
 import ViewNoteIcon from '@mui/icons-material/Visibility';
 

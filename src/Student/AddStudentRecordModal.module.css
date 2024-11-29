@@ -24,7 +24,7 @@
     background: white;
     padding: 20px;
     border-radius: 8px;
-    width: 600px;
+    width: 700px;
     max-width: 100%;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     overflow-y: auto;
@@ -60,13 +60,12 @@
 .dropdown {
   list-style-type: none;
   padding: 0;
-  margin: 5px 0 0 0;
   border: 1px solid #ccc;
-  border-radius: 5px;
   max-height: 150px;
   max-width: 360px;  
   overflow-y: auto;
-  margin-left: 21.7%;
+  margin-left: 45%;
+  margin-bottom: 5%;
 }
 
 .dropdownItem {
@@ -79,3 +78,14 @@
   background-color: #f1f1f1;
 }
 
+.clearButton {
+  background-color: transparent;
+  border: none;
+  font-size: 16px;
+  padding: 10px 10px;
+  cursor: pointer;
+}
+
+.clearButton:hover {
+  transform: scale(1.1); /* Slightly increase size on hover */
+}

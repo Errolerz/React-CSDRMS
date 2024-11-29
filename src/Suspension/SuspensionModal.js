@@ -1,8 +1,13 @@
 import React, { useEffect,useRef, useState } from 'react';
 import axios from 'axios';
+
 import Modal from "@mui/material/Modal";
 import Box from "@mui/material/Box";
+import ExportIcon from '@mui/icons-material/FileUpload';
+
 import styles from "./SuspensionModal.module.css"; // Import custom styles for this modal
+import buttonStyles from "../GlobalButton.module.css";
+
 import { jsPDF } from 'jspdf';
 import html2canvas from 'html2canvas';
 
@@ -90,11 +95,17 @@ const SuspensionModal = ({ isOpen, onClose, suspension }) => {
     <Modal open={isOpen} onClose={onClose}>
       
       <Box className={styles["suspension-modal-modalContainer"]}>
-      <button 
-                           
-                           onClick={handleExportToPDF}>
-                           Export to PDF
-                       </button>
+      <button
+        className={`${buttonStyles['action-button']} ${buttonStyles['maroon-button']}`}
+        style={{
+          display: 'flex', // Make the button a flex container
+          justifyContent: 'flex-start', // Align content to the left
+          alignItems: 'center', // Vertically center the content
+        }}
+        onClick={handleExportToPDF}
+      >
+        <ExportIcon style={{ marginRight: '8px' }} /> Export to PDF
+      </button>
       <div ref={exportRef} className={styles.exportSection}>
         <div className={styles["suspension-modal-formContainer"]}>
         

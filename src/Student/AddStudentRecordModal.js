@@ -129,7 +129,7 @@ const AddRecordModal = ({ student, onClose, refreshRecords }) => {
   };
 
   // Define dynamic height based on report type
-  const modalHeight = report ? '720px' : '670px'; // 750px for report cases, 600px for regular records
+  const modalHeight = report ? '720px' : '600px'; // 750px for report cases, 600px for regular records
 
   return (
     <div className={styles['student-modal-overlay']}>
@@ -152,11 +152,11 @@ const AddRecordModal = ({ student, onClose, refreshRecords }) => {
                   disabled={selectedStudent}
                 />
 
-              {selectedStudent && (
-                <button className={styles.clearButton} onClick={handleRemoveStudent}>
-                ✕
-              </button>
-              )}
+                {selectedStudent && (
+                  <button className={styles.clearButton} onClick={handleRemoveStudent}>
+                    ✕
+                  </button>
+                )}
               </div>
 
               {!selectedStudent && (

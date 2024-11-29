@@ -7,7 +7,7 @@ const AddRecordModal = ({ student, onClose, refreshRecords }) => {
   const authToken = localStorage.getItem('authToken');
   const loggedInUser = JSON.parse(authToken);
 
-  const [report, setReport] = useState(false);
+  const [report, setReport] = useState(null);
 
 
   // Form state
@@ -227,16 +227,18 @@ const AddRecordModal = ({ student, onClose, refreshRecords }) => {
 
           {loggedInUser.userType === 1 && (
             <div className={formStyles['form-group']}>
-              <label>Is this a Case?</label>
-              <select
-                value={report === null ? 'no' : report ? 'yes' : 'no'}  // Default value is "no"
-                onChange={handleReportChange}
-                className={`${formStyles['input']} ${styles['student-modal-select']}`}
-              >
-                <option value="no">No</option>
-                <option value="yes">Yes</option>
-              </select>
-            </div>
+            <label>Is this a Report?</label>
+            <select
+              value={report === null ? '' : report ? 'yes' : 'no'}  // Default value is empty
+              onChange={handleReportChange}
+              className={`${formStyles['input']} ${styles['student-modal-select']}`}
+            >
+              <option value="" disabled>Select</option> {/* Empty option as default */}
+              <option value="no">No</option>
+              <option value="yes">Yes</option>
+            </select>
+          </div>
+
           )}
 
 

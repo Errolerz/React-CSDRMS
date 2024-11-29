@@ -35,15 +35,14 @@
 .details-container {
   padding: 25px; /* Adds some padding inside each container */
   border: 2px solid #8A252C;
-  border-radius: 20px; /* Optional: Slightly rounds the corners of the container */
   background-color: #f9f9f9; /* Optional: Light background color */
-  width: 900px;
+  width: 80%;
   /*height: 380px;*/
 }
 
 .search-container {
   height: 50%;
-  width: 70%;
+  width: 20%;
 }
 
 .search-container input {
@@ -73,7 +72,8 @@
 }
 
 .details-table td {
-  padding: 8px 15px;  
+  padding: 8px 15px; 
+  font-size: 14px; 
 }
 
 .details-table td:nth-child(1) {

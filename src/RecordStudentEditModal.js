@@ -19,7 +19,7 @@ const RecordStudentEditModal = ({ record, onClose, refreshRecords }) => {
   const [complainant, setComplainant] = useState(record?.complainant || '');
   const [complaint, setComplaint] = useState(record?.complaint || '');
   const [investigationDetails, setInvestigationDetails] = useState(record?.investigationDetails || '');
-  const [complete, setComplete] = useState(record?.complete || false);
+  const [complete, setComplete] = useState(record?.complete === 1 ? 1 : 0); // 1 for complete, 0 for incomplete
   const [isSuspension, setIsSuspension] = useState(false); 
   const [suspensionDetails, setSuspensionDetails] = useState({
     days: '',
@@ -169,119 +169,155 @@ const RecordStudentEditModal = ({ record, onClose, refreshRecords }) => {
   return (
     <div className={styles.modalOverlay}>
       <div className={styles.modal}>
-        <h2>Edit Student Record</h2>
+        <h2>{record.type === 2 ? 'Investigate Student Case' : 'Edit Student Record'}</h2>
         <form onSubmit={handleSubmit}>
-          <label>Monitored Record:</label>
-          <select 
-            value={selectedRecord} 
-            onChange={(e) => setSelectedRecord(e.target.value)}
-            className={styles.select}
-          >
-            <option value="">Select a monitored record</option>
-            {monitoredRecords.map((record, index) => (
-              <option key={index} value={record}>
-                {record}
-              </option>
-            ))}
-          </select>
+          <div className={styles.inputGroup}>
+            <label>Monitored Record:</label>
+            <select 
+              value={selectedRecord} 
+              onChange={(e) => setSelectedRecord(e.target.value)}
+              className={styles.select}
+            >
+              <option value="">Select a monitored record</option>
+              {monitoredRecords.map((record, index) => (
+                <option key={index} value={record}>
+                  {record}
+                </option>
+              ))}
+            </select>
+          </div>
 
-          <label>Is Suspension?</label>
-          <select
-            value={isSuspension ? 'Yes' : 'No'}
-            onChange={(e) => setIsSuspension(e.target.value === 'Yes')}
-            className={styles.select}
-          >
-            <option value="No">No</option>
-            <option value="Yes">Yes</option>
-          </select>
-
-          {isSuspension && (
+          {record.type == 2 && (
             <>
-              <label>Suspension Days:</label>
-              <input
-                type="number"
-                name="days"
-                value={suspensionDetails.days}
-                onChange={handleSuspensionChange}
-              />
+              <div className={styles.inputGroup}>     
+                <label>Complainant:</label>
+                <input
+                  type="text"
+                  value={complainant}
+                  onChange={(e) => setComplainant(e.target.value)}
+                />
+              </div>
 
-              <label>Start Date:</label>
-              <input
-                type="date"
-                name="startDate"
-                value={suspensionDetails.startDate}
-                onChange={handleSuspensionChange}
-              />
+              <div className={styles.inputGroup}>
+                <label>Complaint:</label>
+                <textarea
+                  value={complaint}
+                  onChange={(e) => setComplaint(e.target.value)}
+                />
+              </div>
 
-              <label>End Date:</label>
-              <input
-                type="date"
-                name="endDate"
-                value={suspensionDetails.endDate}
-                onChange={handleSuspensionChange}
-              />
-
-              <label>Return Date:</label>
-              <input
-                type="date"
-                name="returnDate"
-                value={suspensionDetails.returnDate}
-                onChange={handleSuspensionChange}
-              />
+              <div className={styles.inputGroup}>
+                <label>Investigation Details:</label>
+                  <textarea
+                    value={investigationDetails}
+                    onChange={(e) => setInvestigationDetails(e.target.value)}
+                  />
+              </div>
             </>
           )}
 
           {!isSuspension && (
               <>
-                <label>Sanction:</label>
-                <input
-                  type="text"
-                  value={sanction}
-                  onChange={(e) => setSanction(e.target.value)}
-                />
+                <div className={styles.inputGroup}>     
+                  <label>Sanction:</label>
+                  <textarea
+                    type="text"
+                    value={sanction}
+                    onChange={(e) => setSanction(e.target.value)}
+                  />
+                </div>
               </>
             )}
 
           {record.type == 1 && (
             <>
-              <label>Remarks:</label>
-              <textarea 
-                type="text" 
-                value={remarks} 
-                onChange={(e) => setRemarks(e.target.value)} // Handling changes in remarks
-              />
+              <div className={styles.inputGroup}>                 
+                <label>Remarks:</label>
+                <textarea 
+                  type="text" 
+                  value={remarks} 
+                  onChange={(e) => setRemarks(e.target.value)} // Handling changes in remarks
+                />
+              </div>
             </>
           )}
 
           {record.type == 2 && (
             <>
-              <label>Complainant:</label>
-              <input
-                type="text"
-                value={complainant}
-                onChange={(e) => setComplainant(e.target.value)}
-              />
-              <label>Complaint:</label>
-              <textarea
-                value={complaint}
-                onChange={(e) => setComplaint(e.target.value)}
-              />
-              <label>Investigation Details:</label>
-                <textarea
-                  value={investigationDetails}
-                  onChange={(e) => setInvestigationDetails(e.target.value)}
-                />
-               <label>Complete:</label>
-                <input 
-                  type="checkbox" 
-                  checked={complete} 
-                  onChange={(e) => setComplete(e.target.checked)} 
-                />
+              <div className={styles.inputGroup}>
+                <label>Is the Case Complete?</label>
+                <select
+                  name="caseComplete"
+                  value={complete === 1 ? "yes" : "no"} // Maps complete to "yes" or "no"
+                  onChange={(e) => setComplete(e.target.value === "yes" ? 1 : 0)} // Update complete based on selection
+                >
+                  <option value="yes">Yes</option>
+                  <option value="no">No</option>
+                </select>
+              </div>
             </>
+          )}
+          
+          <div className={styles.inputGroup}>
+            <label>Should the student be suspended ?</label>
+            <select
+              value={isSuspension ? 'Yes' : 'No'}
+              onChange={(e) => setIsSuspension(e.target.value === 'Yes')}
+              className={styles.select}
+            >
+              <option value="No">No</option>
+              <option value="Yes">Yes</option>
+            </select>
+          </div>
+
+          {isSuspension && (
+            <div className={styles.suspensionSection}>
+              <div className={styles.inputGroup}>
+                <label>Suspension Days:</label>
+                <input
+                  type="number"
+                  name="days"
+                  value={suspensionDetails.days}
+                  onChange={handleSuspensionChange}
+                />
+              </div>
+
+              <div className={styles.inputGroup}>
+                <label>Start Date:</label>
+                <input
+                  type="date"
+                  name="startDate"
+                  value={suspensionDetails.startDate}
+                  onChange={handleSuspensionChange}
+                />
+              </div>
+
+              <div className={styles.inputGroup}>
+                <label>End Date:</label>
+                <input
+                  type="date"
+                  name="endDate"
+                  value={suspensionDetails.endDate}
+                  onChange={handleSuspensionChange}
+                />
+              </div>
+
+              <div className={styles.inputGroup}>
+                <label>Return Date:</label>
+                <input
+                  type="date"
+                  name="returnDate"
+                  value={suspensionDetails.returnDate}
+                  onChange={handleSuspensionChange}
+                />
+              </div>
+            </div>
           )}
 
           <div className={formStyles['global-buttonGroup']}>
-            <button type="submit" className={formStyles['green-button']}>Edit</button>
+            <button type="submit" className={formStyles['green-button']}>
+              {record.type === 2 ? 'Investigate' : 'Edit'}
+            </button>
             <button type="button" onClick={onClose} className={`${formStyles['green-button']} ${formStyles['red-button']}`}>Cancel</button>
           </div>
         </form>

@@ -278,9 +278,29 @@ const Student = () => {
             )}    
           </div>                
         </div>  
+
+        <h2 className={styles['h2-title-record']}>Total Frequency of Monitored Records</h2>
+        <div className={tableStyles['table-container']} style={{ marginBottom: '20px' }}>
+          <table className={tableStyles['global-table-small']}>
+            <thead>
+              <tr>
+                {monitoredRecordsList.map((monitoredRecord, index) => (
+                  <th key={index}>{monitoredRecord}</th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                {monitoredRecordsList.map((monitoredRecord, index) => (
+                  <td key={index}>{frequencies[monitoredRecord]}</td>
+                ))}
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
         <div className={styles['triple-container']}>
-          {/* Display selected student details */}
-          
+          {/* Display selected student details */}        
           <div className={styles['details-container']} sx={{mt:"0"}}> 
             <label style={{ display: 'flex', justifyContent: 'space-between' ,alignItems:"center"}}> Details:
               {selectedStudent && (
@@ -296,85 +316,66 @@ const Student = () => {
                 </div>
               )}      
             </label>
-            <table className={styles['details-table']}>
-              <tbody>
-                <tr>
-                  <td><strong>ID Number</strong></td>
-                  <td><strong>:</strong></td>
-                  <td>{selectedStudent?.sid || 'N/A'}</td>
-                </tr>
-                <tr>
-                  <td><strong>Name</strong></td>
-                  <td><strong>:</strong></td>
-                  <td style={{ width: '75%', whiteSpace: 'nowrap', overflow: 'hidden',  textOverflow:'ellipsis'}}>
-                    {selectedStudent?.name || 'N/A'}
-                  </td>     
-                </tr>
-                <tr>
-                  <td><strong>Grade</strong></td>
-                  <td><strong>:</strong></td>
-                  <td>{selectedStudent?.grade || 'N/A'}</td>
-                </tr>
-                <tr>
-                  <td><strong>Section</strong></td>
-                  <td><strong>:</strong></td>
-                  <td>{selectedStudent?.section || 'N/A'}</td>
-                </tr>
-                <tr>
-                  <td><strong>Adviser</strong></td>
-                  <td><strong>:</strong></td>
-                  <td>{adviser ? `${adviser.firstname} ${adviser.lastname}` : 'N/A'}</td>
-                </tr>
-                <tr>
-                  <td><strong>Gender</strong></td>
-                  <td><strong>:</strong></td>
-                  <td>{selectedStudent?.gender || 'N/A'}</td>
-                </tr>
-                <tr>
-                  <td><strong>Email Address</strong></td>
-                  <td><strong>:</strong></td>
-                  <td>{selectedStudent?.email || 'N/A'}</td>
-                </tr>
-                <tr>
-                  <td><strong>Home Address</strong></td>
-                  <td><strong>:</strong></td>
-                  <td>{selectedStudent?.homeAddress || 'N/A'}</td>
-                </tr>
-                <tr>
-                  <td><strong>Contact No.</strong></td>
-                  <td><strong>:</strong></td>
-                  <td>{selectedStudent?.contactNumber || 'N/A'}</td>
-                </tr>
-                <tr>
-                  <td><strong>Emergency No.</strong></td>
-                  <td><strong>:</strong></td>
-                  <td>{selectedStudent?.emergencyNumber || 'N/A'}</td>
-                </tr>
-              </tbody>
-            </table>
+              <table className={styles['details-table']}>
+                <tbody>
+                  <tr>
+                    <td><strong>ID Number</strong></td>
+                    <td><strong>:</strong></td>
+                    <td>{selectedStudent?.sid || 'N/A'}</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Name</strong></td>
+                    <td><strong>:</strong></td>
+                    <td style={{ width: '75%', whiteSpace: 'nowrap', overflow: 'hidden',  textOverflow:'ellipsis'}}>
+                      {selectedStudent?.name || 'N/A'}
+                    </td>     
+                  </tr>
+                  <tr>
+                    <td><strong>Grade</strong></td>
+                    <td><strong>:</strong></td>
+                    <td>{selectedStudent?.grade || 'N/A'}</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Section</strong></td>
+                    <td><strong>:</strong></td>
+                    <td>{selectedStudent?.section || 'N/A'}</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Adviser</strong></td>
+                    <td><strong>:</strong></td>
+                    <td>{adviser ? `${adviser.firstname} ${adviser.lastname}` : 'N/A'}</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Gender</strong></td>
+                    <td><strong>:</strong></td>
+                    <td>{selectedStudent?.gender || 'N/A'}</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Email Address</strong></td>
+                    <td><strong>:</strong></td>
+                    <td>{selectedStudent?.email || 'N/A'}</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Home Address</strong></td>
+                    <td><strong>:</strong></td>
+                    <td>{selectedStudent?.homeAddress || 'N/A'}</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Contact No.</strong></td>
+                    <td><strong>:</strong></td>
+                    <td>{selectedStudent?.contactNumber || 'N/A'}</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Emergency No.</strong></td>
+                    <td><strong>:</strong></td>
+                    <td>{selectedStudent?.emergencyNumber || 'N/A'}</td>
+                  </tr>
+                </tbody>
+              </table>
           </div>    
 
           {/* Search Bar for Students */}
           <div className={styles['search-container']}>
-            <h2 className={styles['h2-title-record']}>Total Frequency of Monitored Records</h2>
-            <div className={tableStyles['table-container']}>
-              <table className={tableStyles['global-table-small']}>
-                <thead>
-                  <tr>
-                    {monitoredRecordsList.map((monitoredRecord, index) => (
-                      <th key={index}>{monitoredRecord}</th>
-                    ))}
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    {monitoredRecordsList.map((monitoredRecord, index) => (
-                      <td key={index}>{frequencies[monitoredRecord]}</td>
-                    ))}
-                  </tr>
-                </tbody>
-              </table>
-            </div>
             <label htmlFor="studentSearch">Search: </label>
             <input
               type="text"
@@ -471,7 +472,7 @@ const Student = () => {
                 <tr>
                   <th>Record Date</th>
                   <th>Monitored Record</th>
-                  <th style={{ width: '40%'}}>Case Details</th>
+                  <th>Type</th>
                   {/* <th>Sanction</th> */}
                   <th>Action</th>
                 </tr>
@@ -488,7 +489,7 @@ const Student = () => {
                     <tr key={record.recordId}>
                       <td>{record.record_date}</td>
                       <td>{record.monitored_record}</td>
-                      <td style={{ width: '40%'}}>{record.details}</td>
+                      <td>{record.type === 1 ? 'Record' : record.type === 2 ? 'Case' : 'Unknown'}</td>
                       {/* <td>{record.sanction}</td> */}
                       <td>
                         <ViewNoteIcon

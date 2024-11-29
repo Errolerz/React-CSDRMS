@@ -7,7 +7,7 @@ const AddRecordModal = ({ student, onClose, refreshRecords }) => {
   const authToken = localStorage.getItem('authToken');
   const loggedInUser = JSON.parse(authToken);
 
-  const [report, setReport] = useState(null);
+  const [report, setReport] = useState(false);
 
 
   // Form state
@@ -127,9 +127,15 @@ const AddRecordModal = ({ student, onClose, refreshRecords }) => {
       setComplete(2);
     }
   };
+
+  // Define dynamic height based on report type
+  const modalHeight = report ? '720px' : '670px'; // 750px for report cases, 600px for regular records
+
   return (
     <div className={styles['student-modal-overlay']}>
-      <div className={styles['student-add-modal-content']}>
+      <div className={styles['student-add-modal-content']}
+        style={{ height: modalHeight }} // Apply dynamic height here
+      >
         <h2>Add New Record</h2>
 
         <div className={formStyles['form-container']}>
@@ -220,19 +226,19 @@ const AddRecordModal = ({ student, onClose, refreshRecords }) => {
           </div>
 
           {loggedInUser.userType === 1 && (
-          <div className={formStyles['form-group']}>
-            <label>Is this a Report?</label>
-            <select
-              value={report === null ? '' : report ? 'yes' : 'no'}  // Default value is empty
-              onChange={handleReportChange}
-              className={`${formStyles['input']} ${styles['student-modal-select']}`}
-            >
-              <option value="" disabled>Select</option> {/* Empty option as default */}
-              <option value="no">No</option>
-              <option value="yes">Yes</option>
-            </select>
-          </div>
+            <div className={formStyles['form-group']}>
+              <label>Is this a Case?</label>
+              <select
+                value={report === null ? 'no' : report ? 'yes' : 'no'}  // Default value is "no"
+                onChange={handleReportChange}
+                className={`${formStyles['input']} ${styles['student-modal-select']}`}
+              >
+                <option value="no">No</option>
+                <option value="yes">Yes</option>
+              </select>
+            </div>
           )}
+
 
           {report !== null && report ? (
             <>

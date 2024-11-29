@@ -227,7 +227,7 @@ const AddRecordModal = ({ student, onClose, refreshRecords }) => {
 
           {loggedInUser.userType === 1 && (
             <div className={formStyles['form-group']}>
-            <label>Is this a Report?</label>
+            <label>Is this a Case?</label>
             <select
               value={report === null ? '' : report ? 'yes' : 'no'}  // Default value is empty
               onChange={handleReportChange}

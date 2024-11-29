@@ -156,7 +156,9 @@ const ViewSuspensions = () => {
                         <td style={{ width: '350px' }}>{suspension.record.student.name}</td>               
                         <td>{suspension.dateSubmitted}</td>
                         <td>{suspension.days} Days</td>
-                        <td> {suspension.approved ? 'Approved' : 'Not Approved'}</td>
+                        <td style={{ fontWeight: 'bold', color: suspension.approved ? '#4caf50' : '#e53935' }}>
+                          {suspension.approved ? 'Approved' : 'Not Approved'}
+                        </td>
                         <td> 
                           {loggedInUser.userType === 2 && (
                             <>

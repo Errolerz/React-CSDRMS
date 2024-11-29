@@ -46,14 +46,17 @@ const ViewRecordModal = ({ record, onClose }) => {
             {isCaseType2 && (
               <>
                 <tr>
-                  <td><strong>Complaint</strong></td>
-                  <td><strong>:</strong></td>
-                  <td>{record.complaint || 'N/A'}</td>
-                </tr>
-                <tr>
                   <td><strong>Complainant</strong></td>
                   <td><strong>:</strong></td>
                   <td>{record.complainant || 'N/A'}</td>
+                </tr>
+                <tr>
+                  <td><strong>Case Details</strong></td>
+                  <td><strong>:</strong></td>
+                  <td>
+                    <strong>Complaint:</strong> {record.complaint} <br />
+                    <strong>Investigation Details:</strong> {record.investigationDetails || 'Under Investigation'}
+                  </td>
                 </tr>
               </>
             )}

@@ -16,8 +16,7 @@
 .record-modal-content {
   background-color: #ffffff; /* Clean white background */
   padding: 30px;
-  width: 50%;
-  max-width: 700px;
+  width: 70%;
   border-radius: 15px; /* Softer rounded corners */
   box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3); /* Elegant shadow */
   position: relative;

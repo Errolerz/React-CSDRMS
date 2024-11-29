@@ -64,22 +64,14 @@ const ViewSuspensions = () => {
     if (selectedSuspension) {
       try {
         const response = await axios.post(`http://localhost:8080/suspension/approveSuspension/${loggedInUser.userId}?suspensionId=${selectedSuspension.suspensionId}`);
-        if (response.data) {
-          alert("Suspension approved successfully.");
-          setSuspensions(suspensions.map(suspension =>
-            suspension.suspensionId === selectedSuspension.suspensionId
-              ? { ...suspension, approved: true }
-              : suspension
-          ));
-        } else {
-          alert("Failed to approve suspension.");
-        }
+        alert("Suspension approved successfully.");
       } catch (error) {
         console.error("Error approving suspension:", error);
         setError("Failed to approve suspension. Please try again later.");
       }
     }
   };
+  
 
   const handleDeleteClick = async () => {
     if (selectedSuspension) {

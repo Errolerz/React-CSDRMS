@@ -19,7 +19,7 @@ const RecordStudentEditModal = ({ record, onClose, refreshRecords }) => {
   const [complainant, setComplainant] = useState(record?.complainant || '');
   const [complaint, setComplaint] = useState(record?.complaint || '');
   const [investigationDetails, setInvestigationDetails] = useState(record?.investigationDetails || '');
-  const [complete, setComplete] = useState(record?.complete === 1 ? 1 : 0); // 1 for complete, 0 for incomplete
+  const [complete, setComplete] = useState(record?.complete || false);
   const [isSuspension, setIsSuspension] = useState(false); 
   const [suspensionDetails, setSuspensionDetails] = useState({
     days: '',

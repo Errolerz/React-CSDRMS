@@ -14,7 +14,7 @@ import ViewRecordModal from '../ViewRecordModal';
 import AddIcon from '@mui/icons-material/AddCircleOutline';
 import ViewNoteIcon from '@mui/icons-material/Visibility';
 import EditNoteIcon from '@mui/icons-material/Edit';
-import DeleteIcon from '@mui/icons-material/Delete';  
+import DeleteIcon from '@mui/icons-material/Delete';
 
 const Record = () => {
   const [records, setRecords] = useState([]);
@@ -22,7 +22,7 @@ const Record = () => {
   const [showAddModal, setShowAddModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
   const [selectedRecord, setSelectedRecord] = useState(null);
-  const [filterType, setFilterType] = useState('Record'); // Default filter is "Record"
+  const [filterType, setFilterType] = useState('All'); // Default filter is "All"
   const [caseStatusFilter, setCaseStatusFilter] = useState('All'); // Default to showing all cases
 
   const authToken = localStorage.getItem('authToken');
@@ -103,6 +103,7 @@ const Record = () => {
   };
 
   const filteredRecords = records.filter((record) => {
+    if (filterType === 'All') return true; // Show all records
     if (filterType === 'Record') return record.type === 1;
     if (filterType === 'Case') {
       if (caseStatusFilter === 'Complete') return record.complete === 1;
@@ -117,13 +118,20 @@ const Record = () => {
       <Navigation loggedInUser={loggedInUser} />
       <div className={navStyles.content}>
         <div className={navStyles.TitleContainer}>
-          <h2 className={navStyles['h1-title']}>{filterType === 'Record' ? 'Student Records' : 'Student Cases'}</h2>
+          <h2 className={navStyles['h1-title']}>
+            {filterType === 'All'
+              ? 'All Student Records & Cases'
+              : filterType === 'Record'
+              ? 'Student Records'
+              : 'Student Cases'}
+          </h2>
         </div>
 
         <div className={styles.filterContainer}>
           <label>
             View by:
             <select onChange={(e) => setFilterType(e.target.value)} value={filterType}>
+              <option value="All">All</option>
               <option value="Record">Record</option>
               <option value="Case">Case</option>
             </select>
@@ -138,7 +146,7 @@ const Record = () => {
                 <option value="Incomplete">Incomplete</option>
               </select>
             )}
-          </label>          
+          </label>
 
           <div>
             <button
@@ -156,8 +164,9 @@ const Record = () => {
               <tr>
                 <th>Name</th>
                 <th>Date Recorded</th>
-                {filterType === 'Record' && <th>Monitored Record</th>}
-                {filterType === 'Case' && <th>Status</th>} {/* Show "Status" only for Case */}
+                <th>Monitored Record</th>
+                <th>Type</th> {/* New column */}
+                <th>Status</th> {/* Status column for Case */}
                 <th>Encoder</th>
                 <th>Actions</th>
               </tr>
@@ -168,26 +177,25 @@ const Record = () => {
                   <tr key={record.recordId}>
                     <td>{record.student.name}</td>
                     <td>{record.record_date}</td>
-                    {filterType === 'Record' && <td>{record.monitored_record}</td>}
-                    {filterType === 'Case' && (
-                      <td
-                        style={{
-                          fontWeight: 'bold',
-                          color:
-                            record.complete === 0
-                              ? '#e53935' // Red for Incomplete
-                              : record.complete === 1
-                              ? '#4caf50' // Green for Complete
-                              : '#000', // Default color for N/A
-                        }}
-                      >
-                        {record.complete === 0
-                          ? 'Incomplete'
-                          : record.complete === 1
-                          ? 'Complete'
-                          : 'N/A'}
-                      </td>
-                    )}
+                    <td>{record.monitored_record || 'N/A'}</td>
+                    <td>{record.type === 1 ? 'Record' : 'Case'}</td> {/* Determine type */}
+                    <td
+                      style={{
+                        fontWeight: 'bold',
+                        color:
+                          record.complete === 0
+                            ? '#e53935' // Red for Incomplete
+                            : record.complete === 1
+                            ? '#4caf50' // Green for Complete
+                            : '#000', // Default color for N/A
+                      }}
+                    >
+                      {record.complete === 0
+                        ? 'Incomplete'
+                        : record.complete === 1
+                        ? 'Complete'
+                        : 'N/A'}
+                    </td>
                     <td>
                       {record.encoder.firstname} {record.encoder.lastname}
                     </td>
@@ -211,7 +219,7 @@ const Record = () => {
                 ))
               ) : (
                 <tr>
-                  <td colSpan={filterType === 'Record' ? 5 : 5} className={styles['no-records']}>
+                  <td colSpan={7} className={styles['no-records']}>
                     No records found.
                   </td>
                 </tr>

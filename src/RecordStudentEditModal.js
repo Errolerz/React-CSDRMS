@@ -9,7 +9,8 @@ const RecordStudentEditModal = ({ record, onClose, refreshRecords }) => {
 
   const monitoredRecords = [
     'Absent', 'Tardy', 'Cutting Classes', 'Improper Uniform', 
-    'Offense', 'Misbehavior', 'Clinic', 'Sanction',
+    'Offense', 'Misbehavior', 'Clinic', 
+    ...(record.source === 1 ? ['Lost/Found Items', 'Request ID', 'Request Permit'] : []),
   ];
 
   const [selectedRecord, setSelectedRecord] = useState(record?.monitored_record || '');
@@ -63,6 +64,8 @@ const RecordStudentEditModal = ({ record, onClose, refreshRecords }) => {
     }));
     
   };
+
+  const isSpecialRecord = ['Lost/Found Items', 'Request ID', 'Request Permit'].includes(selectedRecord);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -196,6 +199,7 @@ const RecordStudentEditModal = ({ record, onClose, refreshRecords }) => {
                 />
               </div>
 
+              
               <div className={styles.inputGroup}>
                 <label>Complaint:</label>
                 <textarea
@@ -203,7 +207,8 @@ const RecordStudentEditModal = ({ record, onClose, refreshRecords }) => {
                   onChange={(e) => setComplaint(e.target.value)}
                 />
               </div>
-
+              
+              {loggedInUser.userType == 2 && (
               <div className={styles.inputGroup}>
                 <label>Investigation Details:</label>
                   <textarea
@@ -211,6 +216,7 @@ const RecordStudentEditModal = ({ record, onClose, refreshRecords }) => {
                     onChange={(e) => setInvestigationDetails(e.target.value)}
                   />
               </div>
+              )}
             </>
           )}
 
@@ -227,7 +233,7 @@ const RecordStudentEditModal = ({ record, onClose, refreshRecords }) => {
             </>
           )}
 
-          {!isSuspension && (
+          {loggedInUser.userType === 1 && !isSpecialRecord &&  !isSuspension && (
             <>
               <div className={styles.inputGroup}>     
                 <label>Sanction:</label>
@@ -240,7 +246,7 @@ const RecordStudentEditModal = ({ record, onClose, refreshRecords }) => {
             </>
           )}          
 
-          {record.source == 2 && !isSuspension && (
+          {loggedInUser.userType === 1 && record.source == 2 && !isSuspension && (
             <>
               <div className={styles.inputGroup}>
                 <label>Is the Case Complete?</label>
@@ -255,7 +261,7 @@ const RecordStudentEditModal = ({ record, onClose, refreshRecords }) => {
               </div>
             </>
           )}
-          
+          {loggedInUser.userType === 1 && !isSpecialRecord &&  (
           <div className={styles.inputGroup}>
             <label>Should the student be suspended ?</label>
             <select
@@ -273,6 +279,7 @@ const RecordStudentEditModal = ({ record, onClose, refreshRecords }) => {
               <option value="Yes">Yes</option>
             </select>
           </div>
+            )}
 
           {isSuspension && (
             <div className={styles.suspensionSection}>

@@ -32,11 +32,14 @@ const AddRecordModal = ({ student, onClose, refreshRecords }) => {
     'Offense',
     'Misbehavior',
     'Clinic',
-    'Sanction',
+    ...(source !== 2 ? ['Lost/Found Items', 'Request ID', 'Request Permit'] : []),
   ];
 
   // Fetch students on component mount
   useEffect(() => {
+    if (loggedInUser.userType !== 1) {
+      setSource(2); // Automatically select 'Complaint' if userType is not 3
+    }
     const fetchStudents = async () => {
       try {
         const response = await axios.get('http://localhost:8080/student/getAllCurrentStudents');
@@ -197,19 +200,20 @@ const AddRecordModal = ({ student, onClose, refreshRecords }) => {
             </select>
           </div>
 
-          {loggedInUser.userType === 1 && (
+          
             <div className={formStyles['form-group']}>
               <label>Source</label>
               <select
                 value={source || ''}
                 onChange={(e) => setSource(Number(e.target.value))} // Convert the value to integer
                 className={`${formStyles['input']} ${styles['student-modal-select']}`}
+                disabled={loggedInUser.userType !== 1}
               >
                 <option value="1">Log Book</option>
                 <option value="2">Complaint</option>
               </select>
             </div>
-          )}
+         
 
           {/* Show Complainant and Complaint if source is Complaint */}
           {source === 2 ? (

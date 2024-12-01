@@ -60,7 +60,7 @@ const Student = () => {
     'Offense',
     'Misbehavior',
     'Clinic',
-    'Sanction',
+    'Request Permit',
   ];
 
   const fetchStudents = useCallback(async () => {

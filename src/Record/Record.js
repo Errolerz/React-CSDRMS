@@ -30,6 +30,10 @@ const Record = () => {
   const loggedInUser = authToken ? JSON.parse(authToken) : null;
 
   useEffect(() => {
+    if ([5, 6].includes(loggedInUser?.userType)) {
+      setFilterType('Complaint');
+    }
+  
     fetchRecords();
   }, []);
 
@@ -127,13 +131,15 @@ const Record = () => {
       <Navigation loggedInUser={loggedInUser} />
       <div className={navStyles.content}>
         <div className={navStyles.TitleContainer}>
-          <h2 className={navStyles['h1-title']}>
+        <h2 className={navStyles['h1-title']}>
           {filterType === 'All'
-            ? 'All Student Records'
+            ? loggedInUser?.userType === 3
+              ? 'Your Student Records'
+              : 'All Student Records'
             : filterType === 'Log Book'
             ? 'Student Records From Log Book'
             : 'Student Records From Complaints'}
-          </h2>
+        </h2>
         </div>
 
         <div className={styles['separator']}>
@@ -152,7 +158,7 @@ const Record = () => {
         <div className={styles.filterContainer}>
           <label>
             View by:
-            <select onChange={(e) => setFilterType(e.target.value)} value={filterType}>
+            <select onChange={(e) => setFilterType(e.target.value)} value={filterType} disabled={loggedInUser?.userType === 5 || loggedInUser?.userType === 6}>
               <option value="All">All</option>
               <option value="Log Book">Log Book</option>
               <option value="Complaint">Complaint</option>

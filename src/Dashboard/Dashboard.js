@@ -161,6 +161,7 @@ const Record = () => {
                     Offense: 0,
                     Misbehavior: 0,
                     Clinic: 0,
+                    'Request Permit': 0,
                     Sanction: 0,
                 };
             });
@@ -190,6 +191,7 @@ const Record = () => {
                             Offense: 0,
                             Misbehavior: 0,
                             Clinic: 0,
+                            'Request Permit': 0,
                             Sanction: 0,
                         };
                     }
@@ -238,6 +240,7 @@ const Record = () => {
                     Offense: 0,
                     Misbehavior: 0,
                     Clinic: 0,
+                    'Request Permit': 0,
                     SanctionFrequency: 0,
                 };
             }
@@ -294,6 +297,12 @@ const Record = () => {
                     label: 'Clinic',
                     data: labels.map(label => monthlyData[label]?.Clinic || 0),
                     borderColor: 'rgba(75, 192, 192, 0.7)',
+                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                },
+                {
+                    label: 'Request Permit',
+                    data: labels.map(label => monthlyData[label]?.['Request Permit'] || 0),
+                    borderColor: 'rgba(75, 192, 192, 1)',
                     backgroundColor: 'rgba(75, 192, 192, 0.2)',
                 },
                 {
@@ -398,6 +407,7 @@ const Record = () => {
                                         <th>Offense</th>
                                         <th>Misbehavior</th>
                                         <th>Clinic</th>
+                                        <th>Request Permit</th>
                                         <th>Sanction</th>
                                     </tr>
                                 </thead>
@@ -412,6 +422,7 @@ const Record = () => {
                                             <td>{frequencies ? frequencies.Offense : 0}</td>
                                             <td>{frequencies ? frequencies.Misbehavior : 0}</td>
                                             <td>{frequencies ? frequencies.Clinic : 0}</td>
+                                            <td>{frequencies ? frequencies['Request Permit'] : 0}</td>
                                             <td>{frequencies ? frequencies.Sanction : 0}</td>
                                         </tr>
                                     ))}
@@ -436,6 +447,7 @@ const Record = () => {
                                             <th>Offense</th>
                                             <th>Misbehavior</th>
                                             <th>Clinic</th>
+                                            <th>Request Permit</th>
                                             <th>Sanction</th>
                                         </tr>
                                     </thead>
@@ -451,6 +463,7 @@ const Record = () => {
                                                     <td>{counts.Offense}</td>
                                                     <td>{counts.Misbehavior}</td>
                                                     <td>{counts.Clinic}</td>
+                                                    <td>{counts['Request Permit']}</td>
                                                     <td>{counts.SanctionFrequency}</td>
                                                 </tr>
                                             ))

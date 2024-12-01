@@ -111,12 +111,19 @@ const ViewRecordModal = ({ record, onClose }) => {
               <td>{`${record.encoder?.firstname || 'N/A'} ${record.encoder?.lastname || ''}`}</td>
             </tr>
             {suspensionStatus && (
-                  <tr>
-                    <td><strong>Suspension</strong></td>
-                    <td><strong>:</strong></td>
-                    <td>{suspensionStatus || 'N/A'}</td>
-                  </tr>
-                )}
+              <tr>
+                <td><strong>Suspension</strong></td>
+                <td><strong>:</strong></td>
+                <td
+                  style={{
+                    color: suspensionStatus === 'Approved' ? '#4caf50' : '#e53935',
+                    fontWeight: 'bold',
+                  }}
+                >
+                  {suspensionStatus}
+                </td>
+              </tr>
+            )}
           </tbody>
         </table>
       </div>

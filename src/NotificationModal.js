@@ -2,13 +2,13 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import styles from './NotificationModal.module.css';
-import ViewReport from './ViewReport'; // Import ViewReport component
+import ViewRecord from './ViewRecordModal'; // Import ViewRecord component
 
 const NotificationModal = ({ onClose, loggedInUser, notifications, refreshNotifications }) => {
   const navigate = useNavigate();
-  const [showViewReportModal, setShowViewReportModal] = useState(false); // State to control the ViewReport modal
+  const [showViewRecordModal, setShowViewRecordModal] = useState(false); // State to control the ViewRecord modal
   const [selectedNotificationId, setSelectedNotificationId] = useState(null); // Selected notification ID
-  const [selectedReportId, setSelectedReportId] = useState(null);
+  const [selectedRecordId, setSelectedRecordId] = useState(null);
 
   // Automatically mark notifications as viewed when modal opens
   useEffect(() => {
@@ -25,15 +25,15 @@ const NotificationModal = ({ onClose, loggedInUser, notifications, refreshNotifi
   }, [loggedInUser, refreshNotifications]);
   
 
-  // Handle viewing a report in modal
-  const handleViewReport = (reportId) => {
-    setSelectedReportId(reportId);
-    setShowViewReportModal(true); // Show the ViewReport modal
+  // Handle viewing a record in modal
+  const handleViewRecord = (recordId) => {
+    setSelectedRecordId(recordId);
+    setShowViewRecordModal(true); // Show the ViewRecord modal
   };
 
-  const closeViewReportModal = () => {
-    setShowViewReportModal(false);
-    setSelectedReportId(null); // Clear the selected report ID
+  const closeViewRecordModal = () => {
+    setShowViewRecordModal(false);
+    setSelectedRecordId(null); // Clear the selected record ID
   };
 
   return (
@@ -52,7 +52,7 @@ const NotificationModal = ({ onClose, loggedInUser, notifications, refreshNotifi
                 <li
                   key={notification.notificationId}
                   className={`${styles['notification-modal-list-item']} ${styles['clickable']}`}
-                  onClick={() => handleViewReport(notification.notification.report.reportId)}
+                  onClick={() => handleViewRecord(notification.notification.record.recordId)}
                 >
                   <strong>{notification.notification.message}</strong>
                   <br />
@@ -66,11 +66,11 @@ const NotificationModal = ({ onClose, loggedInUser, notifications, refreshNotifi
                 
       </div>
 
-      {/* ViewReport Modal */}
-      {showViewReportModal && selectedReportId && (
-        <ViewReport
-          reportId={selectedReportId}
-          onClose={closeViewReportModal}
+      {/* View Record Modal */}
+      {showViewRecordModal && selectedRecordId && (
+        <ViewRecord
+          recordId={selectedRecordId}
+          onClose={closeViewRecordModal}
         />
       )}
     </div>

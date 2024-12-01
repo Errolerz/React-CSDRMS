@@ -208,7 +208,7 @@ const RecordStudentEditModal = ({ record, onClose, refreshRecords }) => {
                 />
               </div>
               
-              {loggedInUser.userType == 2 && (
+              {loggedInUser.userType == 3 && (
               <div className={styles.inputGroup}>
                 <label>Investigation Details:</label>
                   <textarea

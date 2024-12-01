@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+
 import styles from './AddStudentRecordModal.module.css';
 import formStyles from '../GlobalForm.module.css';
 
@@ -143,7 +144,7 @@ const AddRecordModal = ({ student, onClose, refreshRecords }) => {
                       ))}
                     </ul>
                   ) : searchQuery && filteredStudents.length === 0 ? (
-                    <p className={styles.dropdown}>No students found.</p>
+                    <div className={styles.dropdown}>No students found.</div>
                   ) : null }
                 </div>
               )}

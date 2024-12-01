@@ -140,5 +140,109 @@
   justify-content: center;
 }
 
+.table-container {
+  max-height: 450px; /* Adjust height as needed */
+  width: 100%;
+  overflow-y: auto; /* Ensure horizontal scrolling for smaller screens */
+  border: 2px solid #8A252C;
+}
 
+.record-table {
+  width: 100%;
+  border-collapse: collapse; /* Ensures borders are not doubled */
+  table-layout: fixed; /* Ensures consistent cell width */
+}
+
+.record-table thead th {
+  position: sticky; /* Sticky header */
+  top: 0; /* Stick to the top */
+  z-index: 1; /* Ensure header stays on top of scrolling body */
+  background-color: #8A252C; /* Keep background color to prevent overlapping with content */
+  color: white; /* White text for headers */
+  text-shadow: 3px 3px 5px #000;  /* Slight shadow for text */
+  font-weight: 600;
+  border: none;
+}
+
+.record-table th, .record-table td {
+  padding: 10px;
+  font-size: 14px; /* Larger font size for readability */
+  border-bottom: 1px solid #ddd;
+}
+
+.record-table td {
+  padding: 10px;
+  font-size: 12px; /* Larger font size for readability */
+  border-right: 1px solid #ccc;
+  border-bottom: 1px solid #ccc;
+  text-align: center; /* Center align table data */
+  cursor: pointer; /* Pointer cursor for rows */
+}
+
+.record-table td:nth-child(4), 
+.record-table th:nth-child(4) {
+  white-space: normal; /* Allow text to wrap */
+  word-wrap: break-word; /* Ensure long words wrap onto the next line */
+  word-break: break-word; /* For compatibility with different browsers */
+  width: 20%; /* Adjust the width to make the column longer */
+  text-align: left; /* Optional: Align text to the left for readability */
+}
+
+.record-table td:nth-child(5), 
+.record-table th:nth-child(5) {
+  white-space: normal; /* Allow text to wrap */
+  word-wrap: break-word; /* Ensure long words wrap onto the next line */
+  word-break: break-word; /* For compatibility with different browsers */
+  width: 20%; /* Adjust the width to make the column longer */
+  text-align: left; /* Optional: Align text to the left for readability */
+}
+
+.record-table tr {
+  background-color:#fff;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.1); /* Add shadow to create "floating" effect */
+}
+
+.record-table tr:hover {
+  background-color: #f4f6f9; /* Highlighted row color on hover */
+}
+
+.selected-row {
+  background-color: #e0e0e0 !important;
+  color: #8A252C; /* Dark red text color for selected row */
+  font-weight: bold;
+}
+
+/* Search Bar */
+.separator {
+  display: flex; /* Ensure children are aligned correctly */
+  align-items: center; /* Center the icon and input vertically */
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.search-containerz {
+  position: relative;
+  width: 100%; /* Adjust width as necessary */
+  max-width: 300px; /* Set a maximum width for the input */
+}
+
+.search-input {
+  width: 100%;
+  padding: 10px 15px; /* Adjust padding for input text */
+  padding-left: 40px; /* Add left padding for the icon */
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  outline: none;
+}
+
+.search-icon {
+  position: absolute;
+  top: 50%; /* Center icon vertically */
+  left: 10px; /* Position icon horizontally */
+  transform: translateY(-50%);
+  font-size: 20px; /* Adjust icon size */
+  color: #888; /* Icon color */
+  pointer-events: none; /* Make icon non-clickable */
+}
 

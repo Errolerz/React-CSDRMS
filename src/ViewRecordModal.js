@@ -26,8 +26,8 @@ const ViewRecordModal = ({ record, onClose }) => {
 
   if (!record) return null;
 
-  const isCaseType1 = record.type === 1;
-  const isCaseType2 = record.type === 2;
+  const isSourceType1 = record.source === 1;
+  const isSourceType2 = record.source === 2;
 
   return (
     <div className={styles['record-modal-overlay']}>
@@ -36,28 +36,33 @@ const ViewRecordModal = ({ record, onClose }) => {
           ✕
         </button>
         <h2 className={styles['modal-title']}>
-          {isCaseType2 ? 'Complete Details of Case' : 'Complete Details of Record'}
+          {isSourceType2 ? 'Complete Details of Case' : 'Complete Details of Record'}
         </h2>
 
         <table className={styles['details-table']}>
           <tbody>
+            <tr>
+              <td><strong>Name</strong></td>
+              <td><strong>:</strong></td>
+              <td>{record.student.name}</td>
+            </tr>
             <tr>
               <td><strong>Record Date</strong></td>
               <td><strong>:</strong></td>
               <td>{record.record_date || 'N/A'}</td>
             </tr>
             <tr>
+              <td><strong>Time</strong></td>
+              <td><strong>:</strong></td>
+              <td>{record.time || 'N/A'}</td>
+            </tr>
+            <tr>
               <td><strong>Monitored Record</strong></td>
               <td><strong>:</strong></td>
               <td>{record.monitored_record || 'N/A'}</td>
             </tr>
-            <tr>
-              <td><strong>Encoder</strong></td>
-              <td><strong>:</strong></td>
-              <td>{`${record.encoder?.firstname || 'N/A'} ${record.encoder?.lastname || ''}`}</td>
-            </tr>
             {/* Conditionally render fields based on case type */}
-            {isCaseType1 && (
+            {isSourceType1 && (
               <tr>
                 <td><strong>Remarks</strong></td>
                 <td><strong>:</strong></td>
@@ -65,7 +70,7 @@ const ViewRecordModal = ({ record, onClose }) => {
               </tr>
             )}
             {/* Conditionally render fields based on case type */}
-            {isCaseType2 && (
+            {isSourceType2 && (
               <>
                 <tr>
                   <td><strong>Complainant</strong></td>
@@ -76,8 +81,20 @@ const ViewRecordModal = ({ record, onClose }) => {
                   <td><strong>Case Details</strong></td>
                   <td><strong>:</strong></td>
                   <td>
-                    <strong>Complaint:</strong> {record.complaint} <br />
-                    <strong>Investigation Details:</strong> {record.investigationDetails || 'Under Investigation'}
+                    <strong>Complaint:</strong><br /> {record.complaint} <br /><br />
+                    <strong>Investigation Details:</strong><br /> {record.investigationDetails || 'Under Investigation'}
+                  </td>
+                </tr>
+                <tr>
+                  <td><strong>Status</strong></td>
+                  <td><strong>:</strong></td>
+                  <td
+                    style={{
+                      fontWeight: 'bold',
+                      color: record.complete === 1 ? '#4caf50' : '#e53935',
+                    }}
+                  >
+                    {record.complete === 1 ? 'Complete' : 'Incomplete'}
                   </td>
                 </tr>
                 
@@ -87,6 +104,11 @@ const ViewRecordModal = ({ record, onClose }) => {
               <td><strong>Sanction</strong></td>
               <td><strong>:</strong></td>
               <td>{record.sanction || 'N/A'}</td>
+            </tr>
+            <tr>
+              <td><strong>Encoder</strong></td>
+              <td><strong>:</strong></td>
+              <td>{`${record.encoder?.firstname || 'N/A'} ${record.encoder?.lastname || ''}`}</td>
             </tr>
             {suspensionStatus && (
                   <tr>

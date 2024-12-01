@@ -214,19 +214,6 @@ const RecordStudentEditModal = ({ record, onClose, refreshRecords }) => {
             </>
           )}
 
-          {!isSuspension && (
-              <>
-                <div className={styles.inputGroup}>     
-                  <label>Sanction:</label>
-                  <textarea
-                    type="text"
-                    value={sanction}
-                    onChange={(e) => setSanction(e.target.value)}
-                  />
-                </div>
-              </>
-            )}
-
           {record.source == 1 && (
             <>
               <div className={styles.inputGroup}>                 
@@ -239,6 +226,19 @@ const RecordStudentEditModal = ({ record, onClose, refreshRecords }) => {
               </div>
             </>
           )}
+
+          {!isSuspension && (
+            <>
+              <div className={styles.inputGroup}>     
+                <label>Sanction:</label>
+                <textarea
+                  type="text"
+                  value={sanction}
+                  onChange={(e) => setSanction(e.target.value)}
+                />
+              </div>
+            </>
+          )}          
 
           {record.source == 2 && !isSuspension && (
             <>

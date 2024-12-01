@@ -3,7 +3,6 @@ import axios from 'axios';
 
 import styles from './Record.module.css';
 import navStyles from '../Navigation.module.css';
-import tableStyles from '../GlobalTable.module.css';
 import buttonStyles from '../GlobalButton.module.css';
 import Navigation from '../Navigation';
 
@@ -15,6 +14,7 @@ import AddIcon from '@mui/icons-material/AddCircleOutline';
 import ViewNoteIcon from '@mui/icons-material/Visibility';
 import EditNoteIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
+import SearchIcon from '@mui/icons-material/Search';
 
 const Record = () => {
   const [records, setRecords] = useState([]);
@@ -136,6 +136,19 @@ const Record = () => {
           </h2>
         </div>
 
+        <div className={styles['separator']}>
+          <div className={styles['search-containerz']}>
+              <SearchIcon className={styles['search-icon']} />
+              <input
+              type="search"
+              className={styles['search-input']}
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="Search by Name or ID"
+              />
+          </div>
+        </div>
+
         <div className={styles.filterContainer}>
           <label>
             View by:
@@ -158,15 +171,6 @@ const Record = () => {
           </label>
 
           <div>
-            <input
-              type="text"
-              placeholder="Search by name or ID"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-            />
-          </div>
-
-          <div>
             <button
               className={`${buttonStyles['action-button']} ${buttonStyles['gold-button']}`}
               onClick={openAddModal}
@@ -176,15 +180,16 @@ const Record = () => {
           </div>
         </div>
 
-        <div className={tableStyles['table-container']}>
-          <table className={tableStyles['global-table']}>
+        <div className={styles['table-container']}>
+          <table className={styles['record-table']}>
             <thead>
               <tr>
                 <th>Name</th>
                 <th>Date Recorded</th>
                 <th>Monitored Record</th>
-                <th>Type</th> {/* New column */}
-                <th>Status</th> {/* Status column for Case */}
+                {/* <th>Status</th> Status column for Case */}
+                <th>Remarks/Complaint</th>
+                <th>Sanction</th>
                 <th>Encoder</th>
                 <th>Actions</th>
               </tr>
@@ -196,8 +201,7 @@ const Record = () => {
                     <td>{record.student.name}</td>
                     <td>{record.record_date}</td>
                     <td>{record.monitored_record || 'N/A'}</td>
-                    <td>{record.source === 1 ? 'Log Book' : 'Complaint'}</td>
-                    <td
+                    {/* <td
                       style={{
                         fontWeight: 'bold',
                         color:
@@ -213,7 +217,22 @@ const Record = () => {
                         : record.complete === 1
                         ? 'Complete'
                         : 'N/A'}
+                    </td> */}
+                    <td>
+                      {record.source === 2 ? (
+                        <>
+                          <strong>Complaint:</strong><br /> {record.complaint} <br /><br />
+                          <strong>Investigation Details:</strong><br /> {record.investigationDetails || 'Under Investigation'}
+                        </>
+                      ) : (
+                        <>
+                          <strong>Remarks:</strong><br />
+                          {record.remarks} <br /><br />
+                          <strong>Source:</strong> Logbook
+                        </>
+                      )}
                     </td>
+                    <td>{record.sanction}</td>
                     <td>
                       {record.encoder.firstname} {record.encoder.lastname}
                     </td>

@@ -22,9 +22,7 @@ const createSidebarLink = (to, text, IconComponent) => (
 
 const UpdateAccount = () => {
   const location = useLocation(); 
-  console.log("Location state:", location.state);
   const user = location.state ? location.state.user : null;
-  console.log("User:", user);
   const [UserType, setUserType] = useState(null);
   const authToken = localStorage.getItem('authToken');
   const loggedInUser = JSON.parse(authToken);
@@ -54,9 +52,7 @@ const UpdateAccount = () => {
 
   useEffect(() => {
     document.title = "SSO | Update Account";
-    console.log("User:", user);
     if (user && user.userType) {
-      console.log("UserType:", user.userType);
       setUserType(user.userType);
     }
   }, [user]);

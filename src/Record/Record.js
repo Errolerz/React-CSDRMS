@@ -24,6 +24,7 @@ const Record = () => {
   const [selectedRecord, setSelectedRecord] = useState(null);
   const [filterType, setFilterType] = useState('All'); // Default filter is "All"
   const [caseStatusFilter, setCaseStatusFilter] = useState('All'); // Default to showing all cases
+  const [searchQuery, setSearchQuery] = useState('');
 
   const authToken = localStorage.getItem('authToken');
   const loggedInUser = authToken ? JSON.parse(authToken) : null;
@@ -103,12 +104,20 @@ const Record = () => {
   };
 
   const filteredRecords = records.filter((record) => {
-    if (filterType === 'All') return true; // Show all records
-    if (filterType === 'Record') return record.type === 1;
-    if (filterType === 'Case') {
-      if (caseStatusFilter === 'Complete') return record.complete === 1;
-      if (caseStatusFilter === 'Incomplete') return record.complete === 0;
-      return record.type === 2; // "All" case filter
+    const matchesSearch =
+      record.student.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      record.student.sid.toLowerCase().includes(searchQuery.toLowerCase());
+  
+    if (filterType === 'All') {
+      return matchesSearch;
+    }
+    if (filterType === 'Log Book') {
+      return record.source === 1 && matchesSearch;
+    }
+    if (filterType === 'Complaint') {
+      if (caseStatusFilter === 'Complete') return record.complete === 1 && matchesSearch;
+      if (caseStatusFilter === 'Incomplete') return record.complete === 0 && matchesSearch;
+      return record.source === 2 && matchesSearch;
     }
     return false;
   });
@@ -119,11 +128,11 @@ const Record = () => {
       <div className={navStyles.content}>
         <div className={navStyles.TitleContainer}>
           <h2 className={navStyles['h1-title']}>
-            {filterType === 'All'
-              ? 'All Student Records & Cases'
-              : filterType === 'Record'
-              ? 'Student Records'
-              : 'Student Cases'}
+          {filterType === 'All'
+            ? 'All Student Records'
+            : filterType === 'Log Book'
+            ? 'Student Records From Log Book'
+            : 'Student Records From Complaints'}
           </h2>
         </div>
 
@@ -132,11 +141,11 @@ const Record = () => {
             View by:
             <select onChange={(e) => setFilterType(e.target.value)} value={filterType}>
               <option value="All">All</option>
-              <option value="Record">Record</option>
-              <option value="Case">Case</option>
+              <option value="Log Book">Log Book</option>
+              <option value="Complaint">Complaint</option>
             </select>
 
-            {filterType === 'Case' && (
+            {filterType === 'Complaint' && (
               <select
                 onChange={(e) => setCaseStatusFilter(e.target.value)}
                 value={caseStatusFilter}
@@ -147,6 +156,15 @@ const Record = () => {
               </select>
             )}
           </label>
+
+          <div>
+            <input
+              type="text"
+              placeholder="Search by name or ID"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
+          </div>
 
           <div>
             <button
@@ -178,7 +196,7 @@ const Record = () => {
                     <td>{record.student.name}</td>
                     <td>{record.record_date}</td>
                     <td>{record.monitored_record || 'N/A'}</td>
-                    <td>{record.type === 1 ? 'Record' : 'Case'}</td> {/* Determine type */}
+                    <td>{record.source === 1 ? 'Log Book' : 'Complaint'}</td>
                     <td
                       style={{
                         fontWeight: 'bold',

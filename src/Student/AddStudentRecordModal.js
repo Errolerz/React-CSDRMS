@@ -7,9 +7,6 @@ const AddRecordModal = ({ student, onClose, refreshRecords }) => {
   const authToken = localStorage.getItem('authToken');
   const loggedInUser = JSON.parse(authToken);
 
-  const [report, setReport] = useState(null);
-
-
   // Form state
   const [recordDate, setRecordDate] = useState('');
   const [incidentDate, setIncidentDate] = useState('');
@@ -18,6 +15,7 @@ const AddRecordModal = ({ student, onClose, refreshRecords }) => {
   const [complainant, setComplainant] = useState(`${loggedInUser.firstname} ${loggedInUser.lastname}`);
   const [complaint, setComplaint] = useState('');
   const [remarks, setRemarks] = useState('');
+  const [source, setSource] = useState(1); // Initialize as null for "Select"
   const [complete, setComplete] = useState('');
 
   // State for dynamic student selection
@@ -48,29 +46,21 @@ const AddRecordModal = ({ student, onClose, refreshRecords }) => {
     };
     fetchStudents();
     if (loggedInUser.userType !== 1) {
-      setReport(true);
-      setComplainant(`${loggedInUser.firstname} ${loggedInUser.lastname}`);
       setComplete(0); // Assuming '0' means incomplete or pending
     }
-
   }, []);
 
   const handleSubmit = async () => {
-    if (report && (!complainant || !complaint)) {
-      alert('Please fill in all required fields for the report.');
+    if (!recordDate || !incidentDate || !monitoredRecord || !source) {
+      alert('Please fill in all required fields.');
       return;
     }
-  
-    // If report is selected, clear remarks field and set to null
-    if (report) {
-      setRemarks(null);  // Reset remarks when "Yes" for report
-    }
-  
+
     // Explicitly set remarks to null if it's an empty string
     const finalRemarks = remarks === "" ? null : remarks;
-  
-    const type = report ? 2 : 1;
-  
+
+    const finalComplete = source === 1 ? 2 : complete; 
+
     const newRecord = {
       id: student?.id || selectedStudent?.id,
       encoderId: loggedInUser.userId,
@@ -82,10 +72,10 @@ const AddRecordModal = ({ student, onClose, refreshRecords }) => {
       remarks: finalRemarks,  // Use the final value of remarks
       complainant: complainant,
       complaint: complaint,
-      type: type,
-      complete: complete,
+      source: source,
+      complete: finalComplete,
     };
-  
+
     try {
       await axios.post(`http://localhost:8080/record/insert/${loggedInUser.userId}`, newRecord);
       alert('Record added successfully');
@@ -96,7 +86,6 @@ const AddRecordModal = ({ student, onClose, refreshRecords }) => {
       alert('Error adding record');
     }
   };
-  
 
   // Filter students based on search query
   const filteredStudents = students.filter((s) =>
@@ -115,27 +104,9 @@ const AddRecordModal = ({ student, onClose, refreshRecords }) => {
     setSearchQuery(''); // Clear the search query when removing student
   };
 
-  const handleReportChange = (e) => {
-    const value = e.target.value;
-    setReport(value === 'yes');
-    // Set complainant based on the selection
-    if (value === 'yes') {
-      setComplainant(`${loggedInUser.firstname} ${loggedInUser.lastname}`);
-      setComplete(0);
-    } else if (value === 'no') {
-      setComplainant(null);
-      setComplete(2);
-    }
-  };
-
-  // Define dynamic height based on report type
-  const modalHeight = report ? '720px' : '600px'; // 750px for report cases, 600px for regular records
-
   return (
     <div className={styles['student-modal-overlay']}>
-      <div className={styles['student-add-modal-content']}
-        style={{ height: modalHeight }} // Apply dynamic height here
-      >
+      <div className={styles['student-add-modal-content']}>
         <h2>Add New Record</h2>
 
         <div className={formStyles['form-container']}>
@@ -161,21 +132,21 @@ const AddRecordModal = ({ student, onClose, refreshRecords }) => {
 
               {!selectedStudent && (
                 <div>
-              {searchQuery && filteredStudents.length > 0 ? (
-                <ul className={styles.dropdown}>
-                  {filteredStudents.map((student) => (
-                    <li key={student.id}
-                    onClick={() => handleSelectStudent(student)}
-                    className={styles.dropdownItem}>
-                      {student.name} ({student.sid})
-                    </li>
-                  ))}
-                </ul>
-              ) : searchQuery && filteredStudents.length === 0 ? (
-                <p className={styles.dropdown}>No students found.</p>
-              ) : null }
-              </div>
-            )}
+                  {searchQuery && filteredStudents.length > 0 ? (
+                    <ul className={styles.dropdown}>
+                      {filteredStudents.map((student) => (
+                        <li key={student.id}
+                            onClick={() => handleSelectStudent(student)}
+                            className={styles.dropdownItem}>
+                          {student.name} ({student.sid})
+                        </li>
+                      ))}
+                    </ul>
+                  ) : searchQuery && filteredStudents.length === 0 ? (
+                    <p className={styles.dropdown}>No students found.</p>
+                  ) : null }
+                </div>
+              )}
             </>
           )}
 
@@ -227,22 +198,20 @@ const AddRecordModal = ({ student, onClose, refreshRecords }) => {
 
           {loggedInUser.userType === 1 && (
             <div className={formStyles['form-group']}>
-            <label>Is this a Case?</label>
-            <select
-              value={report === null ? '' : report ? 'yes' : 'no'}  // Default value is empty
-              onChange={handleReportChange}
-              className={`${formStyles['input']} ${styles['student-modal-select']}`}
-            >
-              <option value="" disabled>Select</option> {/* Empty option as default */}
-              <option value="no">No</option>
-              <option value="yes">Yes</option>
-            </select>
-          </div>
-
+              <label>Source</label>
+              <select
+                value={source || ''}
+                onChange={(e) => setSource(Number(e.target.value))} // Convert the value to integer
+                className={`${formStyles['input']} ${styles['student-modal-select']}`}
+              >
+                <option value="1">Log Book</option>
+                <option value="2">Complaint</option>
+              </select>
+            </div>
           )}
 
-
-          {report !== null && report ? (
+          {/* Show Complainant and Complaint if source is Complaint */}
+          {source === 2 ? (
             <>
               <div className={formStyles['form-group']}>
                 <label>Complainant:</label>
@@ -262,8 +231,8 @@ const AddRecordModal = ({ student, onClose, refreshRecords }) => {
                 />
               </div>
             </>
-          ) : report !== null && !report ? (
-            // If "No" is selected, show Remarks field
+          ) : (
+            // Show Remarks if source is not Complaint
             <div className={formStyles['form-group']}>
               <label>Remarks:</label>
               <textarea
@@ -272,7 +241,7 @@ const AddRecordModal = ({ student, onClose, refreshRecords }) => {
                 className={formStyles['form-group-textarea']}
               />
             </div>
-          ) : null }
+          )}
 
           <div className={formStyles['global-buttonGroup']}>
             <button className={formStyles['green-button']} onClick={handleSubmit}>

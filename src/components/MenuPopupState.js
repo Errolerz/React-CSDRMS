@@ -14,7 +14,6 @@ const MenuPopupState = () => {
     const loggedInUser = authToken ? JSON.parse(authToken) : null;
     const navigate = useNavigate();
     const [isModalOpen, setModalOpen] = useState(false); // State for modal visibility
-    console.log("Updates: ",loggedInUser.userId);
 
     // Check if the user is logged in
     if (!loggedInUser) {

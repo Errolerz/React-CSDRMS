@@ -24,6 +24,8 @@ const ViewSuspensions = () => {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false); // State to control Edit modal visibility
 
   const [filterApproved, setFilterApproved] = useState("all");
+  const [searchQuery, setSearchQuery] = useState(""); // State for search query
+
 
   useEffect(() => {
     const fetchAndMarkSuspensions = async () => {
@@ -90,9 +92,12 @@ const ViewSuspensions = () => {
   };
 
   const filteredSuspensions = suspensions.filter((suspension) => {
-    if (filterApproved === "approved") return suspension.approved === true;
-    if (filterApproved === "unapproved") return suspension.approved === false;
-    return true; // "all" - no filter
+    const matchesSearchQuery = suspension.record.student.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    suspension.record.student.sid.toLowerCase().includes(searchQuery.toLowerCase());
+
+    if (filterApproved === "approved") return suspension.approved === true && matchesSearchQuery;
+    if (filterApproved === "unapproved") return suspension.approved === false && matchesSearchQuery;
+    return matchesSearchQuery;
   });
 
   return (
@@ -122,6 +127,17 @@ const ViewSuspensions = () => {
                   <option value="unapproved">Unapproved</option>
                 </select>
               </label>
+              
+             <div>
+                <input
+                  id="searchQuery"
+                  type="text"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className={styles["search-input"]}
+                   placeholder="Search by name or ID"
+                />
+              </div>
             </div>
 
             <div className={tableStyles['table-container']}>

@@ -11,18 +11,14 @@ const EditSuspensionModal = ({ isOpen, onClose, suspension }) => {
   const [endDate, setEndDate] = useState(suspension.endDate);
   const [returnDate, setReturnDate] = useState(suspension.returnDate);
   const [days, setDays] = useState(suspension.days);
-  const [offense, setOffense] = useState(suspension.offense);
   const [error, setError] = useState(null);
-
 
   useEffect(() => {
     setStartDate(suspension.startDate);
     setEndDate(suspension.endDate);
     setReturnDate(suspension.returnDate);
     setDays(suspension.days);
-    setOffense(suspension.offense);
   }, [suspension]);
- 
 
   // Function to handle saving edited suspension data
   const handleSave = async () => {
@@ -33,7 +29,6 @@ const EditSuspensionModal = ({ isOpen, onClose, suspension }) => {
         endDate,
         returnDate,
         days,
-        offense,
       };
 
       await axios.put(`http://localhost:8080/suspension/update/${suspension.suspensionId}/${loggedInUser.userId}`, updatedSuspension);
@@ -90,17 +85,6 @@ const EditSuspensionModal = ({ isOpen, onClose, suspension }) => {
               value={returnDate}
               onChange={(e) => setReturnDate(e.target.value)}
               className={styles['suspension-input']}
-            />
-        </div>
-  
-        <div className={styles['report-group']}>
-          <label>Offense:</label>
-            <textarea
-              type="text"
-              name="offense"
-              value={offense}
-              onChange={(e) => setOffense(e.target.value)}
-              className={styles['complaint-textarea']}
             />
         </div>
   

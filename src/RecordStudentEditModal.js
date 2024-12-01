@@ -6,7 +6,6 @@ import formStyles from './GlobalForm.module.css';
 const RecordStudentEditModal = ({ record, onClose, refreshRecords }) => {
   const authToken = localStorage.getItem('authToken');
   const loggedInUser = JSON.parse(authToken);
-  console.log("Record is: ",record)
 
   const monitoredRecords = [
     'Absent', 'Tardy', 'Cutting Classes', 'Improper Uniform', 
@@ -19,7 +18,7 @@ const RecordStudentEditModal = ({ record, onClose, refreshRecords }) => {
   const [complainant, setComplainant] = useState(record?.complainant || '');
   const [complaint, setComplaint] = useState(record?.complaint || '');
   const [investigationDetails, setInvestigationDetails] = useState(record?.investigationDetails || '');
-  const [complete, setComplete] = useState(record?.complete || false);
+  const [complete, setComplete] = useState(record?.complete || 0);
   const [isSuspension, setIsSuspension] = useState(false); 
   const [suspensionDetails, setSuspensionDetails] = useState({
     days: '',
@@ -46,6 +45,7 @@ const RecordStudentEditModal = ({ record, onClose, refreshRecords }) => {
             });
             setIsSuspension(true);  // Set suspension state to true if a suspension exists
           }
+           
         } catch (error) {
           console.error('Error fetching suspension data:', error);
         }
@@ -61,6 +61,7 @@ const RecordStudentEditModal = ({ record, onClose, refreshRecords }) => {
       ...prev,
       [name]: value,
     }));
+    
   };
 
   const handleSubmit = async (e) => {
@@ -82,9 +83,6 @@ const RecordStudentEditModal = ({ record, onClose, refreshRecords }) => {
     }
   
 
-    console.log('Complete state before submit:', complete);
-    // Map the 'complete' Boolean value to the correct integer (1, 0, or 2)
-    const completeValue = complete ? 1 : (complete === false ? 0 : 2);
   
     // If suspension exists, update it
     if (isSuspension && existingSuspension) {
@@ -141,12 +139,12 @@ const RecordStudentEditModal = ({ record, onClose, refreshRecords }) => {
     const updatedRecord = {
       ...record,
       monitored_record: selectedRecord,
-      remarks: record.type === 2 ? null : remarks, // Set remarks to null if it's a case (record type 2)
+      remarks: record.complaint === 2 ? null : remarks, // Set remarks to null if it's a case (record type 2)
       sanction: formattedSanction,
       complainant: complainant,
       complaint: complaint,
       investigationDetails: investigationDetails,
-      complete: record.type === 1 ? 2 :  completeValue, // Send the correct integer value for complete
+      complete: complete, // Send the correct integer value for complete
     };
   
     // Update the record
@@ -169,7 +167,7 @@ const RecordStudentEditModal = ({ record, onClose, refreshRecords }) => {
   return (
     <div className={styles.modalOverlay}>
       <div className={styles.modal}>
-        <h2>{record.type === 2 ? 'Investigate Student Case' : 'Edit Student Record'}</h2>
+        <h2>{record.source === 2 ? 'Investigate Student Case' : 'Edit Student Record'}</h2>
         <form onSubmit={handleSubmit}>
           <div className={styles.inputGroup}>
             <label>Monitored Record:</label>
@@ -187,7 +185,7 @@ const RecordStudentEditModal = ({ record, onClose, refreshRecords }) => {
             </select>
           </div>
 
-          {record.type == 2 && (
+          {record.source == 2 && (
             <>
               <div className={styles.inputGroup}>     
                 <label>Complainant:</label>
@@ -229,7 +227,7 @@ const RecordStudentEditModal = ({ record, onClose, refreshRecords }) => {
               </>
             )}
 
-          {record.type == 1 && (
+          {record.source == 1 && (
             <>
               <div className={styles.inputGroup}>                 
                 <label>Remarks:</label>
@@ -242,7 +240,7 @@ const RecordStudentEditModal = ({ record, onClose, refreshRecords }) => {
             </>
           )}
 
-          {record.type == 2 && !isSuspension && (
+          {record.source == 2 && !isSuspension && (
             <>
               <div className={styles.inputGroup}>
                 <label>Is the Case Complete?</label>
@@ -262,7 +260,13 @@ const RecordStudentEditModal = ({ record, onClose, refreshRecords }) => {
             <label>Should the student be suspended ?</label>
             <select
               value={isSuspension ? 'Yes' : 'No'}
-              onChange={(e) => setIsSuspension(e.target.value === 'Yes')}
+              onChange={(e) => {
+                const isSuspended = e.target.value === 'Yes';
+                setIsSuspension(isSuspended);
+                if (!isSuspended && existingSuspension) {
+                  setSanction(''); // Clear sanction if suspension is turned off
+                }
+              }}
               className={styles.select}
             >
               <option value="No">No</option>
@@ -316,7 +320,7 @@ const RecordStudentEditModal = ({ record, onClose, refreshRecords }) => {
 
           <div className={formStyles['global-buttonGroup']}>
             <button type="submit" className={formStyles['green-button']}>
-              {record.type === 2 ? 'Investigate' : 'Edit'}
+              {record.source === 2 ? 'Investigate' : 'Edit'}
             </button>
             <button type="button" onClick={onClose} className={`${formStyles['green-button']} ${formStyles['red-button']}`}>Cancel</button>
           </div>

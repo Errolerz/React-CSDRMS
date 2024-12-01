@@ -65,8 +65,6 @@ const LoginPage = () => {
       const { userType, userObject } = response.data;
       login(response.data); // Update context
   
-      console.log("User id: ", response.data.uid);
-  
       // Only log time if the userType is 3
      
         const loginTime = new Date().toISOString(); // Get current time in ISO format

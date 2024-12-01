@@ -4,7 +4,6 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom'; // Im
 import './App.css';
 
 import LoginPage from './LoginPage/LoginPage';
-import Notification from './Notification';
 import Dashboard from './Dashboard/Dashboard';
 import Record from './Record/Record';
 
@@ -74,7 +73,6 @@ function App() {
 
           {(loggedInUser && (loggedInUser.userType === 1 || loggedInUser.userType === 3)) && (
             <>
-            <Route path="/notification" element={<Notification />} />
             <Route path="/student" element={<Student />}  />
             {/*<Route path="/student" element={<PrivateRoute element={<Student />} />}  /> */}
             {/* <Route path="/add-record/:sid" element={<AddStudentRecord />} />  */}

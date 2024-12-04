@@ -12,7 +12,6 @@ import Student from './Student/Student'
 
 import Suspension from './Suspension/Suspension';
 
-import UpdateAccount from './UpdateAccount';
 
 // Admin Pages
 import UserManagement from './UserManagement/UserManagement';
@@ -37,7 +36,7 @@ function App() {
           {loggedInUser && (
             <>
              <Route path="/dashboard" element={<Dashboard />} />
-             <Route path="/UpdateAccount" element={<UpdateAccount />} /> 
+
             </>
 
           )}

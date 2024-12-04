@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import styles from '../ReportModal.module.css'; // Correctly importing the styles
+import styles from './EditSuspensionModal.module.css'; // Correctly importing the styles
 import formStyles from '../GlobalForm.module.css';
 
 const EditSuspensionModal = ({ isOpen, onClose, suspension }) => {
@@ -43,12 +43,12 @@ const EditSuspensionModal = ({ isOpen, onClose, suspension }) => {
   if (!isOpen) return null;
 
   return (
-    <div className={styles['report-modal-overlay']}>
+    <div className={styles['suspension-modal-overlay']}>
       <div className={styles['suspension-modal-content']}>
         <h2>Edit Suspension</h2>
         {error && <p className={styles["error-message"]}>{error}</p>}
   
-        <div className={styles['report-group']}>
+        <div className={styles['suspension-group']}>
           <label>Days of Suspension:</label>
             <input
               type="number"
@@ -58,7 +58,7 @@ const EditSuspensionModal = ({ isOpen, onClose, suspension }) => {
             />
         </div>
   
-        <div className={styles['report-group']}>
+        <div className={styles['suspension-group']}>
           <label>Start Date:</label>
             <input
               type="date"
@@ -68,7 +68,7 @@ const EditSuspensionModal = ({ isOpen, onClose, suspension }) => {
             />
         </div>
   
-        <div className={styles['report-group']}>
+        <div className={styles['suspension-group']}>
           <label>End Date:</label>
             <input
               type="date"
@@ -78,7 +78,7 @@ const EditSuspensionModal = ({ isOpen, onClose, suspension }) => {
             /> 
         </div>
   
-        <div className={styles['report-group']}>
+        <div className={styles['suspension-group']}>
           <label>Return Date:</label>
             <input
               type="date"

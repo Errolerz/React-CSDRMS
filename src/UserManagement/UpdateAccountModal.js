@@ -197,7 +197,7 @@
                                 </div>
                             </div>
                         )}
-                        <div className={buttonStyles['global-buttonGroup']}>
+                        <div className={buttonStyles['button-group']}>
                             <button type="button" className={`${buttonStyles['action-button']} ${buttonStyles['green-button']}`} 
                                 onClick={handleUpdate}>Update
                             </button>

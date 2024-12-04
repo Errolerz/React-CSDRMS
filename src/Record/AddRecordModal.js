@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
-import styles from './AddStudentRecordModal.module.css';
+import styles from './AddRecordModal.module.css';
 import formStyles from '../GlobalForm.module.css';
 
 const AddRecordModal = ({ student, onClose, refreshRecords }) => {

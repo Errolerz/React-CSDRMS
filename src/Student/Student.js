@@ -1,10 +1,6 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import axios from 'axios';
 
-import RecordFilter from './RecordFilter'; // Import RecordFilter component
-import AddRecordModal from './AddStudentRecordModal'; // Import AddRecordModal component
-import ImportModal from './StudentImportModal'; // Import ImportModal component
-
 import styles from '../Record/Record.module.css'; // Importing CSS module
 import navStyles from '../Navigation.module.css'; 
 import formStyles from '../GlobalForm.module.css'; // Importing GlobalForm styles
@@ -12,18 +8,20 @@ import buttonStyles from '../GlobalButton.module.css'; // Importing GlobalForm s
 import tableStyles from '../GlobalTable.module.css'; // Importing GlobalForm styles
 import Navigation from '../Navigation';
 
-import EditStudentModal from './EditStudentModal'; // Ensure this path matches the actual file location
-import RecordStudentEditModal from '../RecordStudentEditModal';
-import RecordStudentViewModal from '../ViewRecordModal'; // Import the view modal
+import RecordFilter from './RecordFilter'; // Import RecordFilter component
+import ImportModal from './StudentImportModal'; // Import ImportModal component
 import AddStudentModal from './AddStudentModal';
+import AddRecordModal from '../Record/AddRecordModal'; // Import AddRecordModal component
+import EditStudentModal from './EditStudentModal'; // Ensure this path matches the actual file location
+import RecordStudentEditModal from '../Record/EditRecordModal';
+import RecordStudentViewModal from '../Record/ViewRecordModal'; // Import the view modal
 
 import AddStudentIcon from '@mui/icons-material/PersonAdd';
 import ImportIcon from '@mui/icons-material/FileDownload';
 import AddIcon from '@mui/icons-material/AddCircleOutline';
 import ViewNoteIcon from '@mui/icons-material/Visibility';
 import EditNoteIcon from '@mui/icons-material/Edit';
-import DeleteIcon from '@mui/icons-material/Delete'; // Import Delete icon
-
+import DeleteIcon from '@mui/icons-material/Delete'; 
 
 const Student = () => {
   const authToken = localStorage.getItem('authToken');

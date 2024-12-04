@@ -78,14 +78,6 @@ const ViewRecordModal = ({ record, onClose }) => {
                   <td>{record.complainant || 'N/A'}</td>
                 </tr>
                 <tr>
-                  <td><strong>Case Details</strong></td>
-                  <td><strong>:</strong></td>
-                  <td>
-                    <strong>Complaint:</strong><br /> {record.complaint} <br /><br />
-                    <strong>Investigation Details:</strong><br /> {record.investigationDetails || 'Under Investigation'}
-                  </td>
-                </tr>
-                <tr>
                   <td><strong>Status</strong></td>
                   <td><strong>:</strong></td>
                   <td
@@ -97,19 +89,16 @@ const ViewRecordModal = ({ record, onClose }) => {
                     {record.complete === 1 ? 'Complete' : 'Incomplete'}
                   </td>
                 </tr>
-                
+                <tr>
+                  <td><strong>Case Details</strong></td>
+                  <td><strong>:</strong></td>
+                  <td>
+                    <strong>Complaint:</strong><br /> {record.complaint} <br /><br />
+                    <strong>Investigation Details:</strong><br /> {record.investigationDetails || 'Under Investigation'}
+                  </td>
+                </tr>
               </>
             )}
-            <tr>
-              <td><strong>Sanction</strong></td>
-              <td><strong>:</strong></td>
-              <td>{record.sanction || 'N/A'}</td>
-            </tr>
-            <tr>
-              <td><strong>Encoder</strong></td>
-              <td><strong>:</strong></td>
-              <td>{`${record.encoder?.firstname || 'N/A'} ${record.encoder?.lastname || ''}`}</td>
-            </tr>
             {suspensionStatus && (
               <tr>
                 <td><strong>Suspension</strong></td>
@@ -123,7 +112,17 @@ const ViewRecordModal = ({ record, onClose }) => {
                   {suspensionStatus}
                 </td>
               </tr>
-            )}
+            )}            
+            <tr>
+              <td><strong>Sanction</strong></td>
+              <td><strong>:</strong></td>
+              <td>{record.sanction || 'N/A'}</td>
+            </tr>
+            <tr>
+              <td><strong>Encoder</strong></td>
+              <td><strong>:</strong></td>
+              <td>{`${record.encoder?.firstname || 'N/A'} ${record.encoder?.lastname || ''}`}</td>
+            </tr>
           </tbody>
         </table>
       </div>

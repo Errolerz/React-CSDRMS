@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import styles from './NotificationModal.module.css';
-import ViewRecord from './ViewRecordModal'; // Import ViewRecord component
+import ViewRecord from './Record/ViewRecordModal'; // Import ViewRecord component
 
 const NotificationModal = ({ onClose, loggedInUser, notifications, refreshNotifications }) => {
   const navigate = useNavigate();

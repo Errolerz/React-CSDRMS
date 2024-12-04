@@ -6,9 +6,9 @@ import navStyles from '../Navigation.module.css';
 import buttonStyles from '../GlobalButton.module.css';
 import Navigation from '../Navigation';
 
-import AddRecordModal from '../Student/AddStudentRecordModal';
-import RecordStudentEditModal from '../RecordStudentEditModal';
-import ViewRecordModal from '../ViewRecordModal';
+import AddRecordModal from './AddRecordModal';
+import RecordStudentEditModal from './EditRecordModal';
+import ViewRecordModal from './ViewRecordModal';
 
 import AddIcon from '@mui/icons-material/AddCircleOutline';
 import ViewNoteIcon from '@mui/icons-material/Visibility';

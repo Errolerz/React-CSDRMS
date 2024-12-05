@@ -32,7 +32,7 @@ const Class = () => {
             setLoading(false);
         };
         fetchData();
-    }, [loggedInUser]);
+    }, []);
 
     const fetchClasses = async () => {
         try {
@@ -51,6 +51,21 @@ const Class = () => {
             console.error("Error fetching school years:", error);
         }
     };
+
+    const handleStartYearChange = (e) => {
+        const value = Number(e.target.value);
+        if (value > 0) {
+            setStartYear(value);
+        }
+    };
+    
+    const handleEndYearChange = (e) => {
+        const value = Number(e.target.value);
+        if (value > 0) {
+            setEndYear(value);
+        }
+    };
+    
 
     const handleOpenModal = () => {
         const currentYear = new Date().getFullYear();
@@ -317,7 +332,7 @@ const Class = () => {
                                             type="number"
                                             placeholder="Enter start year"
                                             value={startYear}
-                                            onChange={(e) => setStartYear(Number(e.target.value))}
+                                            onChange={handleStartYearChange}
                                         />
                                     </div>
                                     <div className={styles['class-group']}>
@@ -327,7 +342,7 @@ const Class = () => {
                                             type="number"
                                             placeholder="Enter end year"
                                             value={endYear}
-                                            onChange={(e) => setEndYear(Number(e.target.value))}
+                                            onChange={handleEndYearChange}
                                         />
                                     </div>
                                 </div>

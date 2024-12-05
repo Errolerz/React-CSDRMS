@@ -73,8 +73,10 @@ const Navigation = ({ loggedInUser }) => {
       {loggedInUser.userType !== 5 && (
         <div className={navStyles.sidenav}>
           <div className={navStyles['sidenav-title']}>MENU</div>
+          {console.log('User: ',loggedInUser.firstname)}
           {/* Render sidebar links */}
           <>
+          
             {/* SSO - usertype 1 */}
             {loggedInUser.userType === 1 && createSidebarLink("/dashboard", "Dashboard", AssessmentIcon)}
             {loggedInUser.userType === 1 && createSidebarLink("/student", "Student", SchoolIcon)}

@@ -89,7 +89,7 @@
 
         const handleUpdate = () => {
             const updatedData = { ...updatedUser, userId };
-
+            updatedData.username = user.username;
             if (updatedData.password === '') {
                 delete updatedData.password;
             } else {

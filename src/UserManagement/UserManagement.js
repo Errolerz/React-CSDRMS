@@ -15,6 +15,8 @@ import SearchIcon from '@mui/icons-material/Search';
 import AddIcon from '@mui/icons-material/PersonAdd';
 import EditNoteIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete'; // Import Delete icon
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import ArrowForwardIcon from '@mui/icons-material/ArrowForward'
 
 const AdminDashboard = () => {
   // State variables
@@ -29,18 +31,21 @@ const AdminDashboard = () => {
   const [isConfirmationModalOpen, setIsConfirmationModalOpen] = useState(false);
   const [confirmationMessage, setConfirmationMessage] = useState('');
   const [isUpdateAccountModalOpen, setIsUpdateAccountModalOpen] = useState(false);
-  
+
+  // Pagination states
+  const [currentPage, setCurrentPage] = useState(1); // Set default page to 1
+  const [usersPerPage] = useState(6); // Max number of users per page
+
   useEffect(() => {
     if (!authToken || !loggedInUser) {
       navigate('/login');
       return;
     }
-  
+
     document.title = "Admin | User Management";
     fetchUsers();
   }, []); // Add missing dependencies
   
-
   useEffect(() => {
     const handleKeyDown = (event) => {
       if (event.key === 'Escape') {
@@ -50,18 +55,17 @@ const AdminDashboard = () => {
         if (isUpdateAccountModalOpen) setIsUpdateAccountModalOpen(false);
       }
     };
-  
+
     // Attach the event listener when any modal is open
     if (isAddUserModalOpen || isConfirmationModalOpen || isUpdateAccountModalOpen) {
       window.addEventListener('keydown', handleKeyDown);
     }
-  
+
     // Clean up the event listener when the modals are closed or component unmounts
     return () => {
       window.removeEventListener('keydown', handleKeyDown);
     };
   }, [isAddUserModalOpen, isConfirmationModalOpen, isUpdateAccountModalOpen]);
-  
 
   const fetchUsers = async () => {
     try {
@@ -113,15 +117,24 @@ const AdminDashboard = () => {
 
   const getUserTypeString = (userType) => {
     switch (userType) {
-        case 1: return 'SSO';
-        case 2: return 'Principal';
-        case 3: return 'Adviser';
-        case 4: return 'Admin';
-        case 5: return 'Teacher';
-        case 6: return 'Guidance';
-        default: return 'Unknown';
+      case 1: return 'SSO';
+      case 2: return 'Principal';
+      case 3: return 'Adviser';
+      case 4: return 'Admin';
+      case 5: return 'Teacher';
+      case 6: return 'Guidance';
+      default: return 'Unknown';
     }
-};
+  };
+
+  // Pagination logic
+  const indexOfLastUser = currentPage * usersPerPage;
+  const indexOfFirstUser = indexOfLastUser - usersPerPage;
+  const currentUsers = filteredUsers.slice(indexOfFirstUser, indexOfLastUser);
+
+  const totalPages = Math.ceil(filteredUsers.length / usersPerPage);
+
+  const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
   return (
     <div className={navStyles.wrapper}>
@@ -164,29 +177,31 @@ const AdminDashboard = () => {
                 </tr>
               </thead>
               <tbody>
-                {filteredUsers.length > 0 ? (
-                  filteredUsers.map(user => (
-                    <tr>
+                {currentUsers.length > 0 ? (
+                  currentUsers.map(user => (
+                    <tr key={user.username}>
                       <td>{user.username}</td>
                       <td>{`${user.firstname} ${user.lastname}`}</td>
                       <td>{user.email}</td>
                       <td>{getUserTypeString(user.userType)}</td>
                       <td className={styles['icon-cell']}>
                         <EditNoteIcon 
-                            style={{ marginRight: '15px' }}                    
+                            style={user.userType !== 4 ? { marginRight: '15px' } : {}}
                             className={styles['action-icon']} 
                             onClick={() => {
-                                setSelectedUser(user);
-                                handleUpdateUser();
+                              setSelectedUser(user);
+                              handleUpdateUser();
                             }}
                         />
-                        <DeleteIcon
-                            className={styles['action-icon']} 
-                            onClick={() => {
-                                setSelectedUser(user);
-                                handleDeleteUser();
-                            }}
-                        />                        
+                        {user.userType !== 4 && (
+                            <DeleteIcon
+                                className={styles['action-icon']}
+                                onClick={() => {
+                                  setSelectedUser(user);
+                                  handleDeleteUser();
+                                }}
+                            />
+                        )}            
                     </td>
                     </tr>
                   ))
@@ -200,6 +215,27 @@ const AdminDashboard = () => {
               </tbody>
             </table>
           </div>
+        </div>
+
+        {/* Pagination Controls - Move this below the table */}
+        <div className={styles.pagination}>
+          <button
+            onClick={() => paginate(currentPage - 1)}
+            disabled={currentPage === 1}
+            className={styles.paginationButton}
+          >
+            <ArrowBackIcon />
+          </button>
+          <span className={styles.paginationText}>
+            Page {currentPage} of {totalPages}
+          </span>
+          <button
+            onClick={() => paginate(currentPage + 1)}
+            disabled={currentPage === totalPages}
+            className={styles.paginationButton}
+          >
+            <ArrowForwardIcon />
+          </button>
         </div>
 
         {/* Modals */}

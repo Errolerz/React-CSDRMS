@@ -3,7 +3,7 @@ import axios from 'axios';
 import styles from './StudentImportModal.module.css'; // Import the updated CSS
 import formStyles from '../GlobalForm.module.css'; // Importing GlobalForm styles
 
-const ImportModal = ({ onClose, schoolYears }) => {
+const ImportModal = ({ onClose, schoolYears = [] }) => { // Default to empty array
   const [file, setFile] = useState(null);
   const [importSchoolYear, setImportSchoolYear] = useState('');
 
@@ -50,11 +50,15 @@ const ImportModal = ({ onClose, schoolYears }) => {
           onChange={(e) => setImportSchoolYear(e.target.value)}
         >
           <option value="">Select School Year</option>
-          {schoolYears.map((year) => (
-            <option key={year.schoolYear_ID} value={year.schoolYear}>
-              {year.schoolYear}
-            </option>
-          ))}
+          {schoolYears && schoolYears.length > 0 ? (
+            schoolYears.map((year) => (
+              <option key={year.schoolYear_ID} value={year.schoolYear}>
+                {year.schoolYear}
+              </option>
+            ))
+          ) : (
+            <option disabled>No school years available</option> // Fallback if no schoolYears are available
+          )}
         </select>
 
         <input

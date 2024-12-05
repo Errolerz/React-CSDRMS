@@ -162,7 +162,7 @@ const ViewSuspensions = () => {
                 >
                   <option value="all">All</option>
                   <option value="approved">Approved</option>
-                  <option value="unapproved">Unapproved</option>
+                  <option value="unapproved">Not Approved</option>
                 </select>
               </label>
             </div>

@@ -6,8 +6,8 @@ import navStyles from '../Navigation.module.css';
 import formStyles from '../GlobalForm.module.css'; // Importing GlobalForm styles
 import buttonStyles from '../GlobalButton.module.css'; // Importing GlobalForm styles
 import tableStyles from '../GlobalTable.module.css'; // Importing GlobalForm styles
-import Navigation from '../Navigation';
 
+import Navigation from '../Navigation';
 import RecordFilter from './RecordFilter'; // Import RecordFilter component
 import ImportModal from './StudentImportModal'; // Import ImportModal component
 import AddStudentModal from './AddStudentModal';
@@ -484,8 +484,8 @@ const Student = () => {
                 <tr>
                   <th>Record Date</th>
                   <th>Monitored Record</th>
-                  <th>Type</th>
-                  {/* <th>Sanction</th> */}
+                  <th>Source</th>
+                  <th>Encoder</th>
                   <th>Action</th>
                 </tr>
               </thead>
@@ -501,8 +501,8 @@ const Student = () => {
                     <tr key={record.recordId}>
                       <td>{record.record_date}</td>
                       <td>{record.monitored_record}</td>
-                      <td>{record.type === 1 ? 'Record' : record.type === 2 ? 'Case' : 'Unknown'}</td>
-                      {/* <td>{record.sanction}</td> */}
+                      <td>{record.source === 1 ? 'Logbook' : record.source === 2 ? 'Complaint' : 'Unknown'}</td>
+                      <td>{record.encoder.firstname} {record.encoder.lastname}</td>
                       <td>
                         <ViewNoteIcon
                           onClick={() => {

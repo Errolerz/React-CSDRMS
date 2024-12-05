@@ -54,6 +54,7 @@
   color: white;
   text-shadow: 3px 3px 5px #000;  /* Slight shadow for all text */
   font-weight: bold;
+  font-size: 14px;
 }
 
 .tableInner td{
@@ -62,11 +63,6 @@
   border-right: 1px solid #ccc; /* Border for body cells */
   border-bottom: 1px solid #ccc; /* Border for body cells */
   font-size: 14px;
-}
-
-.tableInner td, 
-.tableInner th {
-  border-right: none;
 }
 
 .modalContainer {
@@ -231,7 +227,7 @@
 
 .search-input {
   width: 100%;
-  padding: 10px 15px; /* Adjust padding for input text */
+  padding: 10px 10px; /* Adjust padding for input text */
   padding-left: 40px; /* Add left padding for the icon */
   font-size: 16px;
   border: 1px solid #ccc;

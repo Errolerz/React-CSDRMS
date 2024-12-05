@@ -233,3 +233,46 @@ h2 {
 transform: scale(1.25);
 cursor: pointer;
 }
+
+/* Pagination Styles */
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;
+}
+
+.paginationButton {
+    color: #fff;
+    background-color: #8A252C;
+    text-shadow: 1px 1px 3px #808080;  /* Slight shadow for all text */
+    border: 2px solid #8A252C;
+    padding: 6px 12px;
+    margin: 0 8px;
+    cursor: pointer;
+    font-size: 20px; /* Slightly larger font for better readability */
+    transition: background-color 0.3s, transform 0.2s ease-in-out;
+    border-radius: 4px; /* Slightly softer border-radius */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 500; /* Subtle weight for better text clarity */
+}
+
+.paginationButton:disabled {
+    background-color: #ddd;
+    color: #808080;
+    cursor: not-allowed;
+    border: 2px solid #ddd;
+}
+
+.paginationButton:hover:not(:disabled) {
+    background-color: #8A252C;
+    color: white;
+    transform: scale(1.1);
+}
+
+.paginationText {
+    font-size: 14px;
+    font-weight: bold;
+}

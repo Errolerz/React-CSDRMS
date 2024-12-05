@@ -167,17 +167,20 @@ const Class = () => {
             alert("Failed to delete school year");
         }
     };
-    
 
     const handleSearch = (e) => setSearchTerm(e.target.value);
 
     const filteredClasses = classes
-        .filter(classItem =>
-            classItem.grade === newGrade || classItem.section?.toLowerCase().includes(searchTerm.toLowerCase())
-        )
-        .sort((a, b) => a.grade - b.grade);
+    .filter(classItem =>
+        classItem.grade.toString().includes(searchTerm) ||
+        classItem.section?.toLowerCase().includes(searchTerm) ||
+        (classItem.schoolYear && classItem.schoolYear.toLowerCase().includes(searchTerm))
+    )
+    .sort((a, b) => a.grade - b.grade);
 
-    const filteredSchoolYears = schoolYears.filter(schoolYear => schoolYear.schoolYear?.includes(searchTerm));
+    const filteredSchoolYears = schoolYears.filter(schoolYear =>
+        schoolYear.schoolYear?.toLowerCase().includes(searchTerm)
+    );
 
     return (
         <div className={navStyles.wrapper}>
@@ -193,7 +196,7 @@ const Class = () => {
                         <SearchIcon className={styles['search-icon']} />
                         <input
                             type="search"
-                            placeholder="Search by Class"
+                            placeholder="Search by Grade, Section or S.Y."
                             value={searchTerm}
                             onChange={handleSearch}
                             className={styles['search-input']}
@@ -214,7 +217,8 @@ const Class = () => {
                         <table className={styles.tableInner}>
                             <thead>
                                 <tr>
-                                    <th>Grade & Section</th>
+                                    <th>Grade</th>
+                                    <th>Section</th>
                                     <th>Actions</th>
                                 </tr>
                             </thead>
@@ -222,7 +226,8 @@ const Class = () => {
                                 {filteredClasses.length > 0 ? (
                                     filteredClasses.map(classItem => (
                                         <tr key={classItem.class_id}>
-                                            <td>{`${classItem.grade} - ${classItem.section}`}</td>
+                                            <td>{classItem.grade}</td>
+                                            <td>{classItem.section}</td>
                                             <td>
                                                 <DeleteIcon 
                                                     onClick={() => deleteClass(classItem.class_id)} 
@@ -233,7 +238,7 @@ const Class = () => {
                                     ))
                                 ) : (
                                     <tr>
-                                        <td colSpan="2">No Results Found...</td>
+                                        <td colSpan="3">No Results Found...</td>
                                     </tr>
                                 )}
                             </tbody>

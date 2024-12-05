@@ -7,8 +7,11 @@ import LoginPage from './LoginPage/LoginPage';
 import Dashboard from './Dashboard/Dashboard';
 import Record from './Record/Record';
 
-import Student from './Student/Student'
-// import ViewReport from './ViewReport'; 
+// Student Records
+import Student from './Student/Student';
+
+//Student List
+import StudentList from './Student/StudentList';
 
 import Suspension from './Suspension/Suspension';
 
@@ -65,6 +68,7 @@ function App() {
           {loggedInUser && loggedInUser.userType === 4 && (
             <>
               <Route path="/UserManagement" element={<PrivateRoute element={<UserManagement />} />} />
+              <Route path="/StudentList" element={<PrivateRoute element={<StudentList />} />} />
               <Route path="/Class" element={<PrivateRoute element={<Class />} />} />
               <Route path="/activitylog" element={<PrivateRoute element={<ActivityLog />} />} />
             </>

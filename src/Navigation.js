@@ -16,6 +16,7 @@ import AssessmentIcon from '@mui/icons-material/Assessment';
 import LocalPoliceIcon from '@mui/icons-material/LocalPolice';
 import IconButton from '@mui/material/IconButton';
 import AssignmentIcon from '@mui/icons-material/Assignment';
+import AccessTimeIcon from '@mui/icons-material/AccessTimeFilled';
 
 const Navigation = ({ loggedInUser }) => {
   const { userId } = loggedInUser;
@@ -73,7 +74,6 @@ const Navigation = ({ loggedInUser }) => {
       {loggedInUser.userType !== 5 && (
         <div className={navStyles.sidenav}>
           <div className={navStyles['sidenav-title']}>MENU</div>
-          {console.log('User: ',loggedInUser.firstname)}
           {/* Render sidebar links */}
           <>
           
@@ -82,7 +82,7 @@ const Navigation = ({ loggedInUser }) => {
             {loggedInUser.userType === 1 && createSidebarLink("/student", "Student", SchoolIcon)}
             {loggedInUser.userType === 1 && createSidebarLink("/record", "Record", PostAddIcon)}
             {loggedInUser.userType === 1 && createSidebarLink("/suspension", "Suspension", LocalPoliceIcon)}
-            {loggedInUser.userType === 1 && createSidebarLink("/activitylog", "Activity Log", AssignmentIcon)}
+            {loggedInUser.userType === 1 && createSidebarLink("/activitylog", "Activity Log", AccessTimeIcon)}
 
             {/* Principal - usertype 2 */}
             {loggedInUser.userType === 2 && createSidebarLink("/dashboard", "Dashboard", AssessmentIcon)}
@@ -97,7 +97,8 @@ const Navigation = ({ loggedInUser }) => {
             {/* Admin - usertype 4 */}
             {loggedInUser.userType === 4 && createSidebarLink("/UserManagement", "Users", AccountBoxIcon)}
             {loggedInUser.userType === 4 && createSidebarLink("/Class", "Class", SchoolIcon)}
-            {loggedInUser.userType === 4 && createSidebarLink("/activitylog", "Activity Log", AssignmentIcon)}
+            {loggedInUser.userType === 4 && createSidebarLink("/StudentList", "Student List", AssignmentIcon)}
+            {loggedInUser.userType === 4 && createSidebarLink("/activitylog", "Activity Log", AccessTimeIcon)}
 
             {/* Guidance - usertype 6 */}
             {loggedInUser.userType === 6 && createSidebarLink("/dashboard", "Dashboard", AssessmentIcon)}

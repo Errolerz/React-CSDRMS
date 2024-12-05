@@ -8,7 +8,7 @@ const NotificationModal = ({ onClose, loggedInUser, notifications, refreshNotifi
   const navigate = useNavigate();
   const [showViewRecordModal, setShowViewRecordModal] = useState(false); // State to control the ViewRecord modal
   const [selectedNotificationId, setSelectedNotificationId] = useState(null); // Selected notification ID
-  const [selectedRecordId, setSelectedRecordId] = useState(null);
+  const [selectedRecord, setSelectedRecord] = useState(null);
 
   // Automatically mark notifications as viewed when modal opens
   useEffect(() => {
@@ -26,14 +26,14 @@ const NotificationModal = ({ onClose, loggedInUser, notifications, refreshNotifi
   
 
   // Handle viewing a record in modal
-  const handleViewRecord = (recordId) => {
-    setSelectedRecordId(recordId);
-    setShowViewRecordModal(true); // Show the ViewRecord modal
+  const handleViewRecord = (record) => {
+      setSelectedRecord(record);
+      setShowViewRecordModal(true);
   };
 
   const closeViewRecordModal = () => {
     setShowViewRecordModal(false);
-    setSelectedRecordId(null); // Clear the selected record ID
+    setSelectedRecord(null); // Clear the selected record ID
   };
 
   return (
@@ -52,7 +52,7 @@ const NotificationModal = ({ onClose, loggedInUser, notifications, refreshNotifi
                 <li
                   key={notification.notificationId}
                   className={`${styles['notification-modal-list-item']} ${styles['clickable']}`}
-                  onClick={() => handleViewRecord(notification.notification.record.recordId)}
+                  onClick={() => handleViewRecord(notification.notification.record)}
                 >
                   <strong>{notification.notification.message}</strong>
                   <br />
@@ -67,9 +67,9 @@ const NotificationModal = ({ onClose, loggedInUser, notifications, refreshNotifi
       </div>
 
       {/* View Record Modal */}
-      {showViewRecordModal && selectedRecordId && (
+      {showViewRecordModal && selectedRecord && (
         <ViewRecord
-          recordId={selectedRecordId}
+          record={selectedRecord}
           onClose={closeViewRecordModal}
         />
       )}

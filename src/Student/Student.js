@@ -80,7 +80,7 @@ const Student = () => {
     } catch (error) {
       console.error('Error fetching students:', error);
     }
-  }, [loggedInUser]);
+  }, []);
 
   useEffect(() => {
     if (!loggedInUser) return;

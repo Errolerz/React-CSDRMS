@@ -38,7 +38,7 @@ const AdminDashboard = () => {
   
     document.title = "Admin | User Management";
     fetchUsers();
-  }, [authToken, loggedInUser, navigate]); // Add missing dependencies
+  }, []); // Add missing dependencies
   
 
   useEffect(() => {

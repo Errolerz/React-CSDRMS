@@ -22,6 +22,11 @@ const EditSuspensionModal = ({ isOpen, onClose, suspension }) => {
 
   // Function to handle saving edited suspension data
   const handleSave = async () => {
+    if (!startDate || !endDate || !returnDate || !days) {
+      alert("Please fill in all the fields.");
+      return;
+    }
+
     try {
       const updatedSuspension = {
         ...suspension,
@@ -55,6 +60,7 @@ const EditSuspensionModal = ({ isOpen, onClose, suspension }) => {
               value={days}
               onChange={(e) => setDays(e.target.value)}
               className={styles['suspension-input']}
+              
             />
         </div>
   
@@ -65,6 +71,7 @@ const EditSuspensionModal = ({ isOpen, onClose, suspension }) => {
               value={startDate}
               onChange={(e) => setStartDate(e.target.value)}
               className={styles['suspension-input']}
+              required
             />
         </div>
   
@@ -75,6 +82,7 @@ const EditSuspensionModal = ({ isOpen, onClose, suspension }) => {
               value={endDate}
               onChange={(e) => setEndDate(e.target.value)}
               className={styles['suspension-input']}
+              required
             /> 
         </div>
   
@@ -85,6 +93,7 @@ const EditSuspensionModal = ({ isOpen, onClose, suspension }) => {
               value={returnDate}
               onChange={(e) => setReturnDate(e.target.value)}
               className={styles['suspension-input']}
+              required
             />
         </div>
   

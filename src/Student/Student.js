@@ -372,11 +372,11 @@ const Student = () => {
                     <td><strong>:</strong></td>
                     <td>{selectedStudent?.homeAddress || 'N/A'}</td>
                   </tr>
-                  <tr>
+                  {/* <tr>
                     <td><strong>Contact No.</strong></td>
                     <td><strong>:</strong></td>
                     <td>{selectedStudent?.contactNumber || 'N/A'}</td>
-                  </tr>
+                  </tr> */}
                   <tr>
                     <td><strong>Emergency No.</strong></td>
                     <td><strong>:</strong></td>

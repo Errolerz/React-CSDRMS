@@ -64,7 +64,7 @@ const StudentList = () => {
   // Fetch school years from API
   const fetchSchoolYears = useCallback(async () => {
     try {
-      const response = await axios.get('http://localhost:8080/school-year'); // API to fetch school years
+      const response = await axios.get('http://localhost:8080/schoolYear/getAllSchoolYears'); // API to fetch school years
       if (Array.isArray(response.data)) {
         setSchoolYears(response.data);
       } else {

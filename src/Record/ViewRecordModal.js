@@ -47,6 +47,11 @@ const ViewRecordModal = ({ record, onClose }) => {
               <td>{record.student.name}</td>
             </tr>
             <tr>
+              <td><strong>Grade & Section</strong></td>
+              <td><strong>:</strong></td>
+              <td>{record.student.grade} - {record.student.section}</td>
+            </tr>
+            <tr>
               <td><strong>Record Date</strong></td>
               <td><strong>:</strong></td>
               <td>{record.record_date || 'N/A'}</td>

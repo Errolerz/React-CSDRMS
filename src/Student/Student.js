@@ -83,6 +83,20 @@ const Student = () => {
   }, [loggedInUser]);
 
   useEffect(() => {
+    if (!loggedInUser) return;
+    
+    console.log('loggedInUser.userType:', loggedInUser?.userType); // Debug log
+
+    const userTypeTitles = {
+      1: 'SSO',
+      3: 'Adviser',
+    };
+  
+    const userTypeTitle = userTypeTitles[loggedInUser?.userType] || 'Unknown';
+    document.title = `${userTypeTitle} | Student Overview`;
+  }, [loggedInUser]);
+
+  useEffect(() => {
     const fetchSchoolYears = async () => {
       try {
         const response = await axios.get('http://localhost:8080/schoolYear/getAllSchoolYears');

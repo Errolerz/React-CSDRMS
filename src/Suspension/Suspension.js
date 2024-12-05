@@ -30,6 +30,19 @@ const ViewSuspensions = () => {
   const [filterApproved, setFilterApproved] = useState("all");
   const [searchQuery, setSearchQuery] = useState(""); // State for search query
 
+  useEffect(() => {
+    if (!loggedInUser) return;
+    
+    console.log('loggedInUser.userType:', loggedInUser?.userType); // Debug log
+
+    const userTypeTitles = {
+      1: 'SSO',
+      2: 'Principal',
+    };
+  
+    const userTypeTitle = userTypeTitles[loggedInUser?.userType] || 'Unknown';
+    document.title = `${userTypeTitle} | Suspension List`;
+  }, [loggedInUser]);
 
   useEffect(() => {
     const fetchAndMarkSuspensions = async () => {
@@ -51,11 +64,6 @@ const ViewSuspensions = () => {
     fetchAndMarkSuspensions();
   }, []);
 
-  // Handle row click to select suspension
-  const handleRowClick = (suspension) => {
-    setSelectedSuspension(suspension);
-  };
-
   // Open the modal to view the selected suspension
   const handleViewClick = () => {
     setIsModalOpen(true);
@@ -65,12 +73,23 @@ const ViewSuspensions = () => {
     setIsEditModalOpen(true);
   };
 
-  // New function to handle the approval action
   const handleApproveClick = async () => {
     if (selectedSuspension) {
       try {
-        const response = await axios.post(`http://localhost:8080/suspension/approveSuspension/${loggedInUser.userId}?suspensionId=${selectedSuspension.suspensionId}`);
+        const response = await axios.post(
+          `http://localhost:8080/suspension/approveSuspension/${loggedInUser.userId}?suspensionId=${selectedSuspension.suspensionId}`
+        );
+        console.log("Approval Response:", response.data);
         alert("Suspension approved successfully.");
+        
+        // Update state to reflect the approval
+        setSuspensions((prev) =>
+          prev.map((suspension) =>
+            suspension.suspensionId === selectedSuspension.suspensionId
+              ? { ...suspension, approved: true }
+              : suspension
+          )
+        );
       } catch (error) {
         console.error("Error approving suspension:", error);
         setError("Failed to approve suspension. Please try again later.");
@@ -152,24 +171,20 @@ const ViewSuspensions = () => {
               <table className={tableStyles['global-table']}>
                 <thead>
                   <tr>
-                    <th>Record ID</th>
                     <th style={{ width: '350px' }}>Student</th>
-                    <th>Adviser</th>
+                    <th>Grade & Section</th>
                     <th>Date Submitted</th>
-                    <th>Suspended</th>
+                    <th>Days Of Suspension</th>
+                    <th>Suspension</th>
                     <th>Action</th>
                   </tr>
                 </thead>
                 <tbody>
                   {filteredSuspensions.length > 0 ? (
                     filteredSuspensions.map((suspension) => (
-                      <tr 
-                        key={suspension.suspensionId} 
-                        onClick={() => handleRowClick(suspension)}
-                        className={selectedSuspension?.suspensionId === suspension.suspensionId ? tableStyles['selected-row'] : ''}
-                      >
-                        <td>{suspension.record.recordId}</td>  
-                        <td style={{ width: '350px' }}>{suspension.record.student.name}</td>               
+                      <tr>
+                        <td style={{ width: '350px' }}>{suspension.record.student.name}</td>  
+                        <td>{suspension.record.student.grade} - {suspension.record.student.section}</td>             
                         <td>{suspension.dateSubmitted}</td>
                         <td>{suspension.days} Days</td>
                         <td style={{ fontWeight: 'bold', color: suspension.approved ? '#4caf50' : '#e53935' }}>
@@ -182,7 +197,10 @@ const ViewSuspensions = () => {
                                 variant="contained" 
                                 className={formStyles['action-icon']}
                                 style={{ marginRight: '15px' }}
-                                onClick={handleViewClick} 
+                                onClick={() => {
+                                  setSelectedSuspension(suspension); // Set the selected suspension
+                                  handleViewClick(); // Open the modal 
+                                }}
                               />
                               
                               {suspension.approved ? (
@@ -195,13 +213,13 @@ const ViewSuspensions = () => {
                                 <CheckOutlinedIcon
                                   variant="contained"
                                   onClick={() => {
+                                    setSelectedSuspension(suspension); // Set the suspension to be approved
                                     const confirmApproval = window.confirm("Are you sure you want to approve this suspension?");
                                     if (confirmApproval) {
                                       handleApproveClick(); 
                                     }
                                   }}
                                   className={formStyles['action-icon']}
-                                  style={{transform: 'none'}}
                                 />
                               )}
                             </>
@@ -210,23 +228,31 @@ const ViewSuspensions = () => {
                           {loggedInUser.userType === 1 && (
                             <>
                               <ViewNoteIcon
-                                variant="contained" 
+                                variant="contained"
                                 className={formStyles['action-icon']}
                                 style={{ marginRight: '15px' }}
-                                onClick={handleViewClick}
+                                onClick={() => {
+                                  setSelectedSuspension(suspension); // Set the selected suspension
+                                  handleViewClick(); // Open the view modal
+                                }}
                               />
-                              
                               <EditNoteIcon
                                 variant="contained"
-                                onClick={handleEditClick}
                                 className={formStyles['action-icon']}
                                 style={{ marginRight: '15px' }}
+                                onClick={() => {
+                                  setSelectedSuspension(suspension); // Set the selected suspension
+                                  handleEditClick(); // Open the edit modal
+                                }}
                               />
-                              
+
                               <DeleteIcon
                                 variant="contained"
-                                onClick={handleDeleteClick}
                                 className={formStyles['action-icon']}
+                                onClick={() => {
+                                  setSelectedSuspension(suspension); // Set the selected suspension
+                                  handleDeleteClick(); // Confirm and delete
+                                }}
                               />
                             </>
                           )}

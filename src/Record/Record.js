@@ -30,13 +30,30 @@ const Record = () => {
   const loggedInUser = authToken ? JSON.parse(authToken) : null;
 
   useEffect(() => {
+    if (!loggedInUser) return;
+
+    console.log('loggedInUser.userType:', loggedInUser?.userType); // Debug log
+
+    const userTypeTitles = {
+      1: 'SSO',
+      2: 'Principal',
+      3: 'Adviser',
+      5: 'Teacher',
+      6: 'Guidance',
+    };
+  
+    const userTypeTitle = userTypeTitles[loggedInUser?.userType] || 'Unknown';
+    document.title = `${userTypeTitle} | Record`;
+  }, [loggedInUser]);
+
+  useEffect(() => {
     if ([5, 6].includes(loggedInUser?.userType)) {
       setFilterType('Complaint');
     }
-  
+
     fetchRecords();
   }, []);
-
+  
   const fetchRecords = () => {
     let url = '';
     let params = {};
@@ -129,7 +146,11 @@ const Record = () => {
   return (
     <div className={navStyles.wrapper}>
       <Navigation loggedInUser={loggedInUser} />
-      <div className={navStyles.content}>
+      <div
+        className={`${navStyles.content} ${
+          loggedInUser?.userType === 5 ? navStyles['content-teacher'] : ''
+        }`}
+      >
         <div className={navStyles.TitleContainer}>
         <h2 className={navStyles['h1-title']}>
           {filterType === 'All'

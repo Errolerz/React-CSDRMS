@@ -149,6 +149,10 @@ body{
     overflow-y: auto;
 }
 
+.content-teacher{
+    margin-left: 0px;
+}
+
 .margin-zero {
     margin-left: 0; /* For userType 5 */
 }

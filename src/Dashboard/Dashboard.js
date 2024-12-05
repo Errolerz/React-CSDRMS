@@ -39,28 +39,10 @@ const Record = () => {
     const [sectionsForGrade, setSectionsForGrade] = useState([]); // Sections based on selected grade
     const [frequencyData, setFrequencyData] = useState({});
     const [monthlyData, setMonthlyData] = useState({});
-    const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
     const filteredFrequencyData = selectedGrade ? { [selectedGrade]: frequencyData[selectedGrade] } : frequencyData;
     const exportRef = useRef(); 
-
-    useEffect(() => {
-        if (!loggedInUser) return;
-    
-        console.log('loggedInUser.userType:', loggedInUser?.userType); // Debug log
-    
-        const userTypeTitles = {
-            1: 'SSO',
-            2: 'Principal',
-            3: 'Adviser',
-            5: 'Teacher',
-            6: 'Guidance',
-        };
-    
-        const userTypeTitle = userTypeTitles[loggedInUser?.userType] || 'Unknown';
-        document.title = `${userTypeTitle} | Dashboard`;
-        }, [loggedInUser]);
 
 
     const handleExportToPDF = async () => {
@@ -131,8 +113,6 @@ const Record = () => {
                 setUniqueGrades(gradeRes.data); // Set unique grades
             } catch (err) {
                 setError(err.message || 'Error fetching data.');
-            } finally {
-                setLoading(false);
             }
         };
 
@@ -150,7 +130,7 @@ const Record = () => {
             if (selectedGrade) {
                 try {
                     const response = await axios.get(`http://localhost:8080/class/sections/${selectedGrade}`);
-                    setSectionsForGrade(response.data.map(section => section.toLowerCase())); 
+                    setSectionsForGrade(response.data); // Set sections for selected grade
                 } catch (err) {
                     setError(err.message || 'Error fetching sections.');
                 }
@@ -194,8 +174,7 @@ const Record = () => {
                 const isMonthMatch = !selectedMonth || recordMonth === selectedMonth;
                 const isWeekMatch = !selectedWeek || week === parseInt(selectedWeek);
                 const isGradeMatch = !selectedGrade || record.student.grade === parseInt(selectedGrade);
-                const isSectionMatch = !selectedSection || record.student.section.toLowerCase() === selectedSection.toLowerCase();
-
+                const isSectionMatch = !selectedSection || record.student.section === selectedSection;
 
                 if (isYearMatch && isMonthMatch && isWeekMatch && isGradeMatch && isSectionMatch) {
                     const key = selectedMonth ? day : recordMonth;
@@ -245,7 +224,7 @@ const Record = () => {
     const filteredStudentRecords = records
         .filter(record => 
             (!selectedGrade || record.student.grade === parseInt(selectedGrade)) && 
-            (!selectedSection || record.student.section.toLowerCase() === selectedSection.toLowerCase())
+            (!selectedSection || record.student.section === selectedSection)
         )
         .reduce((acc, record) => {
             const studentName = record.student.name;
@@ -278,63 +257,62 @@ const Record = () => {
                 {
                     label: 'Absent',
                     data: labels.map(label => monthlyData[label]?.Absent || 0),
-                    borderColor: 'rgba(255, 0, 0, 1)', // Red
-                    backgroundColor: 'rgba(255, 0, 0, 0.2)',
+                    borderColor: 'rgba(255, 99, 132, 1)',
+                    backgroundColor: 'rgba(255, 99, 132, 0.2)',
                 },
                 {
                     label: 'Tardy',
                     data: labels.map(label => monthlyData[label]?.Tardy || 0),
-                    borderColor: 'rgba(255, 127, 0, 1)', // Orange
-                    backgroundColor: 'rgba(255, 127, 0, 0.2)',
+                    borderColor: 'rgba(54, 162, 235, 1)',
+                    backgroundColor: 'rgba(54, 162, 235, 0.2)',
                 },
                 {
                     label: 'Cutting Classes',
                     data: labels.map(label => monthlyData[label]?.['Cutting Classes'] || 0),
-                    borderColor: 'rgba(255, 255, 0, 1)', // Yellow
-                    backgroundColor: 'rgba(255, 255, 0, 0.2)',
+                    borderColor: 'rgba(255, 206, 86, 1)',
+                    backgroundColor: 'rgba(255, 206, 86, 0.2)',
                 },
                 {
                     label: 'Improper Uniform',
                     data: labels.map(label => monthlyData[label]?.['Improper Uniform'] || 0),
-                    borderColor: 'rgba(0, 255, 0, 1)', // Green
-                    backgroundColor: 'rgba(0, 255, 0, 0.2)',
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
                 },
                 {
                     label: 'Offense',
                     data: labels.map(label => monthlyData[label]?.Offense || 0),
-                    borderColor: 'rgba(0, 0, 255, 1)', // Blue
-                    backgroundColor: 'rgba(0, 0, 255, 0.2)',
+                    borderColor: 'rgba(153, 102, 255, 1)',
+                    backgroundColor: 'rgba(153, 102, 255, 0.2)',
                 },
                 {
                     label: 'Misbehavior',
                     data: labels.map(label => monthlyData[label]?.Misbehavior || 0),
-                    borderColor: 'rgba(75, 0, 130, 1)', // Indigo
-                    backgroundColor: 'rgba(75, 0, 130, 0.2)',
+                    borderColor: 'rgba(255, 159, 64, 1)',
+                    backgroundColor: 'rgba(255, 159, 64, 0.2)',
                 },
                 {
                     label: 'Clinic',
                     data: labels.map(label => monthlyData[label]?.Clinic || 0),
-                    borderColor: 'rgba(238, 130, 238, 1)', // Violet
-                    backgroundColor: 'rgba(238, 130, 238, 0.2)',
+                    borderColor: 'rgba(75, 192, 192, 0.7)',
+                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
                 },
                 {
                     label: 'Request Permit',
                     data: labels.map(label => monthlyData[label]?.['Request Permit'] || 0),
-                    borderColor: 'rgba(0, 0, 0, 1)', // Black
-                    backgroundColor: 'rgba(0, 0, 0, 0.2)',
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
                 },
                 {
                     label: 'Sanction',
                     data: labels.map(label => monthlyData[label]?.Sanction || 0),
-                    borderColor: 'rgba(139, 69, 19, 1)', // Brown
-                    backgroundColor: 'rgba(139, 69, 19, 0.2)',
+                    borderColor: 'rgba(255, 0, 0, 1)',
+                    backgroundColor: 'rgba(255, 0, 0, 0.2)',
                 },
             ];
 
         return { labels, datasets };
     };
 
-    if (loading) return <div>Loading records...</div>;
     if (error) return <div>Error: {error}</div>;
 
     return (
@@ -348,16 +326,16 @@ const Record = () => {
                     <div className={styles.filters}>
                         <div>
                             <label>Filters:
-                            {loggedInUser && loggedInUser.userType !== 3 && (
-                                <select id="schoolYear" value={selectedYear} onChange={handleYearChange}>
-                                    <option value="">All School Years</option>
-                                    {schoolYears.map(year => (
-                                        <option key={year.schoolYear_ID} value={year.schoolYear}>
-                                            {year.schoolYear}
-                                        </option>
-                                    ))}
-                                </select>
-                            )}
+                                {loggedInUser && loggedInUser.userType !== 3 && (
+                                    <select id="schoolYear" value={selectedYear} onChange={handleYearChange}>
+                                        <option value="">All School Years</option>
+                                        {schoolYears.map(year => (
+                                            <option key={year.schoolYear_ID} value={year.schoolYear}>
+                                                {year.schoolYear}
+                                            </option>
+                                        ))}
+                                    </select>
+                                )}
                                 <select
                                     id="grade"
                                     value={selectedGrade}
@@ -373,13 +351,13 @@ const Record = () => {
                                 {selectedGrade && (
                                         <select
                                             id="section"
-                                            value={selectedSection.toLowerCase()}
+                                            value={selectedSection}
                                             onChange={handleSectionChange}
                                             disabled={loggedInUser.userType === 3}
                                         >
                                             <option value="">All Sections</option>
                                             {sectionsForGrade.map((section, index) => (
-                                                <option key={index} value={section.toLowerCase()}>{section}</option>
+                                                <option key={index} value={section}>{section}</option>
                                             ))}
                                         </select>
                                 )}
@@ -457,7 +435,7 @@ const Record = () => {
                                 <table className={tableStyles['global-table']}>
                                     <thead>
                                         <tr>
-                                            <th style={{ width: '250px'}}>Name</th>
+                                            <th style={{ width: '350px'}}>Name</th>
                                             <th>Absent</th>
                                             <th>Tardy</th>
                                             <th>Cutting Classes</th>
@@ -487,7 +465,7 @@ const Record = () => {
                                             ))
                                         ) : (
                                             <tr>
-                                                <td colSpan="10" style={{ textAlign: 'center' }}>
+                                                <td colSpan="9" style={{ textAlign: 'center' }}>
                                                     No records found.
                                                 </td>
                                             </tr>

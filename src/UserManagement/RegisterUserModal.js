@@ -75,6 +75,18 @@ const RegisterUserModal = ({ isOpen, onClose, role }) => {
     const handleChange = (e) => {
         const { name, value } = e.target;
         setUserData(prevUserData => ({ ...prevUserData, [name]: value }));
+        
+        setUserData((prevUserData) => {
+            const updatedUserData = { ...prevUserData, [name]: value };
+    
+            // Automatically update email when first or last name changes
+            if (name === 'firstname' || name === 'lastname') {
+                const email = `${updatedUserData.firstname.toLowerCase()}.${updatedUserData.lastname.toLowerCase()}@example.com`;
+                updatedUserData.email = email;
+            }
+    
+            return updatedUserData;
+        });    
 
         if (name === 'password') {
             setPasswordStrength(calculatePasswordStrength(value));

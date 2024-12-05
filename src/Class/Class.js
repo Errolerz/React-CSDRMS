@@ -20,7 +20,6 @@ const Class = () => {
     const [newGrade, setNewGrade] = useState(null);
     const [newSection, setNewSection] = useState("");
     const [searchTerm, setSearchTerm] = useState("");
-    const [loading, setLoading] = useState(true);
 
     const [modalType, setModalType] = useState("Class"); // Class or School Year
     const [showModal, setShowModal] = useState(false);
@@ -29,7 +28,6 @@ const Class = () => {
         document.title = "Admin | Class";
         const fetchData = async () => {
             await Promise.all([fetchClasses(), fetchSchoolYears()]);
-            setLoading(false);
         };
         fetchData();
     }, []);
@@ -180,9 +178,6 @@ const Class = () => {
         .sort((a, b) => a.grade - b.grade);
 
     const filteredSchoolYears = schoolYears.filter(schoolYear => schoolYear.schoolYear?.includes(searchTerm));
-
-    if (loading)
-        return <div>Loading...</div>;
 
     return (
         <div className={navStyles.wrapper}>

@@ -366,7 +366,7 @@ const RecordStudentEditModal = ({ record, onClose, refreshRecords }) => {
 
           <div className={formStyles['global-buttonGroup']}>
             <button type="submit" className={formStyles['green-button']}>
-              {record.source === 2 ? 'Investigate' : 'Edit'}
+              {record.source === 2 ? 'Submit' : 'Edit'}
             </button>
             <button type="button" onClick={onClose} className={`${formStyles['green-button']} ${formStyles['red-button']}`}>Cancel</button>
           </div>

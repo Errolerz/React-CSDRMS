@@ -11,7 +11,7 @@ const LoginPage = () => {
   const { login } = useContext(AuthContext);
 
   useEffect(() => {
-    document.title = "Login";
+    document.title = "JHS Success Hub | Login";
     const authToken = localStorage.getItem('authToken');
     if (authToken) {
       try {

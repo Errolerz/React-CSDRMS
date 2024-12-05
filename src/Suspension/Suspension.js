@@ -210,17 +210,24 @@ const ViewSuspensions = () => {
                                   disabled={true}
                                 />
                               ) : (
-                                <CheckOutlinedIcon
-                                  variant="contained"
-                                  onClick={() => {
-                                    setSelectedSuspension(suspension); // Set the suspension to be approved
-                                    const confirmApproval = window.confirm("Are you sure you want to approve this suspension?");
-                                    if (confirmApproval) {
-                                      handleApproveClick(); 
-                                    }
-                                  }}
-                                  className={formStyles['action-icon']}
-                                />
+                              <CheckOutlinedIcon
+                                variant="contained"
+                                onClick={() => {
+                                  // Check if suspension details have been viewed
+                                  if (!selectedSuspension) {
+                                    alert("Please review the Suspension Details before approving.");
+                                    return;
+                                  }
+
+                                  setSelectedSuspension(suspension); // Set the suspension to be approved
+                                  const confirmApproval = window.confirm("Are you sure you want to approve this suspension?");
+                                  if (confirmApproval) {
+                                    handleApproveClick();
+                                  }
+                                }}
+                                className={formStyles['action-icon']}
+                              />
+
                               )}
                             </>
                           )}

@@ -87,7 +87,7 @@ const Navigation = ({ loggedInUser }) => {
             {/* Principal - usertype 2 */}
             {loggedInUser.userType === 2 && createSidebarLink("/dashboard", "Dashboard", AssessmentIcon)}
             {loggedInUser.userType === 2 && createSidebarLink("/suspension", "Suspension", LocalPoliceIcon)}
-            {loggedInUser.userType === 2 && createSidebarLink("/record", "Record", PostAddIcon)}
+            {loggedInUser.userType === 2 && createSidebarLink("/record", "Complaint", PostAddIcon)}
 
             {/* Adviser - usertype 3 */}
             {loggedInUser.userType === 3 && createSidebarLink("/dashboard", "Dashboard", AssessmentIcon)}
@@ -102,7 +102,7 @@ const Navigation = ({ loggedInUser }) => {
 
             {/* Guidance - usertype 6 */}
             {loggedInUser.userType === 6 && createSidebarLink("/dashboard", "Dashboard", AssessmentIcon)}
-            {loggedInUser.userType === 6 && createSidebarLink("/record", "Record", PostAddIcon)}
+            {loggedInUser.userType === 6 && createSidebarLink("/record", "Complaint", PostAddIcon)}
           </>
         </div>
       )}

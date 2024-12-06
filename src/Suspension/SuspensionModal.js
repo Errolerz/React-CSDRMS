@@ -106,6 +106,9 @@ const SuspensionModal = ({ isOpen, onClose, suspension }) => {
       >
         <ExportIcon style={{ marginRight: '8px' }} /> Export to PDF
       </button>
+      <button onClick={onClose} className={styles['closeButton']}>
+        ✕
+      </button>
       <div ref={exportRef} className={styles.exportSection}>
         <div className={styles["suspension-modal-formContainer"]}>
         

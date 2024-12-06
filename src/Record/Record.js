@@ -159,6 +159,8 @@ const Record = () => {
               : 'All Student Records'
             : filterType === 'Log Book'
             ? 'Student Records From Log Book'
+            : loggedInUser?.userType === 2 || loggedInUser?.userType === 6
+            ? 'Complaint List'
             : 'Student Records From Complaints'}
         </h2>
         </div>

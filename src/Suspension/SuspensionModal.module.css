@@ -1,17 +1,17 @@
 .suspension-modal-modalContainer {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 800px; /* Increased width */
-    max-height: 90vh; /* Ensure the modal doesn't overflow the screen */
-    overflow-y: auto; /* Enable scrolling if content is too tall */
-    background-color: white;
-    border: 2px solid #000;
-    box-shadow: 24;
-    padding: 40px; /* Increased padding for a more spacious layout */
-    font-family: 'Times New Roman', Times, serif;
-  }
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 800px; /* Increased width */
+  max-height: 90vh; /* Ensure the modal doesn't overflow the screen */
+  overflow-y: auto; /* Enable scrolling if content is too tall */
+  background-color: white;
+  border: 2px solid #000;
+  box-shadow: 24;
+  padding: 40px; /* Increased padding for a more spacious layout */
+  font-family: 'Times New Roman', Times, serif;
+}
   
   .suspension-modal-formContainer {
     margin: 0;
@@ -44,3 +44,25 @@
     margin-bottom: 0;
   }
   
+  /* Close Button */
+.closeButton {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  border: none;
+  font-size: 24px;
+  color: #000; /* Primary color */
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: transform 0.2s ease, background-color 0.2s ease;
+}
+
+.closeButton:hover {
+  transform: scale(1.1);
+  color: #000; /* Slightly darker primary color on hover */
+}

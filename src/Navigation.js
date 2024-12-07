@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
 
 import navStyles from './Navigation.module.css'; // CSS for Navigation
@@ -21,18 +21,27 @@ import AccessTimeIcon from '@mui/icons-material/AccessTimeFilled';
 const Navigation = ({ loggedInUser }) => {
   const { userId } = loggedInUser;
   const navigate = useNavigate();
+  const location = useLocation(); // To get the current URL path
   const [unviewedCount, setUnviewedCount] = useState(0); // To store count of unviewed notifications
   const [notifications, setNotifications] = useState([]); // All notifications for display
   
   const [showNotificationModal, setShowNotificationModal] = useState(false); // State to control modal visibility
   
 
-  const createSidebarLink = (to, text, IconComponent) => (
-    <Link to={to} className={navStyles['styled-link']}>
-      <IconComponent className={navStyles.icon} />
-      <span>{text}</span>
-    </Link>
-  );
+  const createSidebarLink = (to, text, IconComponent) => {
+    const isActive = location.pathname === to; // Check if the link is active
+
+    // Set styles for active link
+    const linkStyles = `${navStyles['styled-link']} ${isActive ? navStyles.active : ''}`;
+
+    return (
+      <Link to={to} className={linkStyles}>
+        <IconComponent className={navStyles.icon} />
+        <span>{text}</span>
+      </Link>
+    );
+  };
+
 
   useEffect(() => {
     const fetchNotifications = async () => {
@@ -133,6 +142,7 @@ const Navigation = ({ loggedInUser }) => {
           onClose={handleModalClose} 
           notifications={notifications} 
           loggedInUser={loggedInUser}
+          setNotifications={setNotifications}
           refreshNotifications={() => setUnviewedCount(0)} // Refresh unviewed count
         />
       )}

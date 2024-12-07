@@ -276,67 +276,123 @@ const Record = () => {
             const labels = selectedMonth
                 ? Array.from({ length: 31 }, (_, i) => i + 1)
                 : ['August', 'September', 'October', 'November', 'December', 'January', 'February', 'March', 'April', 'May'];
-    
+        
             const datasets = [
                 {
                     label: 'Absent',
                     data: labels.map(label => monthlyData[label]?.Absent || 0),
-                    borderColor: 'rgba(255, 0, 0, 1)', 
-                    backgroundColor: 'rgba(255, 0, 0, 0.2)',
+                    borderColor: '#FF0000',  // Red
+                    backgroundColor: '#FF0000', // Light Red
                 },
                 {
                     label: 'Tardy',
                     data: labels.map(label => monthlyData[label]?.Tardy || 0),
-                    borderColor: 'rgba(255, 127, 0, 1)', 
-                    backgroundColor: 'rgba(255, 127, 0, 0.2)',
+                    borderColor: '#FF7F00',  // Orange
+                    backgroundColor: '#FF7F00', // Light Orange
                 },
                 {
                     label: 'Cutting Classes',
                     data: labels.map(label => monthlyData[label]?.['Cutting Classes'] || 0),
-                    borderColor: 'rgba(255, 255, 0, 1)', 
-                    backgroundColor: 'rgba(255, 255, 0, 0.2)',
+                    borderColor: '#FFFF00',  // Yellow
+                    backgroundColor: '#FFFF00', // Light Yellow
                 },
                 {
                     label: 'Improper Uniform',
                     data: labels.map(label => monthlyData[label]?.['Improper Uniform'] || 0),
-                    borderColor: 'rgba(0, 255, 0, 1)', 
-                    backgroundColor: 'rgba(0, 255, 0, 0.2)',
+                    borderColor: '#00FF00',  // Green
+                    backgroundColor: '#00FF00', // Light Green
                 },
                 {
                     label: 'Offense',
                     data: labels.map(label => monthlyData[label]?.Offense || 0),
-                    borderColor: 'rgba(0, 0, 255, 1)', 
-                    backgroundColor: 'rgba(0, 0, 255, 0.2)',
+                    borderColor: '#0000FF',  // Blue
+                    backgroundColor: '#0000FF', // Light Blue
                 },
                 {
                     label: 'Misbehavior',
                     data: labels.map(label => monthlyData[label]?.Misbehavior || 0),
-                    borderColor: 'rgba(75, 0, 130, 1)', 
-                    backgroundColor: 'rgba(75, 0, 130, 0.2)',
+                    borderColor: '#4B0082',  // Indigo
+                    backgroundColor: '#4B0082', // Light Indigo
                 },
                 {
                     label: 'Clinic',
                     data: labels.map(label => monthlyData[label]?.Clinic || 0),
-                    borderColor: 'rgba(238, 130, 238, 1)', 
-                    backgroundColor: 'rgba(238, 130, 238, 0.2)',
+                    borderColor: '#EE82EE',  // Violet
+                    backgroundColor: '#EE82EE', // Light Violet
                 },
                 {
                     label: 'Request Permit',
                     data: labels.map(label => monthlyData[label]?.['Request Permit'] || 0),
-                    borderColor: 'rgba(0, 0, 0, 1)', 
-                    backgroundColor: 'rgba(0, 0, 0, 0.2)',
+                    borderColor: '#8B4513',  // Brown
+                    backgroundColor: '#8B4513', // Light Brown
                 },
                 {
                     label: 'Sanction',
                     data: labels.map(label => monthlyData[label]?.Sanction || 0),
-                    borderColor: 'rgba(139, 69, 19, 1)', 
-                    backgroundColor: 'rgba(139, 69, 19, 0.2)',
+                    borderColor: '#000000',  // Black
+                    backgroundColor: '#000000', // Light Black
                 },
             ];
-    
+        
             return { labels, datasets };
         };
+        
 
+        const getChartPieData = () => {
+            const pieData = {
+                labels: [
+                    'Absent',
+                    'Tardy',
+                    'Cutting Classes',
+                    'Improper Uniform',
+                    'Offense',
+                    'Misbehavior',
+                    'Clinic',
+                    'Request Permit',
+                    'Sanction',
+                ],
+                datasets: [
+                    {
+                        data: [
+                            Object.values(filteredFrequencyData).reduce((sum, frequencies) => sum + frequencies.Absent, 0),
+                            Object.values(filteredFrequencyData).reduce((sum, frequencies) => sum + frequencies.Tardy, 0),
+                            Object.values(filteredFrequencyData).reduce((sum, frequencies) => sum + frequencies['Cutting Classes'], 0),
+                            Object.values(filteredFrequencyData).reduce((sum, frequencies) => sum + frequencies['Improper Uniform'], 0),
+                            Object.values(filteredFrequencyData).reduce((sum, frequencies) => sum + frequencies.Offense, 0),
+                            Object.values(filteredFrequencyData).reduce((sum, frequencies) => sum + frequencies.Misbehavior, 0),
+                            Object.values(filteredFrequencyData).reduce((sum, frequencies) => sum + frequencies.Clinic, 0),
+                            Object.values(filteredFrequencyData).reduce((sum, frequencies) => sum + frequencies['Request Permit'], 0),
+                            Object.values(filteredFrequencyData).reduce((sum, frequencies) => sum + frequencies.Sanction, 0),
+                        ],
+                        backgroundColor: [
+                            '#FF0000', // Absent (Red)
+                            '#FF7F00', // Tardy (Orange)
+                            '#FFFF00', // Cutting Classes (Yellow)
+                            '#008000', // Improper Uniform (Green)
+                            '#0000FF', // Offense (Blue)
+                            '#4B0082', // Misbehavior (Indigo)
+                            '#9400D3', // Clinic (Violet)
+                            'rgba(139, 69, 19, 1)', // Sanction (Brownish)
+                            '#000000', // Request Permit (Black)
+                        ],
+                        borderColor: [
+                            '#FF0000', // Absent (Red)
+                            '#FF7F00', // Tardy (Orange)
+                            '#FFFF00', // Cutting Classes (Yellow)
+                            '#008000', // Improper Uniform (Green)
+                            '#0000FF', // Offense (Blue)
+                            '#4B0082', // Misbehavior (Indigo)
+                            '#9400D3', // Clinic (Violet)
+                            'rgba(139, 69, 19, 1)', // Sanction (Brownish)
+                            '#000000', // Request Permit (Black)
+                        ],
+                        borderWidth: 1,
+                    },
+                ],
+            };
+            return pieData;
+        };
+        
         const handleChartTypeChange = (e) => {
             setSelectedChartType(e.target.value);
         };
@@ -513,7 +569,7 @@ const Record = () => {
                     <h2 className={styles.RecordTitle}>Analytics Overview</h2>
                     <div className={styles.chartContainer}> {/* This will apply the centering styles */}
                         <div className={styles['linechart-Container']}>
-                        {selectedChartType === 'line' && (
+                             {selectedChartType === 'line' && (
                                 <Line
                                     data={getChartData()}
                                     options={{
@@ -539,18 +595,23 @@ const Record = () => {
                                     }}
                                 />
                             )}
-                            {selectedChartType === 'pie' && (
-                                <Pie
-                                    data={getChartData()}
+                            <div className={styles['piechart-Container']}>
+                                {selectedChartType === 'pie' && (
+                                    <Pie
+                                    data={getChartPieData()}
                                     options={{
                                         responsive: true,
+                                        maintainAspectRatio: false, // This allows the chart to take the container size
                                         plugins: {
                                             legend: { position: 'top' },
                                             title: { display: true, text: 'Monitored Records Distribution' },
                                         },
                                     }}
-                                />
-                            )}
+                                    style={{ width: '75%', height: '75%' }} // Ensure the pie chart takes 100% width and height of the container
+                                    />
+
+                                )}
+                            </div>
                         </div>
                     </div>
                 </div>

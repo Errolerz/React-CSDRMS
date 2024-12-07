@@ -81,7 +81,7 @@ const RegisterUserModal = ({ isOpen, onClose, role }) => {
     
             // Automatically update email when first or last name changes
             if (name === 'firstname' || name === 'lastname') {
-                const email = `${updatedUserData.firstname.toLowerCase()}.${updatedUserData.lastname.toLowerCase()}@example.com`;
+                const email = `${updatedUserData.firstname.toLowerCase()}.${updatedUserData.lastname.toLowerCase()}@cit.edu`;
                 updatedUserData.email = email;
             }
     

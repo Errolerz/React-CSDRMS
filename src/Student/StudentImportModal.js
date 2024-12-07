@@ -30,6 +30,7 @@ const ImportModal = ({ onClose, schoolYears = [] }) => { // Default to empty arr
         },
       });
       alert('File uploaded successfully');
+      window.location.reload(); // Refresh the page after successful upload
       onClose(); // Close the modal after upload
     } catch (error) {
       console.error('Error uploading file:', error);

@@ -36,17 +36,20 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    /* margin-top: 20px; Add margin if needed for spacing */
-  }
+    margin-top: 20px; /* Optional: margin for spacing */
+    width: 100%; /* Increased width */
+    height: 100%; /* Increased height */
+}
 
-.pieChart-Container{
-    width: 600px;
-    height: 400px;
+.pieChart-Container {
+    width: 800px; /* Increased width */
+    height: 600px; /* Increased height */
     padding: 5px; /* Padding around the chart for better spacing */
     border: 2px solid #8A252C; /* Optional: border around the chart */
-    border-radius: 8px; /* Rounded corners for the chart */
-    background-color: #f9f9f9; /* Light background for contrast */
+    border-radius: 8px; /* Rounded corners */
+    background-color: #f9f9f9; /* Light background */
 }
+
   
 .linechart-Container, .barchart-Container{
     /* margin-top: 20px; */

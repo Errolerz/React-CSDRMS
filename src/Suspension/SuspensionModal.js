@@ -150,11 +150,58 @@ const SuspensionModal = ({ isOpen, onClose, suspension }) => {
             Thank you very much.
           </p>
 
-          {/* Sincerely */}
+          <br />
+
           <p>
-            Sincerely yours,<br />
-            HS-SSO
+            Sincerely yours,
           </p>
+          
+          <div className={styles.separator}>
+            <div className={styles.signatureContainer}>
+              <div className={styles.signatureLine}>
+                _____________________
+              </div>
+              <div className={styles.signatureLabel}>
+                HS-SSO IN-CHARGE
+              </div>
+            </div>
+
+            <div className={styles.signatureContainer}>
+              <div className={styles.signatureLine}>
+                _____________________
+              </div>
+              <div className={styles.signatureLabel}>
+                HS-SSO IN-CHARGE
+              </div>
+            </div>
+          </div>
+
+          <br /><br />
+          <p>
+            Approved by:
+          </p>
+
+          <div className={styles.separator}>
+            <div className={styles.signatureContainer}>
+              <div className={styles.signatureLine}>
+                _____________________
+              </div>
+              <div className={styles.signatureLabel}>
+                Principal
+              </div>
+            </div>
+
+            <div className={styles.signatureContainer}>
+              <div className={styles.signatureLine}>
+                _____________________
+              </div>
+              <div className={styles.signatureLabel}>
+                Overall Academic Coordinator
+              </div>
+            </div>
+          </div>
+
+
 
         </div>
         </div>

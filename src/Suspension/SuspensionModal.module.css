@@ -66,3 +66,30 @@
   transform: scale(1.1);
   color: #000; /* Slightly darker primary color on hover */
 }
+
+.name {
+  text-align: center; /* Ensure the name is centered */
+}
+
+
+.separator {
+  display: flex;
+  justify-content: space-between; /* Spaces out the signature containers */
+  width: 100%; /* Ensure the containers take up full width */
+}
+
+.signatureContainer {
+  display: flex;
+  flex-direction: column; /* Stack the signature line and label vertically */
+  align-items: center; /* Center the signature line and label horizontally */
+  flex: 1; /* Ensure containers take equal space */
+}
+
+.signatureLine {
+  text-align: center; /* Center the signature line */
+}
+
+.signatureLabel {
+  margin-top: 5px; /* Add some space between the signature line and label */
+  text-align: center; /* Center the label under the line */
+}

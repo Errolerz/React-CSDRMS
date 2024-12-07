@@ -19,7 +19,7 @@
   width: 500px; /* Adjust width relative to viewport */
   height: 50vw; /* Keep height auto to maintain aspect ratio */
   z-index: 1;
-  animation: fadeInUp 0.8s ease-in-out;
+  animation: fadeInUp 0.4s ease-in-out;
 }
 
 .ssoImage {
@@ -32,7 +32,7 @@
   width: 175px; /* Make width relative to the screen */
   height: 175px; /* Keep height auto to maintain aspect ratio */
   z-index: 1;
-  animation: fadeInUp 0.8s ease-in-out;
+  animation: fadeInUp 0.4s ease-in-out;
 }
 
 /* Adjust form container */
@@ -54,11 +54,11 @@
   height: auto;
   width: 80vw; /* Adjust width for mobile screens */
   max-width: 450px; /* Ensure it doesn't stretch too wide on larger screens */
-  border: 2px solid #264143;
+  border: 2px solid #8A252C;
   border-radius: 20px;
   box-shadow: 3px 4px 0px 1px #E99F4C;
   margin-top: 3%;
-  animation: fadeInUp 0.8s ease-in-out;
+  animation: fadeInUp 0.4s ease-in-out;
 }
 
 .title {
@@ -99,7 +99,7 @@
 
 .form_style {
   outline: none;
-  border: 2px solid #264143;
+  border: 2px solid #8A252C;
   box-shadow: 3px 4px 0px 1px #e8bd26;
   width: 80vw; /* Adjust width */
   max-width: 290px; /* Set max-width to prevent stretching */

@@ -21,7 +21,7 @@ const SuspensionModal = ({ isOpen, onClose, suspension }) => {
   useEffect(() => {
     const fetchPrincipal = async () => {
       try {
-        const response = await axios.get('http://localhost:8080/user/getPrincipal', {
+        const response = await axios.get('https://spring-csdrms-g8ra.onrender.com/user/getPrincipal', {
           headers: { Authorization: `Bearer ${authToken}` }
         });
         setPrincipal(response.data);
@@ -32,7 +32,7 @@ const SuspensionModal = ({ isOpen, onClose, suspension }) => {
 
     const markAsViewedForPrincipal = async () => {
       try {
-        await axios.post(`http://localhost:8080/suspension/markAsViewedForPrincipal/${suspension.suspensionId}/${loggedInUser.userId}`, null, {
+        await axios.post(`https://spring-csdrms-g8ra.onrender.com/suspension/markAsViewedForPrincipal/${suspension.suspensionId}/${loggedInUser.userId}`, null, {
           headers: { Authorization: `Bearer ${authToken}` }
         });
       } catch (error) {

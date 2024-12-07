@@ -14,7 +14,7 @@ const NotificationModal = ({ onClose, loggedInUser, notifications, refreshNotifi
   useEffect(() => {
     const markNotificationsAsViewed = async () => {
       try {
-        await axios.post(`http://localhost:8080/notifications/user/${loggedInUser.userId}/mark-all-as-viewed`);
+        await axios.post(`https://spring-csdrms-g8ra.onrender.com/notifications/user/${loggedInUser.userId}/mark-all-as-viewed`);
         refreshNotifications(); // Refresh notification count
       } catch (error) {
         console.error('Error marking notifications as viewed:', error);

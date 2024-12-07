@@ -41,7 +41,7 @@ const StudentList = () => {
       if (userType === 4) {
         // Fetch all students for admin
         response = await axios.get(
-          'http://localhost:8080/student/getAllCurrentStudents'
+          'https://spring-csdrms-g8ra.onrender.com/student/getAllCurrentStudents'
         );
       }
 
@@ -64,7 +64,7 @@ const StudentList = () => {
   // Fetch school years from API
   const fetchSchoolYears = useCallback(async () => {
     try {
-      const response = await axios.get('http://localhost:8080/schoolYear/getAllSchoolYears'); // API to fetch school years
+      const response = await axios.get('https://spring-csdrms-g8ra.onrender.com/schoolYear/getAllSchoolYears'); // API to fetch school years
       if (Array.isArray(response.data)) {
         setSchoolYears(response.data);
       } else {

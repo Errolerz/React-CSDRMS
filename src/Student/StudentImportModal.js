@@ -24,7 +24,7 @@ const ImportModal = ({ onClose, schoolYears = [] }) => { // Default to empty arr
     formData.append('schoolYear', importSchoolYear);
 
     try {
-      await axios.post('http://localhost:8080/student/import', formData, {
+      await axios.post('https://spring-csdrms-g8ra.onrender.com/student/import', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },

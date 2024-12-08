@@ -148,3 +148,108 @@
     background-color: #f4f6f9; /* Highlighted row color on hover */
 }
 
+
+/* Responsive Table */
+@media screen and (max-width: 768px) {
+    .table-container {
+        max-height: 300px; /* Reduce height for smaller screens */
+        overflow-x: auto; /* Enable horizontal scrolling */
+    }
+
+    .global-table th, .global-table td {
+        padding: 8px; /* Reduce padding */
+        font-size: 12px; /* Decrease font size */
+    }
+
+    .global-table td {
+        text-align: left; /* Align text to the left for better readability */
+    }
+
+    .global-table {
+        table-layout: fixed; /* Ensure consistent column width */
+    }
+}
+
+@media screen and (max-width: 480px) {
+    .global-table th, .global-table td {
+        padding: 6px; /* Further reduce padding */
+        font-size: 10px; /* Smaller font size for narrow screens */
+    }
+
+    .global-table td {
+        display: block; /* Stack table cells */
+        width: 100%; /* Full width for each cell */
+    }
+
+    .global-table tr {
+        display: block; /* Stack rows for better mobile experience */
+        margin-bottom: 10px; /* Add spacing between rows */
+    }
+
+    .global-table thead {
+        display: none; /* Hide table header */
+    }
+
+    .global-table td::before {
+        content: attr(data-label); /* Use data-label attribute for column names */
+        font-weight: bold;
+        display: block;
+        margin-bottom: 5px;
+        text-transform: uppercase;
+    }
+}
+
+/* Table Overview */
+.table-overview {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: auto;
+}
+
+.table-overview th, .table-overview td {
+    padding: 8px;
+    font-size: 14px;
+    text-align: center;
+}
+
+.table-overview td {
+    word-wrap: break-word;
+    white-space: normal; /* Allow text to wrap */
+}
+
+@media screen and (max-width: 768px) {
+    .table-overview th, .table-overview td {
+        font-size: 12px;
+        padding: 6px;
+    }
+
+    .table-overview tr td:first-child {
+        width: auto; /* Adjust for smaller screens */
+    }
+
+    .table-overview th:last-child,
+    .table-overview td:last-child {
+        min-width: 50px; /* Ensure minimum width for last column */
+    }
+}
+
+@media screen and (max-width: 480px) {
+    .table-overview th, .table-overview td {
+        display: block;
+        width: 100%;
+        text-align: left;
+        padding: 5px;
+    }
+
+    .table-overview thead {
+        display: none;
+    }
+
+    .table-overview td::before {
+        content: attr(data-label);
+        font-weight: bold;
+        display: block;
+        text-transform: uppercase;
+        margin-bottom: 3px;
+    }
+}

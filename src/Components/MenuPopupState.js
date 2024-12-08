@@ -9,13 +9,15 @@ import AccountCircleIcon from '@mui/icons-material/AccountCircle'; // Profile ic
 import IconButton from '@mui/material/IconButton'; // Profile icon
 
 import UpdateAccountModal from '../UserManagement/UpdateAccountModal'; // Import the UpdateAccountModal
-import navStyles from '../Navigation.module.css'; // Import the CSS module
+import Loader from '../Loader'; // Import your Loader component
+import navStyles from './Navigation.module.css'; // Import the CSS module
 
 const MenuPopupState = () => {
     const authToken = localStorage.getItem('authToken');
     const loggedInUser = authToken ? JSON.parse(authToken) : null;
     const navigate = useNavigate();
     const [isModalOpen, setModalOpen] = useState(false); // State for modal visibility
+    const [loading, setLoading] = useState(false); // State for loader visibility
 
     // Check if the user is logged in
     if (!loggedInUser) {
@@ -35,6 +37,7 @@ const MenuPopupState = () => {
 
     // Handle user logout and remove auth token
     const handleLogout = async () => {
+        setLoading(true); // Show the loader
         const userType = user.userType;
 
         try {
@@ -48,41 +51,50 @@ const MenuPopupState = () => {
             });
 
             localStorage.removeItem('authToken');
+            setLoading(false); // Hide the loader before navigation
             navigate('/');
         } catch (error) {
             console.error('Error logging out', error);
+            setLoading(false); // Hide the loader in case of an error
         }
     };
 
     // Open profile update modal
     const handleProfileClick = () => {
         setModalOpen(true); // Open the modal
-        
     };
 
     // Close profile update modal
     const handleModalClose = () => {
-        setModalOpen(false); // Close the modal c h ec k p o i n t
-        
+        setModalOpen(false); // Close the modal
     };
 
     return (
-        <PopupState variant="popover" popupId="demo-popup-menu">
-            {(popupState) => (
-                <React.Fragment>
-                    <IconButton
-                        {...bindTrigger(popupState)} 
-                    >
-                        <AccountCircleIcon className={navStyles['header-icon']} />
-                    </IconButton>
-                    <Menu {...bindMenu(popupState)}>
-                        <MenuItem onClick={handleProfileClick}>Update Account</MenuItem>
-                        <MenuItem onClick={handleLogout}>Logout</MenuItem>
-                    </Menu>
-                    <UpdateAccountModal isOpen={isModalOpen} onClose={handleModalClose} userId={user.userId} user={user}  /> {/* Include the modal */}
-                </React.Fragment>
-            )}
-        </PopupState>
+        <React.Fragment>
+            {/* Display loader when loading */}
+            {loading && <Loader />}    
+            <PopupState variant="popover" popupId="demo-popup-menu">
+                {(popupState) => (
+                    <React.Fragment>
+                        <IconButton
+                            {...bindTrigger(popupState)} 
+                        >
+                            <AccountCircleIcon className={navStyles['header-icon']} />
+                        </IconButton>
+                        <Menu {...bindMenu(popupState)}>
+                            <MenuItem onClick={handleProfileClick}>Update Account</MenuItem>
+                            <MenuItem onClick={handleLogout}>Logout</MenuItem>
+                        </Menu>
+                        <UpdateAccountModal 
+                            isOpen={isModalOpen} 
+                            onClose={handleModalClose} 
+                            userId={user.userId} 
+                            user={user}  
+                        />
+                    </React.Fragment>
+                )}
+            </PopupState>        
+        </React.Fragment>
     );
 };
 

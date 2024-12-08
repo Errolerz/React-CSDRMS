@@ -51,7 +51,7 @@
   right: 20px;
   border: none;
   font-size: 24px;
-  color: #000; /* Primary color */
+  color: #8A252C; /* Primary color */
   border-radius: 50%;
   width: 40px;
   height: 40px;
@@ -64,7 +64,8 @@
 
 .closeButton:hover {
   transform: scale(1.1);
-  color: #000; /* Slightly darker primary color on hover */
+  color: #8A252C; /* Slightly darker primary color on hover */
+  background-color: #ccc; 
 }
 
 .name {

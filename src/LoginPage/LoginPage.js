@@ -1,14 +1,18 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import styles from "./LoginPage.module.css";
+
 import { AuthContext } from './AuthContext';
+import styles from "./LoginPage.module.css";
+import Loader from '../Loader';
 
 const LoginPage = () => {
   const navigate = useNavigate();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const { login } = useContext(AuthContext);
+  
+  const [loading, setLoading] = useState(false); // Add loading state
 
   useEffect(() => {
     document.title = "JHS Success Hub | Login";
@@ -33,7 +37,7 @@ const LoginPage = () => {
               navigate('/record', { state: { userObject } }); // Redirect for userType 5
               break;
             case 6:
-              navigate('/dashboard', { state: { userObject } }); // Redirect for userType 5
+              navigate('/dashboard', { state: { userObject } }); // Redirect for userType 6
               break;  
             default:
               navigate('/');
@@ -48,6 +52,7 @@ const LoginPage = () => {
 
   const handleLogin = async (e) => {
     e.preventDefault();
+    setLoading(true); // Show loader when login starts
     try {
       const response = await axios.post('https://spring-csdrms-g8ra.onrender.com/user/login', {
         username,
@@ -56,6 +61,7 @@ const LoginPage = () => {
   
       if (!response.data.userType) {
         alert('Incorrect Username or Password');
+        setLoading(false); // Hide loader on error
         return;
       }
   
@@ -64,14 +70,13 @@ const LoginPage = () => {
   
       const { userType, userObject } = response.data;
       login(response.data); // Update context
-  
-      // Only log time if the userType is 3
      
-        const loginTime = new Date().toISOString(); // Get current time in ISO format
-        await axios.post('https://spring-csdrms-g8ra.onrender.com/time-log/login', {
-          userId: response.data.userId, // Assuming `userObject` contains `uid`
-          loginTime: loginTime,
-        });
+      // Only log time if the userType is 3
+      const loginTime = new Date().toISOString(); // Get current time in ISO format
+      await axios.post('https://spring-csdrms-g8ra.onrender.com/time-log/login', {
+        userId: response.data.userId, // Assuming userObject contains uid
+        loginTime: loginTime,
+      });
   
       // Redirect based on userType
       switch (userType) {
@@ -95,9 +100,14 @@ const LoginPage = () => {
     } catch (error) {
       console.error('Login Failed', error.response.data);
       alert('Incorrect Username or Password');
+      setLoading(false); // Hide loader on error
     }
   };
-  
+
+  const handleUsernameChange = (e) => {
+    const updatedUsername = e.target.value.replace(/\s+/g, ''); // Remove spaces
+    setUsername(updatedUsername);
+  };
 
   return (
     <div className={styles.loginbg}>
@@ -113,7 +123,7 @@ const LoginPage = () => {
                 className={styles.form_style}
                 type="user"
                 value={username}
-                onChange={(e) => setUsername(e.target.value)}
+                onChange={handleUsernameChange}
                 required
               />
             </div>
@@ -131,6 +141,9 @@ const LoginPage = () => {
           </form>
         </div>
       </div>
+      
+      {/* Loader: Display when loading state is true */}
+      {loading && <div className={styles.loaderOverlay}><Loader /></div>}
     </div>
   );
 };

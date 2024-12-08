@@ -17,11 +17,12 @@ import {
 } from 'chart.js';
 
 import styles from '../Dashboard/Dashboard.module.css';
-import navStyles from '../Navigation.module.css'; 
-import Navigation from '../Navigation';
+import navStyles from '../Components/Navigation.module.css'; 
+import Navigation from '../Components/Navigation';
 import tableStyles from '../GlobalTable.module.css';
 import buttonStyles from '../GlobalButton.module.css'
 
+import Loader from '../Loader';
 import ExportIcon from '@mui/icons-material/FileUpload';
 
 ChartJS.register(LineElement, PointElement, LinearScale, Title, Tooltip, Legend, CategoryScale, ArcElement, BarElement);
@@ -397,9 +398,6 @@ const Record = () => {
             setSelectedChartType(e.target.value);
         };
 
-    if (loading) return <div>Loading records...</div>;
-    if (error) return <div>Error: {error}</div>;
-
     return (
         <div className={navStyles.wrapper}>
             <Navigation loggedInUser={loggedInUser} />
@@ -407,6 +405,14 @@ const Record = () => {
                 <div ref={exportRef} className={styles.exportSection}>
                     <div className={navStyles.TitleContainer}>
                         <h2 className={navStyles['h1-title']}>JHS Monitored Records</h2>
+
+                        <div className={buttonStyles['button-group']} style={{marginTop: '0px'}}>
+                            <button 
+                                className={`${buttonStyles['action-button']} ${buttonStyles['maroon-button']}`} 
+                                onClick={handleExportToPDF}>
+                                <ExportIcon /> Export to PDF
+                            </button>
+                        </div>
                     </div>         
                     <div className={styles.filters}>
                         <div>
@@ -470,13 +476,6 @@ const Record = () => {
 
                             </label>
                         </div>
-                        <div>
-                            <button 
-                                className={`${buttonStyles['action-button']} ${buttonStyles['maroon-button']}`} 
-                                onClick={handleExportToPDF}>
-                                <ExportIcon /> Export to PDF
-                            </button>
-                        </div>
                     </div>
 
                     <>                
@@ -494,7 +493,7 @@ const Record = () => {
                                         <th>Misbehavior</th>
                                         <th>Clinic</th>
                                         <th>Request Permit</th>
-                                        <th>Sanction</th>
+                                        <th style={{borderRight: '0.5px solid #8A252C'}}>Sanction</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -616,6 +615,8 @@ const Record = () => {
                     </div>
                 </div>
             </div>
+            {/* Loader Overlay */}
+            {loading && <Loader />}
         </div>
     );
 };

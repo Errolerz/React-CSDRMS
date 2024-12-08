@@ -117,7 +117,12 @@ const ViewRecordModal = ({ record, onClose }) => {
                   {suspensionStatus}
                 </td>
               </tr>
-            )}            
+            )}   
+            <tr>
+              <td><strong>Source</strong></td>
+              <td><strong>:</strong></td>
+              <td><strong>{record.source === 1 ? 'Logbook' : record.source === 2 ? 'Complaint' : 'Unknown'}</strong>  </td>
+            </tr>         
             <tr>
               <td><strong>Sanction</strong></td>
               <td><strong>:</strong></td>

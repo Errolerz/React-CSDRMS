@@ -2,9 +2,9 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 
 import styles from './Record.module.css';
-import navStyles from '../Navigation.module.css';
+import navStyles from '../Components/Navigation.module.css';
 import buttonStyles from '../GlobalButton.module.css';
-import Navigation from '../Navigation';
+import Navigation from '../Components/Navigation';
 
 import AddRecordModal from './AddRecordModal';
 import RecordStudentEditModal from './EditRecordModal';
@@ -152,35 +152,31 @@ const Record = () => {
         }`}
       >
         <div className={navStyles.TitleContainer}>
-        <h2 className={navStyles['h1-title']}>
-          {filterType === 'All'
-            ? loggedInUser?.userType === 3
-              ? 'Your Student Records'
-              : 'All Student Records'
-            : filterType === 'Log Book'
-            ? 'Student Records From Log Book'
-            : loggedInUser?.userType === 2 || loggedInUser?.userType === 6
-            ? 'Complaint List'
-            : 'Student Records From Complaints'}
-        </h2>
-        </div>
-
-        <div className={styles['separator']}>
-          <div className={styles['search-containerz']}>
-              <SearchIcon className={styles['search-icon']} />
-              <input
-              type="search"
-              className={styles['search-input']}
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Search by Name or ID"
-              />
+          <h2 className={navStyles['h1-title']}>
+            {filterType === 'All'
+              ? loggedInUser?.userType === 3
+                ? 'Your Student Records'
+                : 'All Student Records'
+              : filterType === 'Log Book'
+              ? 'Student Records From Log Book'
+              : loggedInUser?.userType === 2 || loggedInUser?.userType === 6
+              ? 'Complaint List'
+              : 'Student Records From Complaints'}
+          </h2>         
+          
+          <div className={buttonStyles['button-group']} style={{marginTop: '0px'}}>
+            <button
+                className={`${buttonStyles['action-button']} ${buttonStyles['gold-button']}`}
+                onClick={openAddModal}
+              >
+                <AddIcon /> Add Record
+              </button>
           </div>
         </div>
 
         <div className={styles.filterContainer}>
           <label>
-            View by:
+             Filter by:
             <select onChange={(e) => setFilterType(e.target.value)} value={filterType} disabled={loggedInUser?.userType === 5 || loggedInUser?.userType === 6}>
               <option value="All">All</option>
               <option value="Log Book">Log Book</option>
@@ -200,13 +196,17 @@ const Record = () => {
           </label>
 
           <div>
-            <button
-              className={`${buttonStyles['action-button']} ${buttonStyles['gold-button']}`}
-              onClick={openAddModal}
-            >
-              <AddIcon /> Add Record
-            </button>
-          </div>
+            <div className={styles['search-containerz']}>
+                <SearchIcon className={styles['search-icon']} />
+                <input
+                type="search"
+                className={styles['search-input']}
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder="Search by Name or ID"
+                />
+            </div>
+          </div> 
         </div>
 
         <div className={styles['table-container']}>
@@ -218,7 +218,8 @@ const Record = () => {
                 <th>Monitored Record</th>
                 {/* <th>Status</th> Status column for Case */}
                 <th>Remarks/Complaint</th>
-                <th>Sanction</th>
+                <th>Source</th>
+                {/* <th>Sanction</th> */}
                 <th>Encoder</th>
                 <th>Actions</th>
               </tr>
@@ -261,7 +262,8 @@ const Record = () => {
                         </>
                       )}
                     </td>
-                    <td>{record.sanction}</td>
+                    <td>{record.source === 1 ? 'Logbook' : record.source === 2 ? 'Complaint' : 'Unknown'}</td>
+                    {/* <td>{record.sanction}</td> */}
                     <td>
                       {record.encoder.firstname} {record.encoder.lastname}
                     </td>

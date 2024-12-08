@@ -171,7 +171,7 @@ const EditStudentModal = ({ student, onClose, refreshStudents }) => {
                     placeholder="Enter Home Address"
                 />
             </div>
-          <div className={formStyles['form-group']}>
+          {/* <div className={formStyles['form-group']}>
             <label htmlFor="contactNumber">Contact Number:</label>
             <input
               type="text"
@@ -181,7 +181,7 @@ const EditStudentModal = ({ student, onClose, refreshStudents }) => {
               onChange={handleChange}
               placeholder="Enter Contact Number"
             />
-          </div>
+          </div> */}
           <div className={formStyles['form-group']}>
               <label htmlFor="contactNumber">Emergency Number:</label>
               <input

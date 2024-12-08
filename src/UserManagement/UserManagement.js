@@ -3,10 +3,10 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
 import styles from './UserManagement.module.css';
-import navStyles from '../Navigation.module.css';
+import navStyles from '../Components/Navigation.module.css';
 import buttonStyles from '../GlobalButton.module.css';
 
-import Navigation from '../Navigation'; // Importing the updated Navigation component
+import Navigation from '../Components/Navigation';
 import AddUserModal from './AddUserModal';  
 import ConfirmationModal from './ConfirmationModal';  
 import UpdateAccountModal from './UpdateAccountModal'; 
@@ -26,6 +26,7 @@ const AdminDashboard = () => {
 
   const [users, setUsers] = useState([]);
   const [selectedUser, setSelectedUser] = useState(null);
+  const [userTypeFilter, setUserTypeFilter] = useState(''); // Default: no filter
   const [searchQuery, setSearchQuery] = useState('');
   const [isAddUserModalOpen, setIsAddUserModalOpen] = useState(false);
   const [isConfirmationModalOpen, setIsConfirmationModalOpen] = useState(false);
@@ -76,35 +77,37 @@ const AdminDashboard = () => {
     }
   };
 
-  const handleDeleteUser = () => {
-    if (selectedUser) {
-      setConfirmationMessage(`Are you sure you want to delete the user "${selectedUser.username}"?`);
-      setIsConfirmationModalOpen(true);
-    }
-  };
 
   const confirmDelete = async () => {
     if (selectedUser) {
       try {
         await axios.delete(`https://spring-csdrms-g8ra.onrender.com/user/deleteUser/${selectedUser.username}/${loggedInUser.userId}`);
-        setUsers(prevUsers => prevUsers.filter(user => user.username !== selectedUser.username));
+        setUsers((prevUsers) => prevUsers.filter((user) => user.username !== selectedUser.username));
         setSelectedUser(null);
+        setIsConfirmationModalOpen(false); // Close the modal after successful deletion
       } catch (error) {
         console.error('Error deleting user:', error);
       }
     }
   };
 
-  const handleUpdateUser = () => {
-    if (selectedUser) {
-      setIsUpdateAccountModalOpen(true);
-    }
+  const handleDeleteUser = (user) => {
+    setConfirmationMessage(`Are you sure you want to delete the user "${user.username}"?`);
+    setSelectedUser(user);  // Set selectedUser to the user passed as parameter
+    setIsConfirmationModalOpen(true);  // Open confirmation modal
+  };
+  
+
+  const handleUpdateUser = (user) => {
+    setSelectedUser(user);
+    setIsUpdateAccountModalOpen(true);
   };
 
   const handleAddUser = () => setIsAddUserModalOpen(true);
 
   const refreshUsers = () => fetchUsers();
 
+  // Update filteredUsers to include userTypeFilter
   const filteredUsers = useMemo(() => users.filter(user => {
     const lowerCaseQuery = searchQuery.toLowerCase();
     const usernameMatches = user.username.toLowerCase().includes(lowerCaseQuery);
@@ -112,8 +115,11 @@ const AdminDashboard = () => {
     const emailMatches = user.email.toLowerCase().includes(lowerCaseQuery);
     const userTypeMatches = user.userType.toString().includes(lowerCaseQuery);
 
-    return usernameMatches || nameMatches || emailMatches || userTypeMatches;
-  }), [users, searchQuery]);
+    const matchesSearch = usernameMatches || nameMatches || emailMatches || userTypeMatches;
+    const matchesUserType = userTypeFilter ? user.userType.toString() === userTypeFilter : true;
+
+    return matchesSearch && matchesUserType;
+  }), [users, searchQuery, userTypeFilter]);
 
   const getUserTypeString = (userType) => {
     switch (userType) {
@@ -144,26 +150,49 @@ const AdminDashboard = () => {
       <div className={navStyles.content}>   
         <div className={navStyles.TitleContainer}>
           <h2 className={navStyles['h1-title']}>User Management</h2>  
-        </div>
-        <div className={styles['separator']}>
-          <div className={styles['search-container']}>
-            <SearchIcon className={styles['search-icon']} />
-            <input
-              type="search"
-              className={styles['search-input']}
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Search Users"
-            />
-          </div>
 
-          <button
-            className={`${buttonStyles['action-button']} ${buttonStyles['maroon-button']}`}
-            onClick={handleAddUser}
-          >
-            <AddIcon /> Add User
-          </button>        
-        </div>        
+          <div className={buttonStyles['button-group']} style={{ marginTop: '0' }}>
+            <button
+              className={`${buttonStyles['action-button']} ${buttonStyles['maroon-button']}`}
+              onClick={handleAddUser}
+            >
+              <AddIcon /> Add User
+            </button>        
+          </div>
+        </div>
+        <div className={styles['filter-container']}>
+          {/* User Type Filter */}
+          <label htmlFor="userTypeFilter" className={styles['filter-label']}>
+            Filter by User Type:
+            <select
+              id="userTypeFilter"
+              className={styles['filter-select']}
+              value={userTypeFilter}
+              onChange={(e) => setUserTypeFilter(e.target.value)}
+            >
+              <option value="">All</option>
+              <option value="1">SSO</option>
+              <option value="2">Principal</option>
+              <option value="3">Adviser</option>
+              <option value="4">Admin</option>
+              <option value="5">Teacher</option>
+              <option value="6">Guidance</option>
+            </select>
+          </label>
+          
+          <div>
+            <div className={styles['search-container']}>
+              <SearchIcon className={styles['search-icon']} />
+              <input
+                type="search"
+                className={styles['search-input']}
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder="Search Users"
+              />
+            </div>
+          </div>        
+        </div>
         <div className={styles['user-center-container']}>
           <div className={styles['table-container']}>
             <table className={styles['user-table']}>
@@ -188,21 +217,15 @@ const AdminDashboard = () => {
                         <EditNoteIcon 
                             style={user.userType !== 4 ? { marginRight: '15px' } : {}}
                             className={styles['action-icon']} 
-                            onClick={() => {
-                              setSelectedUser(user);
-                              handleUpdateUser();
-                            }}
+                            onClick={() => handleUpdateUser(user)} // Pass the user directly
                         />
                         {user.userType !== 4 && (
                             <DeleteIcon
                                 className={styles['action-icon']}
-                                onClick={() => {
-                                  setSelectedUser(user);
-                                  handleDeleteUser();
-                                }}
+                                onClick={() => handleDeleteUser(user)} // Pass the user directly
                             />
                         )}            
-                    </td>
+                      </td>
                     </tr>
                   ))
                 ) : (

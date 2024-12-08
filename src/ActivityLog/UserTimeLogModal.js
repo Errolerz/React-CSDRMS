@@ -85,7 +85,9 @@ const UserTimeLogModal = ({ user, onClose }) => { // Changed from adviser to use
     return (
         <div className={styles['timelog-modal-overlay']} onClick={onClose}>
             <div className={styles['timelog-modal-content']} onClick={e => e.stopPropagation()}>
-                <button className={styles['timelog-close-button']} onClick={onClose}>X</button>
+                <button onClick={onClose} className={styles['timelog-close-button']}>
+                ✕
+                </button>
                 <h2 className={styles['timelog-title']}>{user.firstname} {user.lastname}'s Activity Logs</h2> {/* Changed from adviser to user */}
 
                 <div className={styles['timelog-filters']}>

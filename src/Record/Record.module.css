@@ -102,7 +102,7 @@
 
 .filters select,
 .filterContainer select {
-  padding: 10px; /* Reduced padding for a tighter look */
+  /* padding: 10px; Reduced padding for a tighter look */
   font-size: 14px; /* Adjust font size */
   border: 1px solid #ccc; /* Consistent border */
   border-radius: 4px; /* Smooth edges */
@@ -115,12 +115,13 @@
 }
 
 .filterContainer {
-  margin-top: 20px;
+  margin-top: 10px;
   max-width: 100%; /* Ensures it doesn't exceed the parent container's width */
   display: flex; /* Added flexbox to control layout */
   gap: 10px; /* Space between individual filters */
   flex-wrap: wrap; /* Allows filters to wrap to the next line if necessary */
   justify-content: space-between;
+  text-align: center;
 }
 
 /* Chart Styles */
@@ -184,18 +185,18 @@
   white-space: normal; /* Allow text to wrap */
   word-wrap: break-word; /* Ensure long words wrap onto the next line */
   word-break: break-word; /* For compatibility with different browsers */
-  width: 20%; /* Adjust the width to make the column longer */
+  width: 25%; /* Adjust the width to make the column longer */
   text-align: left; /* Optional: Align text to the left for readability */
 }
 
-.record-table td:nth-child(5), 
+/* .record-table td:nth-child(5), 
 .record-table th:nth-child(5) {
-  white-space: normal; /* Allow text to wrap */
-  word-wrap: break-word; /* Ensure long words wrap onto the next line */
-  word-break: break-word; /* For compatibility with different browsers */
-  width: 20%; /* Adjust the width to make the column longer */
-  text-align: left; /* Optional: Align text to the left for readability */
-}
+  white-space: normal; 
+  word-wrap: break-word; 
+  word-break: break-word; 
+  width: 20%; 
+  text-align: left; 
+} */
 
 .record-table th:nth-child(7) {
   border-right: 0.5px solid #8A252C;
@@ -250,3 +251,53 @@
   pointer-events: none; /* Make icon non-clickable */
 }
 
+/* Media Queries */
+@media screen and (max-width: 768px) {
+  .h1-title {
+      font-size: 24px;
+      text-align: center;
+  }
+
+  .triple-container {
+      flex-direction: column; /* Stack containers vertically */
+      gap: 20px;
+  }
+
+  .details-container {
+      width: 100%;
+  }
+
+  .search-container input {
+      width: 100%;
+      max-width: 100%;
+  }
+
+  .filters {
+      justify-content: space-between; /* Adjust alignment for smaller screens */
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .h1-title {
+      font-size: 20px;
+  }
+
+  .search-container input {
+      padding: 8px;
+      font-size: 14px;
+  }
+
+  .filters {
+      flex-direction: column; /* Stack filters vertically */
+      align-items: center;
+  }
+
+  .record-table th, .record-table td {
+      font-size: 12px; /* Reduce font size */
+      padding: 8px;
+  }
+
+  .chart {
+      padding: 10px; /* Reduce padding around chart */
+  }
+}

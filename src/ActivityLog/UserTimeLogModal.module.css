@@ -29,7 +29,7 @@
     font-weight: bold;
     text-align: center;
     margin: 25px;
-    color: #81343a;
+    color: #8A252C;
 }
 
 /* Close Button */
@@ -37,16 +37,20 @@
     position: absolute;
     top: 20px;
     right: 20px;
-    background: none;
     border: none;
     font-size: 16px;
     cursor: pointer;
     color: #8A252C;
     transition: color 0.3s, transform 0.3s;
-    border-radius: 4px;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
     padding: 7px 15px;
-    font-size: 18px;
+    font-size: 24px;
     font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .timelog-close-button:hover {

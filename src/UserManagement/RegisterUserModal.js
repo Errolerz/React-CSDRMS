@@ -78,7 +78,9 @@ const RegisterUserModal = ({ isOpen, onClose, role }) => {
         
         setUserData((prevUserData) => {
             const updatedUserData = { ...prevUserData, [name]: value };
-    
+
+            if (name === "username") updatedUserData.username = value.replace(/\s+/g, '')
+
             // Automatically update email when first or last name changes
             if (name === 'firstname' || name === 'lastname') {
                 const email = `${updatedUserData.firstname.toLowerCase()}.${updatedUserData.lastname.toLowerCase()}@cit.edu`;
@@ -107,6 +109,7 @@ const RegisterUserModal = ({ isOpen, onClose, role }) => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        userData.username.replace(/\s+/g, '')
     
         const minimumPasswordStrength = 5;
         if (passwordStrength < minimumPasswordStrength) {

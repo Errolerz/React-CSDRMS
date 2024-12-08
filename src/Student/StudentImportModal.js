@@ -2,10 +2,12 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import styles from './StudentImportModal.module.css'; // Import the updated CSS
 import formStyles from '../GlobalForm.module.css'; // Importing GlobalForm styles
+import Loader from '../Loader';
 
-const ImportModal = ({ onClose, schoolYears = [] }) => { // Default to empty array
+const ImportModal = ({ onClose, schoolYears = [] }) => {
   const [file, setFile] = useState(null);
   const [importSchoolYear, setImportSchoolYear] = useState('');
+  const [loading, setLoading] = useState(false); // Loading state
 
   // Handle file change
   const handleFileChange = (e) => {
@@ -23,6 +25,7 @@ const ImportModal = ({ onClose, schoolYears = [] }) => { // Default to empty arr
     formData.append('file', file);
     formData.append('schoolYear', importSchoolYear);
 
+    setLoading(true); // Set loading to true
     try {
       await axios.post('https://spring-csdrms-g8ra.onrender.com/student/import', formData, {
         headers: {
@@ -35,6 +38,8 @@ const ImportModal = ({ onClose, schoolYears = [] }) => { // Default to empty arr
     } catch (error) {
       console.error('Error uploading file:', error);
       alert('Error uploading file');
+    } finally {
+      setLoading(false); // Set loading to false
     }
   };
 
@@ -43,43 +48,51 @@ const ImportModal = ({ onClose, schoolYears = [] }) => { // Default to empty arr
       <div className={styles['student-import-modal-content']}>
         <h2 className={styles['student-modal-header']}>Import Student Data</h2>
 
-        <label htmlFor="importSchoolYear">Select School Year for Import:</label>
-        <select
-          id="importSchoolYear"
-          className={styles['student-modal-select']}
-          value={importSchoolYear}
-          onChange={(e) => setImportSchoolYear(e.target.value)}
-        >
-          <option value="">Select School Year</option>
-          {schoolYears && schoolYears.length > 0 ? (
-            schoolYears.map((year) => (
-              <option key={year.schoolYear_ID} value={year.schoolYear}>
-                {year.schoolYear}
-              </option>
-            ))
-          ) : (
-            <option disabled>No school years available</option> // Fallback if no schoolYears are available
-          )}
-        </select>
+        {loading ? (
+          <Loader />
+        ) : (
+          <>
+            <label htmlFor="importSchoolYear">Select School Year for Import:</label>
+            <select
+              id="importSchoolYear"
+              className={styles['student-modal-select']}
+              value={importSchoolYear}
+              onChange={(e) => setImportSchoolYear(e.target.value)}
+            >
+              <option value="">Select School Year</option>
+              {schoolYears && schoolYears.length > 0 ? (
+                schoolYears.map((year) => (
+                  <option key={year.schoolYear_ID} value={year.schoolYear}>
+                    {year.schoolYear}
+                  </option>
+                ))
+              ) : (
+                <option disabled>No school years available</option>
+              )}
+            </select>
 
-        <input
-          type="file"
-          className={styles['student-modal-file-input']}
-          onChange={handleFileChange}
-        />
+            <input
+              type="file"
+              className={styles['student-modal-file-input']}
+              onChange={handleFileChange}
+            />
 
-        <div className={formStyles['global-buttonGroup']}>
-          <button
-            className={formStyles['green-button']}
-            onClick={handleFileUpload}>
-            Import  
-          </button>
-          <button
-            className={`${formStyles['green-button']} ${formStyles['red-button']}`}
-            onClick={onClose}>
-            Cancel
-          </button>
-        </div>
+            <div className={formStyles['global-buttonGroup']}>
+              <button
+                className={formStyles['green-button']}
+                onClick={handleFileUpload}
+              >
+                Import  
+              </button>
+              <button
+                className={`${formStyles['green-button']} ${formStyles['red-button']}`}
+                onClick={onClose}
+              >
+                Cancel
+              </button>
+            </div>
+          </>
+        )}
       </div>
     </div>
   );

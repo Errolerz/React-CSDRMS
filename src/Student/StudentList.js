@@ -1,22 +1,25 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 import styles from './StudentList.module.css'; // Updated CSS for table container
-import navStyles from '../Navigation.module.css'; // Assuming this is where your nav styles are stored
+import navStyles from '../Components/Navigation.module.css'; // Assuming this is where your nav styles are stored
 import buttonStyles from '../GlobalButton.module.css';
 
+import Navigation from '../Components/Navigation';
 import ImportModal from './StudentImportModal'; // Import ImportModal component
 import AddStudentModal from './AddStudentModal';
 import EditStudentModal from './EditStudentModal';
+import StudentDetailsModal from './StudentDetailsModal'; // Import the modal
+import Loader from '../Loader';
 
 import AddStudentIcon from '@mui/icons-material/PersonAdd';
 import ImportIcon from '@mui/icons-material/FileDownload';
 import SearchIcon from '@mui/icons-material/Search';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
+import ViewNoteIcon from '@mui/icons-material/Visibility';
 import EditNoteIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete'; 
 
-import Navigation from '../Navigation';
 
 const StudentList = () => {
   const loggedInUser = JSON.parse(localStorage.getItem('authToken'));
@@ -26,13 +29,13 @@ const StudentList = () => {
   const [isLoading, setIsLoading] = useState(true); // Loading state
   const [error, setError] = useState(null); // Error state
   const [currentPage, setCurrentPage] = useState(1); // Pagination state
-  const [studentsPerPage] = useState(10); // Limit number of students per page
+  const [studentsPerPage] = useState(7); // Limit number of students per page
   const [searchQuery, setSearchQuery] = useState(''); // Search query state
   const [showAddStudentModal, setShowAddStudentModal] = useState(false);
   const [showImportModal, setShowImportModal] = useState(false);
   const [showEditStudentModal, setShowEditStudentModal] = useState(false);
-const [selectedStudent, setSelectedStudent] = useState(null); // Store the selected student
-
+  const [selectedStudent, setSelectedStudent] = useState(null); // Store the selected student
+  const [showStudentDetailsModal, setShowStudentDetailsModal] = useState(false);
 
   // New states for filtering by grade and section
   const [grades, setGrades] = useState([]); // Available grades
@@ -106,6 +109,20 @@ const [selectedStudent, setSelectedStudent] = useState(null); // Store the selec
     fetchGradesAndSections();
   }, [fetchGradesAndSections]);
 
+  useEffect(() => {
+    if (!loggedInUser) return;
+
+    console.log('loggedInUser.userType:', loggedInUser?.userType); // Debug log
+
+    const userTypeTitles = {
+        1: 'SSO',
+        4: 'Admin',
+    };
+
+    const userTypeTitle = userTypeTitles[loggedInUser?.userType] || 'Unknown';
+    document.title = `${userTypeTitle} | Student List`;
+    }, []);
+
   // Filter students based on search query, grade, and section
   const filteredStudents = students.filter((student) => {
     const searchLower = searchQuery.toLowerCase();
@@ -158,20 +175,6 @@ const [selectedStudent, setSelectedStudent] = useState(null); // Store the selec
       <div className={navStyles.content}>
         <div className={navStyles.TitleContainer}>
           <h2 className={navStyles['h1-title']}>Student List</h2>
-        </div>
-
-        <div className={styles['separator']}>
-          <div className={styles['search-container']}>
-            <SearchIcon className={styles['search-icon']} />
-            <input
-              type="search"
-              className={styles['search-input']}
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Search"
-            />
-          </div>
-
           <div className={buttonStyles['button-group']} style={{ marginTop: '0' }}>
             <button
               onClick={() => setShowAddStudentModal(true)}
@@ -190,11 +193,10 @@ const [selectedStudent, setSelectedStudent] = useState(null); // Store the selec
             </button>
           </div>
         </div>
-
-        <div className={styles['filters']}>
-        <div className={styles['filter-item']}>
-          <label>School Year</label>
-          <select
+        
+        <div className={styles['filter-container']}>
+          <label>Filter by: 
+            <select
               value={selectedSchoolYear}
               onChange={(e) => setSelectedSchoolYear(e.target.value)}
             >
@@ -206,11 +208,7 @@ const [selectedStudent, setSelectedStudent] = useState(null); // Store the selec
               ))}
             </select>
 
-        </div>
-
-          {/* Grade Filter */}
-          <div className={styles['filter-item']}>
-            <label>Grade</label>
+            {/* Grade Filter */}
             <select
               value={selectedGrade}
               onChange={(e) => {
@@ -225,30 +223,40 @@ const [selectedStudent, setSelectedStudent] = useState(null); // Store the selec
                 </option>
               ))}
             </select>
-          </div>
 
-          {/* Section Filter (visible only after grade is selected) */}
-          {selectedGrade && (
-            <div className={styles['filter-item']}>
-              <label>Section</label>
-              <select
-                value={selectedSection}
-                onChange={(e) => setSelectedSection(e.target.value)}
-              >
-                <option value="">Select Section</option>
-                {sections.map((section) => (
-                  <option key={section} value={section}>
-                    {section.toUpperCase()}
-                  </option>
-                ))}
-              </select>
+            {/* Section Filter (visible only after grade is selected) */}
+            {selectedGrade && (
+                <select
+                  value={selectedSection}
+                  onChange={(e) => setSelectedSection(e.target.value)}
+                >
+                  <option value="">Select Section</option>
+                  {sections.map((section) => (
+                    <option key={section} value={section}>
+                      {section.toUpperCase()}
+                    </option>
+                  ))}
+                </select>
+            )}
+          </label>
+
+          <div>
+            <div className={styles['search-container']}>
+              <SearchIcon className={styles['search-icon']} />
+              <input
+                type="search"
+                className={styles['search-input']}
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder="Search"
+              />
             </div>
-          )}
+          </div>
         </div>
 
         <div className={styles['student-list-table-container']}>
           {isLoading ? (
-            <p>Loading students...</p>
+            <Loader />
           ) : error ? (
             <p className={styles['error-message']}>{error}</p>
           ) : (
@@ -283,6 +291,13 @@ const [selectedStudent, setSelectedStudent] = useState(null); // Store the selec
                       <td>{student.email}</td>
                       <td>{student.emergencyNumber}</td>
                       <td>
+                        <ViewNoteIcon
+                          className={buttonStyles['action-icon']}
+                          onClick={() => {
+                            setSelectedStudent(student); // Set the selected student
+                            setShowStudentDetailsModal(true); // Open the modal
+                          }}
+                        />
                         <EditNoteIcon
                           className={buttonStyles['action-icon']}
                           onClick={() => handleEditStudent(student)}
@@ -340,6 +355,13 @@ const [selectedStudent, setSelectedStudent] = useState(null); // Store the selec
             student={selectedStudent}
             onClose={() => setShowEditStudentModal(false)}
             refreshStudents={fetchStudents}
+          />
+        )}
+
+        {showStudentDetailsModal && selectedStudent && (
+          <StudentDetailsModal
+            student={selectedStudent}
+            onClose={() => setShowStudentDetailsModal(false)}
           />
         )}
 

@@ -142,7 +142,8 @@ const SuspensionModal = ({ isOpen, onClose, suspension }) => {
 
           {/* Offense */}
           <p><strong>OFFENSE(S) COMMITTED:</strong></p>
-          <p> <strong>{suspension.record.investigationDetails}</strong></p>
+          <p> <strong>{suspension.record.complaint}</strong></p>
+          <p> <strong>Details: <br />{suspension.record.investigationDetails}</strong></p>
 
           {/* Closing */}
           <p>

@@ -1,12 +1,12 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 
-import navStyles from "../Navigation.module.css"; // Import CSS module for Navigation
+import navStyles from "../Components/Navigation.module.css"; // Import CSS module for Navigation
 import tableStyles from "../GlobalTable.module.css"; // Import GlobalTable CSS module
 import formStyles from "../GlobalForm.module.css";
 import styles from "./Suspension.module.css"; // Import GlobalTable CSS module
 
-import Navigation from '../Navigation'; // Import the Navigation component
+import Navigation from '../Components/Navigation';
 import SuspensionModal from "./SuspensionModal"; // Import the modal component
 import EditSuspensionModal from "./EditSuspensionModal"; // Import the edit modal component
 
@@ -17,7 +17,7 @@ import ViewNoteIcon from '@mui/icons-material/Visibility';
 import DeleteIcon from '@mui/icons-material/Delete'; // Import Delete icon
 import SearchIcon from '@mui/icons-material/Search';
 
-const ViewSuspensions = () => {
+const Suspensions = () => {
   const authToken = localStorage.getItem('authToken');
   const loggedInUser = JSON.parse(authToken);
   const [suspensions, setSuspensions] = useState([]);
@@ -132,21 +132,6 @@ const ViewSuspensions = () => {
         <div className={navStyles.TitleContainer}>
             <h2 className={navStyles['h1-title']}>Suspension List</h2>
         </div>  
-
-        <div className={styles['separator']}>
-          <div className={styles['search-container']}>
-            <SearchIcon className={styles['search-icon']} />
-            <input
-              id="searchQuery"
-              type="text"
-              className={styles["search-input"]}
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Search by name or ID"
-            />
-          </div>   
-        </div>
-     
         
         {loading && <p>Loading suspensions...</p>}
         {error && <p>{error}</p>}
@@ -165,6 +150,20 @@ const ViewSuspensions = () => {
                   <option value="unapproved">Not Approved</option>
                 </select>
               </label>
+            
+              <div>
+                <div className={styles['search-container']}>
+                  <SearchIcon className={styles['search-icon']} />
+                  <input
+                    id="searchQuery"
+                    type="text"
+                    className={styles["search-input"]}
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    placeholder="Search by Name or ID"
+                  />
+                </div>   
+              </div>
             </div>
 
             <div className={tableStyles['table-container']}>
@@ -176,7 +175,7 @@ const ViewSuspensions = () => {
                     <th>Date Submitted</th>
                     <th>Days Of Suspension</th>
                     <th>Suspension</th>
-                    <th>Action</th>
+                    <th style={{borderRight: '0.5px solid #8A252C'}}>Action</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -300,4 +299,4 @@ const ViewSuspensions = () => {
   );
 };
 
-export default ViewSuspensions;
+export default Suspensions;

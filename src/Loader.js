@@ -1,19 +1,20 @@
-// Loader Component
 import React from 'react';
-import './Loader.module.css'; // You can import your hourglass animation CSS here
+import styles from './Loader.module.css'; // Import CSS module styles
 
 const Loader = () => {
   return (
-    <div className="loader-container">
-      <div className="hourglassBackground">
-        <div className="hourglassContainer">
-          <div className="hourglassCurves"></div>
-          <div className="hourglassCapTop"></div>
-          <div className="hourglassGlassTop"></div>
-          <div className="hourglassSand"></div>
-          <div className="hourglassSandStream"></div>
-          <div className="hourglassCapBottom"></div>
-          <div className="hourglassGlass"></div>
+    <div className={styles["modal-overlay"]}>
+      <div className={styles.loaderContainer}>
+        <div className={styles.hourglassBackground}>
+          <div className={styles.hourglassContainer}>
+            <div className={styles.hourglassCurves}></div>
+            <div className={styles.hourglassCapTop}></div>
+            <div className={styles.hourglassGlassTop}></div>
+            <div className={styles.hourglassSand}></div>
+            <div className={styles.hourglassSandStream}></div>
+            <div className={styles.hourglassCapBottom}></div>
+            <div className={styles.hourglassGlass}></div>
+          </div>
         </div>
       </div>
     </div>

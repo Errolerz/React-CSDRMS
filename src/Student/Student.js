@@ -2,13 +2,13 @@ import React, { useEffect, useState, useCallback } from 'react';
 import axios from 'axios';
 
 import styles from '../Record/Record.module.css'; // Importing CSS module
-import navStyles from '../Navigation.module.css'; 
+import navStyles from '../Components/Navigation.module.css'; 
 import formStyles from '../GlobalForm.module.css'; // Importing GlobalForm styles
 import buttonStyles from '../GlobalButton.module.css'; // Importing GlobalForm styles
 import tableStyles from '../GlobalTable.module.css'; // Importing GlobalForm styles
 
-import Navigation from '../Navigation';
-import RecordFilter from './RecordFilter'; // Import RecordFilter component
+import Navigation from '../Components/Navigation';
+import StudentFilter from './StudentFilter'; 
 import ImportModal from './StudentImportModal'; // Import ImportModal component
 import AddStudentModal from './AddStudentModal';
 import AddRecordModal from '../Record/AddRecordModal'; // Import AddRecordModal component
@@ -447,10 +447,10 @@ const Student = () => {
         {/* Display records if student is selected */}
         {selectedStudent && (
           <>
-            {/* Use RecordFilter component to filter by school year, month, week */}
+            {/* Use StudentFilter component to filter by school year, month, week */}
             <div className={styles['filter-container']}>
               {selectedStudent && (
-                <RecordFilter
+                <StudentFilter
                   schoolYears={schoolYears}
                   loggedInUser={loggedInUser}
                   selectedSchoolYear={selectedSchoolYear}

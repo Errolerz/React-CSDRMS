@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 
-import Navigation from '../Navigation';
-import navStyles from '../Navigation.module.css'; 
+import Navigation from '../Components/Navigation';
+import navStyles from '../Components/Navigation.module.css'; 
 import formStyles from '../GlobalForm.module.css';
 import tableStyles from '../GlobalTable.module.css';
 import styles from './ActivityLog.module.css';
 
 import UserTimeLogModal from './UserTimeLogModal';
+import Loader from '../Loader';
 
 import SearchIcon from '@mui/icons-material/Search';
 import ViewNoteIcon from '@mui/icons-material/Visibility';
@@ -22,11 +23,24 @@ const ActivityLog = () => {
     const [error, setError] = useState(null);
 
     const [searchQuery, setSearchQuery] = useState('');
+    const [selectedUserType, setSelectedUserType] = useState(''); // State for user type filter
     const [selectedUser, setSelectedUser] = useState(null);
 
     // Pagination states
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 6; // Number of items per page
+
+    useEffect(() => {
+        if (!loggedInUser) return;
+
+        const userTypeTitles = {
+            1: 'SSO',
+            4: 'Admin',
+        };
+
+        const userTypeTitle = userTypeTitles[loggedInUser?.userType] || 'Unknown';
+        document.title = `${userTypeTitle} | Activity Log`;
+    }, []);
 
     useEffect(() => {
         const fetchActivityLogs = async () => {
@@ -37,7 +51,7 @@ const ActivityLog = () => {
             } catch (err) {
                 setError(err.message || 'An error occurred while fetching activity logs.');
             } finally {
-                setLoading(false);
+                setLoading(false);  // Set loading to false after fetching data
             }
         };
 
@@ -45,6 +59,7 @@ const ActivityLog = () => {
     }, []);
 
     const handleSearchChange = (e) => setSearchQuery(e.target.value);
+    const handleUserTypeChange = (e) => setSelectedUserType(e.target.value); // Update user type filter
 
     const handleViewClick = (user) => setSelectedUser(user);
     const closeModal = () => setSelectedUser(null);
@@ -67,7 +82,10 @@ const ActivityLog = () => {
         const userTypeString = getUserTypeString(log.user.userType).toLowerCase();
         const searchLower = searchQuery.toLowerCase();
 
-        return fullName.includes(searchLower) || userTypeString.includes(searchLower);
+        return (
+            (fullName.includes(searchLower) || userTypeString.includes(searchLower)) &&
+            (selectedUserType === '' || log.user.userType.toString() === selectedUserType)
+        );
     });
 
     // Pagination calculations
@@ -85,14 +103,6 @@ const ActivityLog = () => {
         }
     };
 
-    if (loading) {
-        return <div>Loading activity logs...</div>;
-    }
-
-    if (error) {
-        return <div>Error: {error}</div>;
-    }
-
     return (
         <div className={navStyles.wrapper}>
             <Navigation loggedInUser={loggedInUser} />
@@ -101,16 +111,35 @@ const ActivityLog = () => {
                     <h2 className={navStyles['h1-title']}>Activity Log</h2>
                 </div>
 
-                <div className={styles['separator']}>
-                    <div className={styles['search-container']}>
-                        <SearchIcon className={styles['search-icon']} />
-                        <input
-                            type="search"
-                            className={styles['search-input']}
-                            value={searchQuery}
-                            onChange={handleSearchChange}
-                            placeholder="Search by Name or UserType"
-                        />
+                <div className={styles['filters']}>
+                    <label htmlFor="userType">
+                        Filter by User Type: 
+                        <select
+                            id="userType"
+                            value={selectedUserType}
+                            onChange={handleUserTypeChange}
+                        >
+                            <option value="">All</option>
+                            <option value="1">SSO</option>
+                            <option value="2">Principal</option>
+                            <option value="3">Adviser</option>
+                            <option value="4">Admin</option>
+                            <option value="5">Teacher</option>
+                            <option value="6">Guidance</option>
+                        </select>
+                    </label>
+
+                    <div>
+                        <div className={styles['search-container']}>
+                            <SearchIcon className={styles['search-icon']} />
+                            <input
+                                type="search"
+                                className={styles['search-input']}
+                                value={searchQuery}
+                                onChange={handleSearchChange}
+                                placeholder="Search by Name"
+                            />
+                        </div>
                     </div>
                 </div>
 
@@ -123,7 +152,7 @@ const ActivityLog = () => {
                                 <th>Action</th>
                                 <th>Description</th>
                                 <th>Timestamp</th>
-                                <th className={styles['icon-cell']}>View</th>
+                                <th className={styles['icon-cell']} style={{borderRight: '0.5px solid #8A252C'}}>View</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -175,6 +204,9 @@ const ActivityLog = () => {
             </div>
 
             {selectedUser && <UserTimeLogModal user={selectedUser} onClose={closeModal} />}
+
+            {/* Loader Overlay */}
+            {loading && <Loader />}
         </div>
     );
 };

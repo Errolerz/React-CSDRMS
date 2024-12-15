@@ -44,16 +44,21 @@
             
             try {
                 const sectionsResponse = await axios.get(`https://spring-csdrms-g8ra.onrender.com/class/sections/${selectedGrade}`);
-                setSections(sectionsResponse.data);
+                const newSections = sectionsResponse.data;
+                setSections(newSections);
         
-                // Preserve the previously selected section if it matches the new grade
-                if (updatedUser.section) {
-                    setUpdatedUser((prevUser) => ({ ...prevUser, section: prevUser.section }));
-                }
+                // Update the section only if it exists in the new sections list
+                setUpdatedUser((prevUser) => ({
+                    ...prevUser,
+                    section: newSections.includes(prevUser.section) ? prevUser.section : ''
+                }));
             } catch (error) {
                 console.error('Error fetching sections:', error);
             }
-        }, [updatedUser.section]);
+        }, []);
+        
+        
+        
         
         useEffect(() => {
             if (isOpen && user) {
@@ -116,7 +121,7 @@
                 })
                 .catch(error => {
                     console.error('Error updating user:', error);
-                    alert('Error updating account. Please try again.');
+                    alert('Adviser with the same School Year, Grade, and Section already existing');
                 });
         };
 
@@ -137,7 +142,7 @@
             <div className={styles['modal-overlay']} onClick={onClose}>
                 <div className={styles['modal-content']} onClick={e => e.stopPropagation()}>
                     <h2>Update Account</h2>
-                    <form className={styles1['form-container']}>
+                    <form className={styles1['form-container']} onSubmit={handleUpdate}>
                         <div className={styles1['form-group']}>
                             <label>Username:</label>
                             <input type="text" name="username" value={updatedUser.username} onChange={handleInputChange} disabled style={{ cursor: 'not-allowed' }} />
@@ -156,21 +161,21 @@
                         </p>
                         <div className={styles1['form-group']}>
                             <label>First Name:</label>
-                            <input type="text" name="firstname" value={updatedUser.firstname} onChange={handleInputChange} />
+                            <input type="text" name="firstname" value={updatedUser.firstname} onChange={handleInputChange} required/>
                         </div>
                         <div className={styles1['form-group']}>
                             <label>Last Name:</label>
-                            <input type="text" name="lastname" value={updatedUser.lastname} onChange={handleInputChange} />
+                            <input type="text" name="lastname" value={updatedUser.lastname} onChange={handleInputChange} required/>
                         </div>
                         <div className={styles1['form-group']}>
                             <label>Email:</label>
-                            <input type="email" name="email" value={updatedUser.email} onChange={handleInputChange} />
+                            <input type="email" name="email" value={updatedUser.email} onChange={handleInputChange} required/>
                         </div>
-                        {userType === 3 && (
+                        {loggedInUser.userType === 4 && userType === 3 && (
                             <div>
                                 <div className={styles1['form-group']}>
                                     <label>School Year:</label>
-                                    <select name="schoolYear" value={updatedUser.schoolYear} onChange={handleInputChange}>
+                                    <select name="schoolYear" value={updatedUser.schoolYear} onChange={handleInputChange} required>
                                         <option value="">Select School Year</option>
                                         {schoolYears.map(sy => (
                                             <option key={sy.schoolYear_ID} value={sy.schoolYear}>{sy.schoolYear}</option>
@@ -179,7 +184,7 @@
                                 </div>
                                 <div className={styles1['form-group']}>
                                     <label>Grade:</label>
-                                    <select name="grade" value={updatedUser.grade} onChange={handleGradeChange}>
+                                    <select name="grade" value={updatedUser.grade} onChange={handleGradeChange} required>
                                         <option value="">Select Grade</option>
                                         {grades.map(grade => (
                                             <option key={grade} value={grade}>{grade}</option>
@@ -188,7 +193,7 @@
                                 </div>
                                 <div className={styles1['form-group']}>
                                     <label>Section:</label>
-                                    <select name="section" value={updatedUser.section} onChange={handleInputChange}>
+                                    <select name="section" value={updatedUser.section} onChange={handleInputChange} required>
                                         <option value="">Select Section</option>
                                         {sections.map(section => (
                                             <option key={section} value={section}>{section}</option>
@@ -198,8 +203,8 @@
                             </div>
                         )}
                         <div className={buttonStyles['button-group']}>
-                            <button type="button" className={`${buttonStyles['action-button']} ${buttonStyles['green-button']}`} 
-                                onClick={handleUpdate}>Update
+                            <button type="submit" className={`${buttonStyles['action-button']} ${buttonStyles['green-button']}`} >
+                                Update
                             </button>
                             <button type="button" className={`${buttonStyles['action-button']} ${buttonStyles['red-button']}`} 
                                 onClick={onClose}>Cancel

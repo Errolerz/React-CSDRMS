@@ -29,23 +29,6 @@ const AddLogBookModal = ({ isOpen, onClose, refreshRecords }) => {
   const authToken = localStorage.getItem('authToken');
   const loggedInUser = JSON.parse(authToken);
 
-  // Load from localStorage whenever the modal is opened
-  useEffect(() => {
-    if (isOpen) {
-      const storedData = JSON.parse(localStorage.getItem('logBookData')) || {};
-      const newMonitoredRecords = {};
-      const newRemarks = {};
-      
-      for (const [key, value] of Object.entries(storedData)) {
-        newMonitoredRecords[key] = value.record;
-        newRemarks[key] = value.remarks;
-      }
-
-      setMonitoredRecords(newMonitoredRecords);
-      setRemarks(newRemarks);
-    }
-  }, [isOpen]);
-
   // Fetch students, school years, grades, and sections on component mount
   useEffect(() => {
     fetchSchoolYears();
@@ -78,6 +61,52 @@ const AddLogBookModal = ({ isOpen, onClose, refreshRecords }) => {
     }
   }, [sections]);
 
+  useEffect(() => {
+    if (isOpen && selectedSchoolYear && selectedGrade && selectedSection && selectedDate) {
+      fetchRecords();
+    }
+  }, [isOpen, selectedSchoolYear, selectedGrade, selectedSection, selectedDate]);
+  
+  const fetchRecords = async () => {
+    try {
+      const response = await axios.get('https://spring-csdrms-g8ra.onrender.com/record/getRecordsByStudentDetails', {
+        params: {
+          schoolYear: selectedSchoolYear,
+          grade: selectedGrade,
+          section: selectedSection,
+          recordDate: selectedDate
+        },
+        headers: { Authorization: `Bearer ${authToken}` },
+      });
+      processRecords(response.data);
+    } catch (error) {
+      console.error('Error fetching records:', error);
+      // Reset the records if the fetch fails or no data is found
+      setMonitoredRecords({});
+      setRemarks({});
+    }
+  };
+  
+  const processRecords = (records) => {
+    const recordMap = {};
+    const remarksMap = {};
+    if (records.length === 0) {
+      setMonitoredRecords({});
+      setRemarks({});
+    } else {
+      records.forEach(record => {
+        const key = `record-${record.student.id}-${record.period}`;
+        if (!recordMap[key]) {
+          recordMap[key] = [];
+        }
+        recordMap[key].push(record.monitored_record);
+        remarksMap[key] = record.remarks; // Assuming `record.remarks` exists
+      });
+      setMonitoredRecords(recordMap);
+      setRemarks(remarksMap); // Update remarks state
+    }
+  };
+  
   const fetchStudents = async () => {
     try {
       const response = await axios.get('https://spring-csdrms-g8ra.onrender.com/student/getAllCurrentStudents', {
@@ -144,62 +173,47 @@ const AddLogBookModal = ({ isOpen, onClose, refreshRecords }) => {
     setIsPeriodModalOpen(true);
   };
 
-  const closePeriodModal = (selectedRecord, periodRemarks) => {
+  
+
+  
+
+  const closePeriodModal = (data, periodRemarks) => {
+    if (data === false) {
+      // Just close the modal and do nothing else, the user has decided to close without saving changes.
+      setIsPeriodModalOpen(false);
+      setSelectedStudent(null);
+      setSelectedPeriod(null);
+      return; // Important: Exit the function without making any state changes.
+    }
+  
     const key = `record-${selectedStudent.id}-${selectedPeriod}`;
   
-    if (selectedRecord) {
-      // There's data, update states and local storage
-      setMonitoredRecords((prevRecords) => ({
-        ...prevRecords,
-        [key]: selectedRecord,
+    if (data) {
+      setMonitoredRecords(prevRecords => ({
+          ...prevRecords,
+          [key]: data,
       }));
-      setRemarks((prevRemarks) => ({
-        ...prevRemarks,
-        [key]: periodRemarks,
+      setRemarks(prevRemarks => ({
+          ...prevRemarks,
+          [key]: periodRemarks,
       }));
-  
-      saveToLocalStorage({
-        ...monitoredRecords,
-        [key]: selectedRecord,
-      }, {
-        ...remarks,
-        [key]: periodRemarks,
-      });
     } else {
       // No data (null), remove any existing entries
-      setMonitoredRecords((prevRecords) => {
-        const updated = { ...prevRecords };
-        delete updated[key];
-        return updated;
+      setMonitoredRecords(prevRecords => {
+          const updated = { ...prevRecords };
+          delete updated[key];
+          return updated;
       });
-  
-      setRemarks((prevRemarks) => {
-        const updated = { ...prevRemarks };
-        delete updated[key];
-        return updated;
+      setRemarks(prevRemarks => {
+          const updated = { ...prevRemarks };
+          delete updated[key];
+          return updated;
       });
-  
-      // Also remove from localStorage
-      const storedData = JSON.parse(localStorage.getItem('logBookData')) || {};
-      delete storedData[key];
-      localStorage.setItem('logBookData', JSON.stringify(storedData));
     }
   
     setIsPeriodModalOpen(false);
     setSelectedStudent(null);
     setSelectedPeriod(null);
-  };
-  
-
-  const saveToLocalStorage = (monitoredRecords, remarks) => {
-    const storedData = {};
-    for (const key of Object.keys(monitoredRecords)) {
-      storedData[key] = {
-        record: monitoredRecords[key],
-        remarks: remarks[key] || ''
-      };
-    }
-    localStorage.setItem('logBookData', JSON.stringify(storedData));
   };
   
 
@@ -235,8 +249,6 @@ const AddLogBookModal = ({ isOpen, onClose, refreshRecords }) => {
       alert('Records successfully saved!');
       refreshRecords();
       onClose();
-      // Clear localStorage after successful submit if desired
-      localStorage.removeItem('logBookData');
     } catch (error) {
       console.error('Error saving records:', error);
       alert('Failed to save records.');

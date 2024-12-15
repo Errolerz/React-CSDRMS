@@ -17,10 +17,11 @@ const RecordStudentEditModal = ({ record, onClose, refreshRecords }) => {
   const [selectedRecord, setSelectedRecord] = useState(record?.monitored_record || '');
   const [remarks, setRemarks] = useState(record?.remarks || '');
   const [sanction, setSanction] = useState(record?.sanction || '');
-  const [complainant, setComplainant] = useState(record?.complainant || '');
+  const [complainant, setComplainant] = useState(record?.complainant || `${loggedInUser.firstname} ${loggedInUser.lastname}`);
   const [complaint, setComplaint] = useState(record?.complaint || '');
   const [investigationDetails, setInvestigationDetails] = useState(record?.investigationDetails || '');
   const [complete, setComplete] = useState(record?.complete || 0);
+  const [period, setPeriod] = useState(record?.period || '');
   const [isSuspension, setIsSuspension] = useState(false); 
   const [suspensionDetails, setSuspensionDetails] = useState({
     days: '',
@@ -56,6 +57,14 @@ const RecordStudentEditModal = ({ record, onClose, refreshRecords }) => {
 
     fetchSuspensionData();
   }, [record]);
+
+  useEffect(() => {
+    if (selectedSource === '1') {
+      setComplete(2); 
+    } else {
+      setComplete(0); 
+    }
+  }, [selectedSource]);
 
   const handleSuspensionChange = (e) => {
     const { name, value } = e.target;
@@ -116,7 +125,7 @@ const RecordStudentEditModal = ({ record, onClose, refreshRecords }) => {
   
     if (isSuspension) {
       formattedSanction = `Suspended for ${suspensionDetails.days} days starting from ${suspensionDetails.startDate} to ${suspensionDetails.endDate} and will be returned at ${suspensionDetails.returnDate}`;
-    }
+    } 
   
 
   
@@ -176,12 +185,13 @@ const RecordStudentEditModal = ({ record, onClose, refreshRecords }) => {
       ...record,
       source: selectedSource,  // Include the selected source in the updated record
       monitored_record: selectedRecord,
+      period: period,
       remarks: record.complaint === 2 ? null : remarks, // Set remarks to null if it's a case (record type 2)
       sanction: formattedSanction,
       complainant: complainant,
       complaint: complaint,
       investigationDetails: investigationDetails,
-      complete: complete, // Send the correct integer value for complete
+      complete: isSuspension ? record.complete : complete,
     };
   
     // Update the record
@@ -213,6 +223,7 @@ const RecordStudentEditModal = ({ record, onClose, refreshRecords }) => {
                 value={selectedSource === null ? "0" : selectedSource}
                 onChange={(e) => setSelectedSource(parseInt(e.target.value, 10))}
                 className={styles.select}
+                disabled={record.user && record.user.userType !== 1}
               >
                 <option value="">Select Source</option>
                 <option value="1">Logbook</option>
@@ -238,9 +249,11 @@ const RecordStudentEditModal = ({ record, onClose, refreshRecords }) => {
             </select>
           </div>
 
-          {record.source === 2 && (
+         
+          
+          {selectedSource === 2 ? (
             <>
-              <div className={styles.inputGroup}>     
+              <div className={styles.inputGroup}>
                 <label>Complainant:</label>
                 <input
                   type="text"
@@ -249,7 +262,6 @@ const RecordStudentEditModal = ({ record, onClose, refreshRecords }) => {
                 />
               </div>
 
-              
               <div className={styles.inputGroup}>
                 <label>Complaint:</label>
                 <textarea
@@ -257,7 +269,6 @@ const RecordStudentEditModal = ({ record, onClose, refreshRecords }) => {
                   onChange={(e) => setComplaint(e.target.value)}
                 />
               </div>
-              
               {loggedInUser.userType === 1 && (
               <div className={styles.inputGroup}>
                 <label>Investigation Details:</label>
@@ -268,21 +279,33 @@ const RecordStudentEditModal = ({ record, onClose, refreshRecords }) => {
               </div>
               )}
             </>
-          )}
-
-          {record.source === 1 && (
+          ) : (
             <>
-              <div className={styles.inputGroup}>                 
-                <label>Remarks:</label>
-                <textarea 
-                  type="text" 
-                  value={remarks} 
-                  onChange={(e) => setRemarks(e.target.value)} // Handling changes in remarks
-                />
-              </div>
+            <div className={styles.inputGroup}>
+              <label>Period:</label>
+              <select
+                value={period}
+                onChange={(e) => setPeriod(e.target.value)}
+                className={styles.select}
+                required
+              >
+                <option value="">Select Period</option>
+                {Array.from({ length: 8 }, (_, i) => i + 1).map((p) => (
+                  <option key={p} value={p}>{p}</option>
+                ))}
+              </select>
+            </div>
+
+            <div className={styles.inputGroup}>
+              <label>Remarks:</label>
+              <textarea
+                value={remarks}
+                onChange={(e) => setRemarks(e.target.value)}
+              />
+            </div>
             </>
           )}
-
+              
           {loggedInUser.userType === 1 && !isSpecialRecord &&  !isSuspension && (
             <>
               <div className={styles.inputGroup}>     
@@ -297,7 +320,7 @@ const RecordStudentEditModal = ({ record, onClose, refreshRecords }) => {
             </>
           )}          
 
-          {loggedInUser.userType === 1 && record.source === 2 && !isSuspension && (
+          {loggedInUser.userType === 1 && selectedSource === 2 && !isSuspension && (
             <>
               <div className={styles.inputGroup}>
                 <label>Is the Case Complete?</label>
@@ -332,7 +355,7 @@ const RecordStudentEditModal = ({ record, onClose, refreshRecords }) => {
           </div>
             )}
 
-          {isSuspension && (
+          {loggedInUser.userType === 1 &&  isSuspension && (
             <div className={styles.suspensionSection}>
               <div className={styles.inputGroup}>
                 <label>Suspension Days:</label>

@@ -417,6 +417,7 @@ const StudentList = () => {
         )}
 
       </div>
+      {isLoading && <Loader />}
     </div>
   );
 };

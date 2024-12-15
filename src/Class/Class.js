@@ -5,6 +5,7 @@ import styles from './Class.module.css';
 import navStyles from '../Components/Navigation.module.css';
 import buttonStyles from '../GlobalButton.module.css';
 import Navigation from '../Components/Navigation';
+import Loader from '../Loader';
 
 import Box from "@mui/material/Box";
 import Modal from "@mui/material/Modal";
@@ -25,6 +26,7 @@ const Class = () => {
     const [searchTerm, setSearchTerm] = useState("");
     const [selectedGradeFilter, setSelectedGradeFilter] = useState("");
     const [selectedSectionFilter, setSelectedSectionFilter] = useState("");
+      const [isLoading, setIsLoading] = useState(true); // Loading state
 
     const [modalType, setModalType] = useState("Class"); // Class or School Year
     const [showModal, setShowModal] = useState(false);
@@ -38,20 +40,27 @@ const Class = () => {
     }, []);
 
     const fetchClasses = async () => {
+        setIsLoading(true); // Start loading
         try {
             const response = await axios.get("https://spring-csdrms-g8ra.onrender.com/class/getAllClasses");
             setClasses(response.data);
         } catch (error) {
             console.error("Error fetching classes:", error);
+            alert("Failed to fetch classes");
+        } finally {
+            setIsLoading(false); // Stop loading
         }
     };
-
     const fetchSchoolYears = async () => {
+        setIsLoading(true); // Start loading
         try {
             const response = await axios.get("https://spring-csdrms-g8ra.onrender.com/schoolYear/getAllSchoolYears");
             setSchoolYears(response.data);
         } catch (error) {
             console.error("Error fetching school years:", error);
+            alert("Failed to fetch school years");
+        } finally {
+            setIsLoading(false); // Stop loading
         }
     };
 
@@ -92,7 +101,9 @@ const Class = () => {
         }
 
         const classExists = classes.some(
-            classItem => classItem.grade === newGrade && classItem.section === newSection
+            classItem =>
+                classItem.grade === newGrade &&
+                classItem.section.toLowerCase() === newSection.toLowerCase()
         );
 
         if (classExists) {
@@ -382,6 +393,7 @@ const Class = () => {
                     </Box>
                 </Modal>
             </div>
+            {isLoading && <Loader />}
         </div>
     );
 };

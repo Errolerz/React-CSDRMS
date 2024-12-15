@@ -7,6 +7,8 @@ import formStyles from '../GlobalForm.module.css';
 const AddRecordModal = ({ student, onClose, refreshRecords }) => {
   const authToken = localStorage.getItem('authToken');
   const loggedInUser = JSON.parse(authToken);
+  const [period, setPeriod] = useState(''); // New state for period
+
 
   // Form state
   const [recordDate, setRecordDate] = useState('');
@@ -61,7 +63,7 @@ const AddRecordModal = ({ student, onClose, refreshRecords }) => {
       return;
     }
     
-    if (!recordDate || !incidentDate || !monitoredRecord || !source) {
+    if (!recordDate || !incidentDate || !monitoredRecord || !source || (source === 1 && !period)) {
       alert('Please fill in all required fields.');
       return;
     }
@@ -78,14 +80,20 @@ const AddRecordModal = ({ student, onClose, refreshRecords }) => {
       record_date: recordDate,
       incident_date: incidentDate,
       time: time,
-      monitored_record: monitoredRecord,
-      remarks: finalRemarks,  // Use the final value of remarks
+      monitored_record: monitoredRecord,  
       encoder: `${loggedInUser.firstname} ${loggedInUser.lastname}`,
-      complainant: complainant,
-      complaint: complaint,
       source: source,
       complete: finalComplete,
     };
+
+    if (source === 1) {
+      newRecord.period = period;
+      newRecord.remarks= finalRemarks;
+    } else if (source === 2) {
+      // Properties for Complaint
+      newRecord.complainant = complainant;
+      newRecord.complaint = complaint;
+    } 
 
     try {
       await axios.post(`https://spring-csdrms-g8ra.onrender.com/record/insert/${loggedInUser.userId}`, newRecord);
@@ -94,7 +102,7 @@ const AddRecordModal = ({ student, onClose, refreshRecords }) => {
       onClose();
     } catch (error) {
       console.error('Error adding record:', error);
-      alert('Error adding record');
+      alert('Record with the same student, record date, period, and monitored record already exists.');
     }
   };
 
@@ -221,6 +229,23 @@ const AddRecordModal = ({ student, onClose, refreshRecords }) => {
               ))}
             </select>
           </div>
+          {source === 1 && (
+            <div className={formStyles['form-group']}>
+              <label>Period:</label>
+              <select
+                value={period}
+                onChange={(e) => setPeriod(e.target.value)}
+                className={formStyles['input']}
+              >
+                <option value="">Select Period</option>
+                {Array.from({ length: 8 }, (_, i) => (
+                  <option key={i + 1} value={i + 1}>
+                    {i + 1}
+                  </option>
+                ))}
+              </select>
+            </div>
+          )}
 
           {/* Show Complainant and Complaint if source is Complaint */}
           {source === 2 ? (

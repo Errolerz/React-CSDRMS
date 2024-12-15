@@ -14,62 +14,45 @@ const PeriodDetailModal = ({ student, period, initialRecord, initialRemarks, onC
   const [remarks, setRemarks] = useState('');
 
   useEffect(() => {
-    if ((!initialRecord || initialRecord.length === 0) && (!initialRemarks || initialRemarks.trim() === '')) {
-      // Attempt to load from localStorage if no initial data
-      const key = `record-${student.id}-${period}`;
-      const storedData = JSON.parse(localStorage.getItem('logBookData')) || {};
-      if (storedData[key]) {
-        setSelectedOptions(storedData[key].record || []);
-        setRemarks(storedData[key].remarks || '');
-      }
-    } else {
-      // Use the passed-in initial values
-      setSelectedOptions(initialRecord || []);
-      setRemarks(initialRemarks || '');
-    }
+    // Initialize state with either passed initial values or empty defaults
+    setSelectedOptions(initialRecord || []);
+    setRemarks(initialRemarks || '');
   }, [initialRecord, initialRemarks, student.id, period]);
 
   const handleCheckboxChange = (option) => {
-    setSelectedOptions((prev) =>
-      prev.includes(option)
-        ? prev.filter(item => item !== option)
-        : [...prev, option]
+    setSelectedOptions((prevOptions) =>
+      prevOptions.includes(option)
+        ? prevOptions.filter(item => item !== option)
+        : [...prevOptions, option]
     );
   };
 
   const isEmpty = selectedOptions.length === 0 && remarks.trim() === '';
 
   const handleSubmit = () => {
-    // If there's data, save it
+    // If there's data, save it and pass it back to the parent component
     if (!isEmpty) {
-      const key = `record-${student.id}-${period}`;
-      const storedData = JSON.parse(localStorage.getItem('logBookData')) || {};
-
-      storedData[key] = {
-        record: selectedOptions,
-        remarks: remarks
-      };
-
-      localStorage.setItem('logBookData', JSON.stringify(storedData));
-
       onClose(selectedOptions, remarks);
+    } else {
+      // Consider what should happen if submit is pressed with empty inputs
+      onClose([], '');
     }
   };
 
   const handleClear = () => {
-    // Clear means submit empty data, removing any existing record.
-    onClose(null);
+    // Submit empty data, indicating removal of any existing records
+    onClose([], '');
   };
 
   const handleClose = () => {
-    // Close without saving any changes.
+    // Close without saving any changes
     onClose(false);
   };
 
   return (
     <div className={styles.modalOverlay}>
       <div className={styles.modalContent}>
-        <h3 style={{color: '#8A252C'}}>Period {period} - {student.name}</h3>
+        <h3 style={{ color: '#8A252C' }}>Period {period} - {student.name}</h3>
         <div className={styles.checkboxContainer}>
           {options.map((option) => (
             <label key={option} className={styles.checkboxItem}>
@@ -106,7 +89,6 @@ const PeriodDetailModal = ({ student, period, initialRecord, initialRemarks, onC
           <button
             onClick={handleClear}
             className={`${buttonStyles['action-button']} ${buttonStyles['yellow-button']}`}
-            // Make sure you define a `.yellow-button` class in your CSS, or choose another style
           >
             Clear
           </button>

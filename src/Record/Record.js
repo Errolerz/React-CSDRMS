@@ -37,7 +37,7 @@ const Record = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1); // Current page
-  const recordsPerPage = 50; // Number of items per page
+  const recordsPerPage = 30; // Number of items per page
 
   const authToken = localStorage.getItem('authToken');
   const loggedInUser = authToken ? JSON.parse(authToken) : null;

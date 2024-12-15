@@ -6,6 +6,7 @@ import tableStyles from "../GlobalTable.module.css"; // Import GlobalTable CSS m
 import formStyles from "../GlobalForm.module.css";
 import styles from "./Suspension.module.css"; // Import GlobalTable CSS module
 
+import Loader from '../Loader';
 import Navigation from '../Components/Navigation';
 import SuspensionModal from "./SuspensionModal"; // Import the modal component
 import EditSuspensionModal from "./EditSuspensionModal"; // Import the edit modal component
@@ -295,6 +296,7 @@ const Suspensions = () => {
           />
         )}
       </div>
+      {loading && <Loader />}
     </div>
   );
 };

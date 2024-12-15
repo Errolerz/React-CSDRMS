@@ -1,0 +1,68 @@
+.modalOverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.5); 
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1001; 
+}
+
+.modalContent {
+    background: white;
+    padding: 20px 30px;
+    border-radius: 8px;
+    width: 650px;
+    max-width: 90%;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    position: relative;
+    text-align: center;
+}
+
+.checkboxContainer {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); /* Two columns with equal width */
+    gap: 10px; /* Space between items */
+    margin: 20px 0; /* Space around the container */
+  }
+  
+.checkboxItem {
+    display: flex;
+    align-items: center;
+    gap: 12px; /* Space between checkbox and label text */
+    font-size: 16px; /* Adjust font size for readability */
+    text-align: left;
+    color: #000; /* Set the label text color */
+    margin-left: 50px;
+}
+
+/* Style for the checkbox */
+.checkboxItem input[type="checkbox"] {
+    accent-color: #8A252C; /* Change the checkbox color when checked */
+}
+
+/* Optional: Add a hover effect to make the interaction clearer */
+.checkboxItem:hover {
+    cursor: pointer;
+    opacity: 0.8;
+}
+
+
+.modalContent textarea {
+    width: 90%;
+    padding: 12px;
+    font-size: 16px;
+    border-radius: 5px; /* Match the border-radius with the input */
+    border: 1px solid #ccc; /* Match the border style with the input */
+    margin-bottom: 10px; /* Add space below */
+    resize: vertical; /* Allow vertical resizing */
+    font-family: Arial, sans-serif;
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+    transition: border-color 0.3s ease;
+    margin-left: auto;
+}
+
+  

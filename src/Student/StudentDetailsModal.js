@@ -1,9 +1,29 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
+
 import styles from './StudentDetailsModal.module.css';
 
 const StudentDetailsModal = ({ student, onClose }) => {
-  if (!student) return null;
+  const [adviser, setAdviser] = useState(null); // Hold the adviser data
 
+  useEffect(() => {
+    if (student) {
+      const fetchAdviser = async () => {
+        try {
+          const response = await axios.get('http://localhost:8080/user/adviser', {
+            params: { grade: student.grade, section: student.section, schoolYear: student.schoolYear },
+          });
+          setAdviser(response.data); // Set the adviser data
+        } catch (error) {
+          console.error('Error fetching adviser:', error);
+        }
+      };
+      
+      fetchAdviser(); // Fetch adviser when student data is available
+    }
+  }, [student]); // Trigger fetching adviser whenever student changes
+
+  if (!student) return null; // Ensure the modal doesn't render if no student data is passed
   return (
     <div className={styles.modalOverlay}>
       <div className={styles.modalContent}>
@@ -34,8 +54,8 @@ const StudentDetailsModal = ({ student, onClose }) => {
               <tr>
                 <td className={styles.keyColumn}>Adviser</td>
                 <td className={styles.separator}>:</td>
-                <td>{student.adviser || 'N/A'}</td>
-              </tr>
+                <td>{adviser ? `${adviser.firstname} ${adviser.lastname}` : 'N/A'}</td>
+                </tr>
               <tr>
                 <td className={styles.keyColumn}>Gender</td>
                 <td className={styles.separator}>:</td>

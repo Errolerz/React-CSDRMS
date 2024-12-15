@@ -9,15 +9,11 @@ import tableStyles from '../GlobalTable.module.css'; // Importing GlobalForm sty
 
 import Navigation from '../Components/Navigation';
 import StudentFilter from './StudentFilter'; 
-import ImportModal from './StudentImportModal'; // Import ImportModal component
-import AddStudentModal from './AddStudentModal';
 import AddRecordModal from '../Record/AddRecordModal'; // Import AddRecordModal component
 import EditStudentModal from './EditStudentModal'; // Ensure this path matches the actual file location
 import RecordStudentEditModal from '../Record/EditRecordModal';
 import RecordStudentViewModal from '../Record/ViewRecordModal'; // Import the view modal
 
-import AddStudentIcon from '@mui/icons-material/PersonAdd';
-import ImportIcon from '@mui/icons-material/FileDownload';
 import AddIcon from '@mui/icons-material/AddCircleOutline';
 import ViewNoteIcon from '@mui/icons-material/Visibility';
 import EditNoteIcon from '@mui/icons-material/Edit';
@@ -36,13 +32,12 @@ const Student = () => {
   const [selectedMonth, setSelectedMonth] = useState(''); 
   const [selectedWeek, setSelectedWeek] = useState('');
   const [showAddRecordModal, setShowAddRecordModal] = useState(false); // Modal visibility state
-  const [showImportModal, setShowImportModal] = useState(false); // Control ImportModal visibility
-  const [showAddStudentModal, setShowAddStudentModal] = useState(false); 
   const [showEditRecordModal, setShowEditRecordModal] = useState(false); // Modal visibility state
   const [showViewRecordModal, setShowViewRecordModal] = useState(false); // State to control view modal
   const [recordToEdit, setRecordToEdit] = useState(null); // Hold the record to edit
   const [recordToView, setRecordToView] = useState(null); // Hold the record to view
-
+  const [selectedMonitoredRecord, setSelectedMonitoredRecord] = useState(''); 
+  
   const [schoolYears, setSchoolYears] = useState([]); // State for school years
   const [students, setStudents] = useState([]); // State for students
 
@@ -66,7 +61,7 @@ const Student = () => {
       let response;
       const userType = loggedInUser.userType;
       if (userType === 3) {
-        response = await axios.get('https://spring-csdrms-g8ra.onrender.com/student/getAllStudentsByAdviser', {
+        response = await axios.get('http://localhost:8080/student/getAllStudentsByAdviser', {
           params: {
             grade: loggedInUser.grade,
             section: loggedInUser.section,
@@ -74,7 +69,7 @@ const Student = () => {
           }
         });
       } else {
-        response = await axios.get('https://spring-csdrms-g8ra.onrender.com/student/getAllCurrentStudents');
+        response = await axios.get('http://localhost:8080/student/getAllCurrentStudents');
       }
       setStudents(response.data);
     } catch (error) {
@@ -90,6 +85,7 @@ const Student = () => {
     const userTypeTitles = {
       1: 'SSO',
       3: 'Adviser',
+      6: 'Guidance',
     };
   
     const userTypeTitle = userTypeTitles[loggedInUser?.userType] || 'Unknown';
@@ -99,7 +95,7 @@ const Student = () => {
   useEffect(() => {
     const fetchSchoolYears = async () => {
       try {
-        const response = await axios.get('https://spring-csdrms-g8ra.onrender.com/schoolYear/getAllSchoolYears');
+        const response = await axios.get('http://localhost:8080/schoolYear/getAllSchoolYears');
         setSchoolYears(response.data);
       } catch (error) {
         console.error('Error fetching school years:', error);
@@ -114,17 +110,15 @@ const Student = () => {
     const handleKeyDown = (event) => {
       if (event.key === 'Escape') {
         // Close the respective modals when the 'Esc' key is pressed
-        if (showAddStudentModal) setShowAddStudentModal(false);
         if (showEditRecordModal) setShowEditRecordModal(false);
         if (showViewRecordModal) setShowViewRecordModal(false);
         if (showAddRecordModal) setShowAddRecordModal(false);
-        if (showImportModal) setShowImportModal(false);
         if (showEditStudentModal) setShowEditStudentModal(false);
       }
     };
   
     // Attach the event listener when any modal is open
-    if (showAddStudentModal || showEditRecordModal || showViewRecordModal || showAddRecordModal || showImportModal || showEditStudentModal) {
+    if (showEditRecordModal || showViewRecordModal || showAddRecordModal || showEditStudentModal) {
       window.addEventListener('keydown', handleKeyDown);
     }
   
@@ -132,7 +126,7 @@ const Student = () => {
     return () => {
       window.removeEventListener('keydown', handleKeyDown);
     };
-  }, [showAddStudentModal, showEditRecordModal, showViewRecordModal, showAddRecordModal, showImportModal, showEditStudentModal]);
+  }, [showEditRecordModal, showViewRecordModal, showAddRecordModal, showEditStudentModal]);
   
   
 
@@ -153,7 +147,7 @@ const Student = () => {
   const fetchStudentRecords = async (sid) => {
     setLoading(true);
     try {
-      const response = await axios.get(`https://spring-csdrms-g8ra.onrender.com/record/getStudentRecords/${sid}`);
+      const response = await axios.get(`http://localhost:8080/record/getStudentRecords/${sid}`);
       setRecords(response.data);
     } catch (error) {
       console.error('Error fetching student records:', error);
@@ -164,7 +158,7 @@ const Student = () => {
 
   const fetchAdviser = async (grade, section, schoolYear) => {
     try {
-      const response = await axios.get(`https://spring-csdrms-g8ra.onrender.com/user/adviser`, {
+      const response = await axios.get(`http://localhost:8080/user/adviser`, {
         params: { grade, section, schoolYear }
       });
       setAdviser(response.data);
@@ -194,7 +188,8 @@ const Student = () => {
     return (
       (!selectedSchoolYear || record.student.schoolYear === selectedSchoolYear) &&
       (!selectedMonth || formattedMonth === selectedMonth) &&
-      (!selectedWeek || recordWeek === parseInt(selectedWeek, 10))
+      (!selectedWeek || recordWeek === parseInt(selectedWeek, 10)) &&
+      (!selectedMonitoredRecord || record.monitored_record === selectedMonitoredRecord) // Filter by monitored record
     );
   });
 
@@ -227,7 +222,7 @@ const Student = () => {
     const confirmed = window.confirm('Are you sure you want to delete this record?'); // Confirmation alert
     if (confirmed) {
       try {
-        await axios.delete(`https://spring-csdrms-g8ra.onrender.com/record/delete/${recordId}/${loggedInUser.userId}`); // Call your delete API
+        await axios.delete(`http://localhost:8080/record/delete/${recordId}/${loggedInUser.userId}`); // Call your delete API
         setRecords(records.filter((record) => record.recordId !== recordId)); // Remove the deleted record from state
         alert('Record deleted successfully!'); // Optionally, show a success message
       } catch (error) {
@@ -250,7 +245,7 @@ const Student = () => {
     if (confirmed) {
       try {
         // Perform DELETE request to the backend API
-        await axios.delete(`https://spring-csdrms-g8ra.onrender.com/student/delete/${studentId}/${loggedInUser.userId}`);
+        await axios.delete(`http://localhost:8080/student/delete/${studentId}/${loggedInUser.userId}`);
         
         // Update state: Remove the deleted student from the list and clear the selected student
         setStudents(students.filter((student) => student.id !== studentId));
@@ -272,23 +267,7 @@ const Student = () => {
       <Navigation loggedInUser={loggedInUser} />
       <div className={navStyles.content}>  
         <div className={navStyles.TitleContainer}>
-          <h2 className={navStyles['h1-title']}>Student Overview</h2>
-          <div className={buttonStyles['button-group']}>
-            {loggedInUser?.userType !== 3 && (
-              <button onClick={() => setShowAddStudentModal(true)} 
-                className={`${buttonStyles['action-button']} ${buttonStyles['gold-button']}`}>
-                <AddStudentIcon />Add Student
-              </button>
-            )}     
-
-            {/* Button to open Import Modal */}
-            {loggedInUser?.userType !== 3 && (
-              <button onClick={() => setShowImportModal(true)} 
-                className={`${buttonStyles['action-button']} ${buttonStyles['maroon-button']}`}>
-                <ImportIcon />Import Student
-              </button>
-            )}    
-          </div>                
+          <h2 className={navStyles['h1-title']}>Student Overview</h2>            
         </div>  
 
         <h2 className={styles['h2-title-record']}>Total Frequency of Monitored Records</h2>
@@ -317,14 +296,18 @@ const Student = () => {
             <label style={{ display: 'flex', justifyContent: 'space-between' ,alignItems:"center"}}> Details:
               {selectedStudent && (
                 <div className={formStyles['global-buttonGroup']} style={{marginTop:"0"}}>
-                  <EditNoteIcon 
-                    onClick={() => handleEditStudent(selectedStudent)} 
-                    className={formStyles['action-icon']} 
-                  />
-                  <DeleteIcon 
-                    onClick={() => handleDeleteStudent(selectedStudent.id)} 
-                    className={formStyles['action-icon']}
-                  />
+                  {loggedInUser.userType === 2 && (
+                    <>
+                      <EditNoteIcon 
+                      onClick={() => handleEditStudent(selectedStudent)} 
+                      className={formStyles['action-icon']} 
+                      />
+                      <DeleteIcon 
+                        onClick={() => handleDeleteStudent(selectedStudent.id)} 
+                        className={formStyles['action-icon']}
+                      />
+                    </>
+                  )}
                 </div>
               )}      
             </label>
@@ -343,14 +326,9 @@ const Student = () => {
                     </td>     
                   </tr>
                   <tr>
-                    <td><strong>Grade</strong></td>
+                    <td><strong>Grade & Section</strong></td>
                     <td><strong>:</strong></td>
-                    <td>{selectedStudent?.grade || 'N/A'}</td>
-                  </tr>
-                  <tr>
-                    <td><strong>Section</strong></td>
-                    <td><strong>:</strong></td>
-                    <td>{selectedStudent?.section || 'N/A'}</td>
+                    <td>{selectedStudent?.grade && selectedStudent?.section ? `${selectedStudent.grade} - ${selectedStudent.section}` : 'N/A'}</td>
                   </tr>
                   <tr>
                     <td><strong>Adviser</strong></td>
@@ -419,21 +397,6 @@ const Student = () => {
             
           </div>    
         </div>   
-
-        {/* Import Modal */}
-        {showImportModal && (
-          <ImportModal
-            onClose={() => setShowImportModal(false)}
-            schoolYears={schoolYears}
-          />
-        )}
-
-        {showAddStudentModal && ( 
-          <AddStudentModal
-            open={showAddStudentModal}
-            onClose={() => setShowAddStudentModal(false)}
-          />    
-        )}
       
         {/* Add Record Modal */}
         {showAddRecordModal && (
@@ -461,7 +424,8 @@ const Student = () => {
                   setSelectedMonth={setSelectedMonth}
                   selectedWeek={selectedWeek}
                   setSelectedWeek={setSelectedWeek}
-                  showGradeAndSection={false} // Hide grade and section filters
+                  showGradeAndSection={false} 
+                  setSelectedMonitoredRecord={setSelectedMonitoredRecord}
                 />
               )}    
             </div>         
@@ -475,7 +439,7 @@ const Student = () => {
                 >
                   <AddIcon /> Add Record
                 </button>
-              )}
+              )} 
             </div>
                         
             <div className={tableStyles['table-container']}>
@@ -492,17 +456,17 @@ const Student = () => {
               <tbody>
                 {filteredRecords.length === 0 ? (
                   <tr>
-                    <td colSpan={4} style={{ textAlign: 'center' }}>
+                    <td colSpan={5} style={{ textAlign: 'center' }}>
                       No records found.
                     </td>
                   </tr>
                 ) : (
                   filteredRecords.map((record) => (
                     <tr key={record.recordId}>
-                      <td>{record.record_date}</td>
+                      <td>{record.record_date ? new Date(record.record_date).toLocaleDateString('en-US') : 'N/A'}</td>
                       <td>{record.monitored_record}</td>
-                      <td>{record.source === 1 ? 'Logbook' : record.source === 2 ? 'Complaint' : 'Unknown'}</td>
-                      <td>{record.encoder.firstname} {record.encoder.lastname}</td>
+                      <td>{record.source === 1 ? 'Logbook' : record.source === 2 ? 'Complaint' : 'N/A'}</td>
+                      <td>{record.encoder}</td>
                       <td>
                         <ViewNoteIcon
                           onClick={() => {

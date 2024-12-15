@@ -9,7 +9,7 @@ const ViewRecordModal = ({ record, onClose }) => {
     const fetchSuspensionData = async () => {
       if (record?.recordId) {
         try {
-          const response = await axios.get(`https://spring-csdrms-g8ra.onrender.com/suspension/getSuspensionByRecord/${record.recordId}`);
+          const response = await axios.get(`http://localhost:8080/suspension/getSuspensionByRecord/${record.recordId}`);
           if (response.data) {
             // Check if the suspension is approved or not
             const status = response.data.approved ? 'Approved' : 'Not Approved';  // Or 'Pending' depending on your choice
@@ -54,12 +54,13 @@ const ViewRecordModal = ({ record, onClose }) => {
             <tr>
               <td><strong>Record Date</strong></td>
               <td><strong>:</strong></td>
-              <td>{record.record_date || 'N/A'}</td>
+              <td>{record.record_date ? new Date(record.record_date).toLocaleDateString('en-US') : 'N/A'}</td>
             </tr>
             <tr>
               <td><strong>Time</strong></td>
               <td><strong>:</strong></td>
-              <td>{record.time || 'N/A'}</td>
+              <td>{record.time ? new Date(`1970-01-01T${record.time}`).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true }) : 'N/A'}</td>
+
             </tr>
             <tr>
               <td><strong>Monitored Record</strong></td>
@@ -121,8 +122,13 @@ const ViewRecordModal = ({ record, onClose }) => {
             <tr>
               <td><strong>Source</strong></td>
               <td><strong>:</strong></td>
-              <td><strong>{record.source === 1 ? 'Logbook' : record.source === 2 ? 'Complaint' : 'Unknown'}</strong>  </td>
-            </tr>         
+              <td><strong>{record.source === 1 ? 'Logbook' : record.source === 2 ? 'Complaint' : 'N/A'}</strong>  </td>
+            </tr>    
+            <tr>
+              <td><strong>Remarks</strong></td>
+              <td><strong>:</strong></td>
+              <td>{record.remarks || 'N/A'}</td>
+            </tr>     
             <tr>
               <td><strong>Sanction</strong></td>
               <td><strong>:</strong></td>
@@ -131,7 +137,7 @@ const ViewRecordModal = ({ record, onClose }) => {
             <tr>
               <td><strong>Encoder</strong></td>
               <td><strong>:</strong></td>
-              <td>{`${record.encoder?.firstname || 'N/A'} ${record.encoder?.lastname || ''}`}</td>
+              <td>{`${record?.encoder || 'N/A'}`}</td>
             </tr>
           </tbody>
         </table>

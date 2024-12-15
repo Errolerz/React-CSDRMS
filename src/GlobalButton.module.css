@@ -97,3 +97,10 @@
     transform: scale(1.25);
     cursor: pointer;
 }
+
+.gray-button {
+    background-color: #A9A9A9;  /* Gray color */
+    text-shadow: 1px 1px 3px #000;  /* Slight shadow for all text */
+    pointer-events: none;  /* Disable pointer events */
+    cursor: not-allowed;  /* Show the not-allowed cursor */
+}

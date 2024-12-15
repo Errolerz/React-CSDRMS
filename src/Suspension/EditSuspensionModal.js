@@ -20,6 +20,10 @@ const EditSuspensionModal = ({ isOpen, onClose, suspension }) => {
     setDays(suspension.days);
   }, [suspension]);
 
+  const handleInputChange = (e) => {
+    if (e.target.value === "" || parseInt(e.target.value) >= 1) setDays(e.target.value);
+  }
+  
   // Function to handle saving edited suspension data
   const handleSave = async () => {
     if (!startDate || !endDate || !returnDate || !days) {
@@ -36,7 +40,7 @@ const EditSuspensionModal = ({ isOpen, onClose, suspension }) => {
         days,
       };
 
-      await axios.put(`https://spring-csdrms-g8ra.onrender.com/suspension/update/${suspension.suspensionId}/${loggedInUser.userId}`, updatedSuspension);
+      await axios.put(`http://localhost:8080/suspension/update/${suspension.suspensionId}/${loggedInUser.userId}`, updatedSuspension);
       window.location.reload();
       onClose(); // Close modal after save
     } catch (error) {
@@ -58,7 +62,7 @@ const EditSuspensionModal = ({ isOpen, onClose, suspension }) => {
             <input
               type="number"
               value={days}
-              onChange={(e) => setDays(e.target.value)}
+              onChange={handleInputChange}
               className={styles['suspension-input']}
               
             />

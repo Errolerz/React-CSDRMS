@@ -1,0 +1,47 @@
+.record-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.record-import-modal-content {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    width: 330px;
+    max-width: 100%;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.record-add-modal-content {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    width: 450px;
+    max-width: 100%;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.record-modal-header {
+    margin-top: 0;
+    color: #8A252C;
+}
+
+.record-modal-select {
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.record-modal-file-input {
+    margin: 10px 0;
+}

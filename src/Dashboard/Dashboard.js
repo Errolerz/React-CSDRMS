@@ -1,20 +1,22 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState, useRef, useMemo } from 'react';
 import axios from 'axios';
 import { jsPDF } from 'jspdf';
 import html2canvas from 'html2canvas';
 import { Line, Bar, Pie } from 'react-chartjs-2';
 import {
     Chart as ChartJS,
-    LineElement,
-    PointElement,
+    registerables,
+    ArcElement,
+    CategoryScale,
     LinearScale,
+    PointElement,
+    LineElement,
+    BarElement,
     Title,
     Tooltip,
-    Legend,
-    CategoryScale,
-    ArcElement,
-    BarElement,
+    Legend
 } from 'chart.js';
+import ChartDataLabels from 'chartjs-plugin-datalabels';
 
 import styles from '../Dashboard/Dashboard.module.css';
 import navStyles from '../Components/Navigation.module.css'; 
@@ -25,7 +27,20 @@ import buttonStyles from '../GlobalButton.module.css'
 import Loader from '../Loader';
 import ExportIcon from '@mui/icons-material/FileUpload';
 
-ChartJS.register(LineElement, PointElement, LinearScale, Title, Tooltip, Legend, CategoryScale, ArcElement, BarElement);
+// Register Chart.js components and plugins
+ChartJS.register(
+    ...registerables,
+    ArcElement,
+    CategoryScale,
+    LinearScale,
+    PointElement,
+    LineElement,
+    BarElement,
+    Title,
+    Tooltip,
+    Legend,
+    ChartDataLabels // Register the DataLabels plugin
+);
 
 const Record = () => {
     const authToken = localStorage.getItem('authToken');
@@ -67,41 +82,55 @@ const Record = () => {
         }, [loggedInUser]);
 
 
-    const handleExportToPDF = async () => {
-        const element = exportRef.current;
-
-        // Capture the element as an image using html2canvas
-        const canvas = await html2canvas(element);
-        const imgData = canvas.toDataURL('image/png');
-
-        // Create jsPDF document with long bond paper size
-        const pdf = new jsPDF({
-            orientation: 'portrait',
-            unit: 'mm',
-            format: [216, 330], // Long bond paper size in mm
-        });
-
-        // Define margins and calculate content dimensions
-        const marginTop = 20; // Top margin in mm
-        const marginLeft = 10; // Left margin in mm
-        const pdfWidth = 216 - 2 * marginLeft; // Width adjusted for margins
-        const pdfHeight = (canvas.height * pdfWidth) / canvas.width; // Maintain aspect ratio
-
-        // Add title and custom header (optional)
-        pdf.setFontSize(16);
-        pdf.text('Student Records', marginLeft, marginTop - 10);
-
-        // Add the image content with margins
-        pdf.addImage(imgData, 'PNG', marginLeft, marginTop, pdfWidth, pdfHeight);
-
-        // Optional footer
-        pdf.setFontSize(10);
-        pdf.text('Generated on: ' + new Date().toLocaleDateString(), marginLeft, 330 - 10); // Bottom left corner
-
-        // Save the PDF
-        pdf.save('Records.pdf');
-    };
-
+        const handleExportToPDF = async () => {
+            const element = exportRef.current;
+        
+            const exportButton = document.getElementById('exportToPDFButton');
+            let originalDisplay = '';
+        
+            if (exportButton) {
+                // Save original display value
+                originalDisplay = getComputedStyle(exportButton).display;
+                // Hide the export button
+                exportButton.style.display = 'none';
+            }
+        
+            // Capture the element as an image using html2canvas
+            const canvas = await html2canvas(element);
+            const imgData = canvas.toDataURL('image/png');
+        
+            if (exportButton) {
+                // Restore the original display value
+                exportButton.style.display = originalDisplay;
+            }
+        
+            // Create jsPDF document
+            const pdf = new jsPDF({
+                orientation: 'portrait',
+                unit: 'mm',
+                format: [216, 279], // Letter size in mm
+            });
+        
+            // Define margins and content dimensions
+            const topMargin = 15;
+            const sideMargin = 27.4;
+            const pdfContentWidth = 216 - 2 * sideMargin;
+            const pdfContentHeight = 279 - topMargin - sideMargin;
+            const imgHeight = (canvas.height * pdfContentWidth) / canvas.width;
+            const adjustedImgHeight = Math.min(imgHeight, pdfContentHeight);
+        
+            // Add content to the PDF
+            pdf.addImage(imgData, 'PNG', sideMargin, topMargin, pdfContentWidth, adjustedImgHeight);
+        
+            // Footer
+            pdf.setFontSize(10);
+            pdf.text('Generated on: ' + new Date().toLocaleDateString(), sideMargin, 279 - sideMargin + 5);
+        
+            // Save PDF
+            pdf.save('JHS-Monitored-Records.pdf');
+        };
+        
+        
     // Fetch initial data (records, classes, school years, unique grades)
     useEffect(() => {
         const fetchData = async () => {
@@ -111,7 +140,7 @@ const Record = () => {
                 // Check if the logged-in user is an adviser
                 if (loggedInUser.userType === 3) {
                     // Fetch records based on adviser parameters
-                    recordRes = await axios.get('https://spring-csdrms-g8ra.onrender.com/record/getStudentRecordsByAdviser', {
+                    recordRes = await axios.get('http://localhost:8080/record/getStudentRecordsByAdviser', {
                         params: {
                             grade: loggedInUser.grade,
                             section: loggedInUser.section,
@@ -120,13 +149,13 @@ const Record = () => {
                     });
                 } else {
                     // Fetch all records for other user types
-                    recordRes = await axios.get('https://spring-csdrms-g8ra.onrender.com/record/getAllRecords');
+                    recordRes = await axios.get('http://localhost:8080/record/getAllRecords');
                 }
 
                 const [classRes, yearRes, gradeRes] = await Promise.all([
-                    axios.get('https://spring-csdrms-g8ra.onrender.com/class/getAllClasses'),
-                    axios.get('https://spring-csdrms-g8ra.onrender.com/schoolYear/getAllSchoolYears'),
-                    axios.get('https://spring-csdrms-g8ra.onrender.com/class/allUniqueGrades'),
+                    axios.get('http://localhost:8080/class/getAllClasses'),
+                    axios.get('http://localhost:8080/schoolYear/getAllSchoolYears'),
+                    axios.get('http://localhost:8080/class/allUniqueGrades'),
                 ]);
 
                 setRecords(recordRes.data);
@@ -153,8 +182,8 @@ const Record = () => {
         const fetchSections = async () => {
             if (selectedGrade) {
                 try {
-                    const response = await axios.get(`https://spring-csdrms-g8ra.onrender.com/class/sections/${selectedGrade}`);
-                    setSectionsForGrade(response.data.map(section => section.toLowerCase())); 
+                    const response = await axios.get(`http://localhost:8080/class/sections/${selectedGrade}`);
+                    setSectionsForGrade(response.data.map(section => section.toUpperCase())); 
                 } catch (err) {
                     setError(err.message || 'Error fetching sections.');
                 }
@@ -198,7 +227,7 @@ const Record = () => {
                 const isMonthMatch = !selectedMonth || recordMonth === selectedMonth;
                 const isWeekMatch = !selectedWeek || week === parseInt(selectedWeek);
                 const isGradeMatch = !selectedGrade || record.student.grade === parseInt(selectedGrade);
-                const isSectionMatch = !selectedSection || record.student.section.toLowerCase() === selectedSection.toLowerCase();
+                const isSectionMatch = !selectedSection || record.student.section.toUpperCase() === selectedSection.toUpperCase();
 
 
                 if (isYearMatch && isMonthMatch && isWeekMatch && isGradeMatch && isSectionMatch) {
@@ -246,32 +275,91 @@ const Record = () => {
     const handleSectionChange = (e) => setSelectedSection(e.target.value);
 
     // New: Filter studentRecords by selectedGrade and selectedSection
-    const filteredStudentRecords = records
-        .filter(record => 
-            (!selectedGrade || record.student.grade === parseInt(selectedGrade)) && 
-            (!selectedSection || record.student.section.toLowerCase() === selectedSection.toLowerCase())
-        )
-        .reduce((acc, record) => {
-            const studentName = record.student.name;
-            if (!acc[studentName]) {
-                acc[studentName] = {
-                    Absent: 0,
-                    Tardy: 0,
-                    'Cutting Classes': 0,
-                    'Improper Uniform': 0,
-                    Offense: 0,
-                    Misbehavior: 0,
-                    Clinic: 0,
-                    'Request Permit': 0,
-                    SanctionFrequency: 0,
-                };
-            }
-            acc[studentName][record.monitored_record]++;
-            if (record.sanction) {
-                acc[studentName].SanctionFrequency++;
-            }
-            return acc;
+    const filteredData = useMemo(() => {
+        const filteredRecords = records.filter(record => {
+          const recordDate = new Date(record.record_date);
+          const recordMonth = recordDate.toLocaleString('default', { month: 'long' });
+          const week = Math.ceil(recordDate.getDate() / 7);
+      
+          return (
+            (!selectedGrade || record.student.grade === parseInt(selectedGrade)) &&
+            (!selectedSection || record.student.section.toUpperCase() === selectedSection.toUpperCase()) &&
+            (!selectedMonth || recordMonth === selectedMonth) &&
+            (!selectedWeek || week === parseInt(selectedWeek))
+          );
+        });
+      
+        const studentCounts = filteredRecords.reduce((acc, record) => {
+          const studentName = record.student.name;
+          if (!acc[studentName]) {
+            acc[studentName] = {
+              Absent: 0,
+              Tardy: 0,
+              'Cutting Classes': 0,
+              'Improper Uniform': 0,
+              Offense: 0,
+              Misbehavior: 0,
+              Clinic: 0,
+              'Request Permit': 0,
+              SanctionFrequency: 0,
+            };
+          }
+          acc[studentName][record.monitored_record]++;
+          if (record.sanction) {
+            acc[studentName].SanctionFrequency++;
+          }
+          return acc;
         }, {});
+      
+        return studentCounts;
+      }, [records, selectedGrade, selectedSection, selectedMonth, selectedWeek]);
+
+        const classOverviewTable = 
+        Object.entries(filteredData).length > 0 ? (
+            Object.entries(filteredData).map(([studentName, counts]) => (
+                <tr key={studentName}>
+                    <td style={{ width: '350px', textAlign:'left' }}>{studentName}</td>
+                    <td>{counts.Absent}</td>
+                    <td>{counts.Tardy}</td>
+                    <td>{counts['Cutting Classes']}</td>
+                    <td>{counts['Improper Uniform']}</td>
+                    <td>{counts.Offense}</td>
+                    <td>{counts.Misbehavior}</td>
+                    <td>{counts.Clinic}</td>
+                    <td>{counts['Request Permit']}</td>
+                    <td>{counts.SanctionFrequency}</td>
+                </tr>
+            ))
+        ) : (
+            <tr>
+                <td colSpan="10" style={{ textAlign: 'center' }}>
+                    No records found.
+                </td>
+            </tr>
+        )
+        const classOverviewTableByMonth = 
+        Object.entries(filteredData).length > 0 ? (
+            Object.entries(filteredData).map(([studentName, counts]) => (
+                <tr key={studentName}>
+                    <td style={{ width: '350px' }}>{studentName}</td>
+                    <td>{counts.Absent}</td>
+                    <td>{counts.Tardy}</td>
+                    <td>{counts['Cutting Classes']}</td>
+                    <td>{counts['Improper Uniform']}</td>
+                    <td>{counts.Offense}</td>
+                    <td>{counts.Misbehavior}</td>
+                    <td>{counts.Clinic}</td>
+                    <td>{counts['Request Permit']}</td>
+                    <td>{counts.SanctionFrequency}</td>
+                </tr>
+            ))
+        ) : (
+            <tr>
+                <td colSpan="10" style={{ textAlign: 'center' }}>
+                    No records found.
+                </td>
+            </tr>
+        )
 
         const getChartData = () => {
             const labels = selectedMonth
@@ -300,20 +388,14 @@ const Record = () => {
                 {
                     label: 'Improper Uniform',
                     data: labels.map(label => monthlyData[label]?.['Improper Uniform'] || 0),
-                    borderColor: '#00FF00',  // Green
-                    backgroundColor: '#00FF00', // Light Green
+                    borderColor: '#008000',  // Green
+                    backgroundColor: '#008000', // Green
                 },
                 {
                     label: 'Offense',
                     data: labels.map(label => monthlyData[label]?.Offense || 0),
                     borderColor: '#0000FF',  // Blue
                     backgroundColor: '#0000FF', // Light Blue
-                },
-                {
-                    label: 'Misbehavior',
-                    data: labels.map(label => monthlyData[label]?.Misbehavior || 0),
-                    borderColor: '#4B0082',  // Indigo
-                    backgroundColor: '#4B0082', // Light Indigo
                 },
                 {
                     label: 'Clinic',
@@ -335,64 +417,106 @@ const Record = () => {
                 },
             ];
         
+            // Conditionally add 'Misbehavior' dataset or combine 'Offense' and 'Misbehavior' data for userType === 2
+            if (loggedInUser.userType !== 2) {
+                datasets.splice(5, 0, { // Insert 'Misbehavior' after 'Offense'
+                    label: 'Misbehavior',
+                    data: labels.map(label => monthlyData[label]?.Misbehavior || 0),
+                    borderColor: '#4B0082',  // Indigo
+                    backgroundColor: '#4B0082', // Light Indigo
+                });
+            } else {
+                // If userType is 2, combine 'Offense' and 'Misbehavior' data into 'Offense'
+                datasets[4].data = labels.map((label, index) => {
+                    return (monthlyData[label]?.Offense || 0) + (monthlyData[label]?.Misbehavior || 0);
+                });
+                datasets[4].label = 'Offense'; // Update the label to reflect combined data
+            }
+        
             return { labels, datasets };
         };
         
-
+        
         const getChartPieData = () => {
+            // Define the labels and dataset order
+            const labels = [
+                'Absent',
+                'Tardy',
+                'Cutting Classes',
+                'Improper Uniform',
+                'Clinic',
+                'Request Permit',
+                'Sanction',
+            ];
+        
+            // Define the colors for the chart
+            const backgroundColors = [
+                '#FF0000', // Absent (Red)
+                '#FF7F00', // Tardy (Orange)
+                '#FFFF00', // Cutting Classes (Yellow)
+                '#008000', // Improper Uniform (Green)
+                '#9400D3', // Clinic (Violet)
+                'rgba(139, 69, 19, 1)', // Sanction (Brownish)
+                '#000000', // Request Permit (Black)
+            ];
+        
+            const borderColors = [
+                '#FF0000', // Absent (Red)
+                '#FF7F00', // Tardy (Orange)
+                '#FFFF00', // Cutting Classes (Yellow)
+                '#008000', // Improper Uniform (Green)
+                '#9400D3', // Clinic (Violet)
+                'rgba(139, 69, 19, 1)', // Sanction (Brownish)
+                '#000000', // Request Permit (Black)
+            ];
+        
+            // Initialize the dataset with the required frequency sums
+            const data = [
+                Object.values(filteredFrequencyData).reduce((sum, frequencies) => sum + frequencies.Absent, 0),
+                Object.values(filteredFrequencyData).reduce((sum, frequencies) => sum + frequencies.Tardy, 0),
+                Object.values(filteredFrequencyData).reduce((sum, frequencies) => sum + frequencies['Cutting Classes'], 0),
+                Object.values(filteredFrequencyData).reduce((sum, frequencies) => sum + frequencies['Improper Uniform'], 0),
+                Object.values(filteredFrequencyData).reduce((sum, frequencies) => sum + frequencies.Clinic, 0),
+                Object.values(filteredFrequencyData).reduce((sum, frequencies) => sum + frequencies['Request Permit'], 0),
+                Object.values(filteredFrequencyData).reduce((sum, frequencies) => sum + frequencies.Sanction, 0),
+            ];
+        
+            // Conditionally add 'Offense' and 'Misbehavior' data if the user is not type 2
+            if (loggedInUser.userType !== 2) {
+                labels.splice(4, 0, 'Offense', 'Misbehavior'); // Insert 'Offense' and 'Misbehavior' after 'Improper Uniform'
+                backgroundColors.splice(4, 0, '#0000FF', '#4B0082'); // Add respective colors
+                borderColors.splice(4, 0, '#0000FF', '#4B0082'); // Add respective border colors
+                data.splice(4, 0,
+                    Object.values(filteredFrequencyData).reduce((sum, frequencies) => sum + frequencies.Offense, 0),
+                    Object.values(filteredFrequencyData).reduce((sum, frequencies) => sum + frequencies.Misbehavior, 0)
+                );
+            } else {
+                // If userType is 2, combine Offense and Misbehavior into Offense
+                labels.splice(4, 1, 'Offense'); // Replace 'Offense' label at index 4
+                backgroundColors.splice(4, 1, '#0000FF'); // Replace the color for 'Offense'
+                borderColors.splice(4, 1, '#0000FF'); // Replace the border color for 'Offense'
+        
+                // Combine 'Offense' and 'Misbehavior' data
+                const combinedOffenseMisbehavior = Object.values(filteredFrequencyData).reduce((sum, frequencies) => sum + frequencies.Offense + frequencies.Misbehavior, 0);
+                data.splice(4, 1, combinedOffenseMisbehavior); // Replace the data at index 4 with the combined value
+            }
+        
+            // Return the pie chart data object
             const pieData = {
-                labels: [
-                    'Absent',
-                    'Tardy',
-                    'Cutting Classes',
-                    'Improper Uniform',
-                    'Offense',
-                    'Misbehavior',
-                    'Clinic',
-                    'Request Permit',
-                    'Sanction',
-                ],
+                labels,
                 datasets: [
                     {
-                        data: [
-                            Object.values(filteredFrequencyData).reduce((sum, frequencies) => sum + frequencies.Absent, 0),
-                            Object.values(filteredFrequencyData).reduce((sum, frequencies) => sum + frequencies.Tardy, 0),
-                            Object.values(filteredFrequencyData).reduce((sum, frequencies) => sum + frequencies['Cutting Classes'], 0),
-                            Object.values(filteredFrequencyData).reduce((sum, frequencies) => sum + frequencies['Improper Uniform'], 0),
-                            Object.values(filteredFrequencyData).reduce((sum, frequencies) => sum + frequencies.Offense, 0),
-                            Object.values(filteredFrequencyData).reduce((sum, frequencies) => sum + frequencies.Misbehavior, 0),
-                            Object.values(filteredFrequencyData).reduce((sum, frequencies) => sum + frequencies.Clinic, 0),
-                            Object.values(filteredFrequencyData).reduce((sum, frequencies) => sum + frequencies['Request Permit'], 0),
-                            Object.values(filteredFrequencyData).reduce((sum, frequencies) => sum + frequencies.Sanction, 0),
-                        ],
-                        backgroundColor: [
-                            '#FF0000', // Absent (Red)
-                            '#FF7F00', // Tardy (Orange)
-                            '#FFFF00', // Cutting Classes (Yellow)
-                            '#008000', // Improper Uniform (Green)
-                            '#0000FF', // Offense (Blue)
-                            '#4B0082', // Misbehavior (Indigo)
-                            '#9400D3', // Clinic (Violet)
-                            'rgba(139, 69, 19, 1)', // Sanction (Brownish)
-                            '#000000', // Request Permit (Black)
-                        ],
-                        borderColor: [
-                            '#FF0000', // Absent (Red)
-                            '#FF7F00', // Tardy (Orange)
-                            '#FFFF00', // Cutting Classes (Yellow)
-                            '#008000', // Improper Uniform (Green)
-                            '#0000FF', // Offense (Blue)
-                            '#4B0082', // Misbehavior (Indigo)
-                            '#9400D3', // Clinic (Violet)
-                            'rgba(139, 69, 19, 1)', // Sanction (Brownish)
-                            '#000000', // Request Permit (Black)
-                        ],
+                        data,
+                        backgroundColor: backgroundColors,
+                        borderColor: borderColors,
                         borderWidth: 1,
                     },
                 ],
             };
+        
             return pieData;
         };
+        
         
         const handleChartTypeChange = (e) => {
             setSelectedChartType(e.target.value);
@@ -405,14 +529,16 @@ const Record = () => {
                 <div ref={exportRef} className={styles.exportSection}>
                     <div className={navStyles.TitleContainer}>
                         <h2 className={navStyles['h1-title']}>JHS Monitored Records</h2>
-
-                        <div className={buttonStyles['button-group']} style={{marginTop: '0px'}}>
-                            <button 
-                                className={`${buttonStyles['action-button']} ${buttonStyles['maroon-button']}`} 
-                                onClick={handleExportToPDF}>
-                                <ExportIcon /> Export to PDF
-                            </button>
-                        </div>
+                        {loggedInUser.userType === 1 && (
+                            <div className={buttonStyles['button-group']} style={{marginTop: '0px'}}>
+                                <button 
+                                    id="exportToPDFButton"
+                                    className={`${buttonStyles['action-button']} ${buttonStyles['maroon-button']}`} 
+                                    onClick={handleExportToPDF}>
+                                    <ExportIcon /> Export to PDF
+                                </button>
+                            </div>
+                        )}
                     </div>         
                     <div className={styles.filters}>
                         <div>
@@ -442,13 +568,13 @@ const Record = () => {
                                 {selectedGrade && (
                                         <select
                                             id="section"
-                                            value={selectedSection.toLowerCase()}
+                                            value={selectedSection.toUpperCase()}
                                             onChange={handleSectionChange}
                                             disabled={loggedInUser.userType === 3}
                                         >
                                             <option value="">All Sections</option>
                                             {sectionsForGrade.map((section, index) => (
-                                                <option key={index} value={section.toLowerCase()}>{section}</option>
+                                                <option key={index} value={section.toUpperCase()}>{section}</option>
                                             ))}
                                         </select>
                                 )}
@@ -484,33 +610,120 @@ const Record = () => {
                             <table className={tableStyles['global-table']}>
                                 <thead>
                                     <tr>
-                                        {selectedGrade && selectedSection ? null :<th>Grade</th>}
+                                        {selectedGrade && selectedSection ? null : <th>Grade</th>}
                                         <th>Absent</th>
                                         <th>Tardy</th>
                                         <th>Cutting Classes</th>
                                         <th>Improper Uniform</th>
-                                        <th>Offense</th>
-                                        <th>Misbehavior</th>
-                                        <th>Clinic</th>
+                                        {loggedInUser && loggedInUser.userType !== 2 && (
+                                            <>
+                                                <th>Offense</th> {/* OFFENSE || Policy Violation */}
+                                                <th>Misbehavior</th> {/* MISBEHAVIOR */}
+                                            </>
+                                        )}
+                                        {loggedInUser && loggedInUser.userType === 2 && (
+                                            <>
+                                                <th>Offense</th> {/* OFFENSE || Policy Violation */}
+                                            </>
+                                        )}
+                                        <th>Clinic</th> {/* CLINIC */}
                                         <th>Request Permit</th>
-                                        <th style={{borderRight: '0.5px solid #8A252C'}}>Sanction</th>
+                                        <th>Sanction</th>
+                                        <th style={{ borderRight: '0.5px solid #8A252C' }}>Total</th> {/* New Total Column */}
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {Object.entries(filteredFrequencyData).map(([grade, frequencies]) => (
-                                        <tr key={grade}>
-                                            {selectedGrade && selectedSection ? null :<td>{grade}</td>}
-                                            <td>{frequencies ? frequencies.Absent : 0}</td>
-                                            <td>{frequencies ? frequencies.Tardy : 0}</td>
-                                            <td>{frequencies ? frequencies['Cutting Classes'] : 0}</td>
-                                            <td>{frequencies ? frequencies['Improper Uniform'] : 0}</td>
-                                            <td>{frequencies ? frequencies.Offense : 0}</td>
-                                            <td>{frequencies ? frequencies.Misbehavior : 0}</td>
-                                            <td>{frequencies ? frequencies.Clinic : 0}</td>
-                                            <td>{frequencies ? frequencies['Request Permit'] : 0}</td>
-                                            <td>{frequencies ? frequencies.Sanction : 0}</td>
+                                    {filteredFrequencyData && Object.entries(filteredFrequencyData).length === 0 ? (
+                                        <tr>
+                                            <td colSpan={loggedInUser && loggedInUser.userType !== 2 ? 11 : 10} style={{ textAlign: 'center' }}>
+                                                No records found.
+                                            </td>
                                         </tr>
-                                    ))}
+                                    ) : (
+                                        <>
+                                            {Object.entries(filteredFrequencyData).map(([grade, frequencies]) => {
+                                                const rowTotal =
+                                                    (frequencies?.Absent || 0) +
+                                                    (frequencies?.Tardy || 0) +
+                                                    (frequencies?.['Cutting Classes'] || 0) +
+                                                    (frequencies?.['Improper Uniform'] || 0) +
+                                                    (frequencies?.Clinic || 0) +
+                                                    (frequencies?.['Request Permit'] || 0) +
+                                                    (frequencies?.Sanction || 0) +
+                                                    (loggedInUser && loggedInUser.userType !== 2
+                                                        ? (frequencies?.Offense || 0) + (frequencies?.Misbehavior || 0)
+                                                        : (frequencies?.Offense || 0) + (frequencies?.Misbehavior || 0));
+
+                                                return (
+                                                    <tr key={grade}>
+                                                        {selectedGrade && selectedSection ? null : <td>Grade - {grade}</td>}
+                                                        <td>{frequencies?.Absent || 0}</td>
+                                                        <td>{frequencies?.Tardy || 0}</td>
+                                                        <td>{frequencies?.['Cutting Classes'] || 0}</td>
+                                                        <td>{frequencies?.['Improper Uniform'] || 0}</td>
+                                                        {loggedInUser && loggedInUser.userType !== 2 && (
+                                                            <>
+                                                                <td>{frequencies?.Offense || 0}</td>
+                                                                <td>{frequencies?.Misbehavior || 0}</td>
+                                                            </>
+                                                        )}
+                                                        {loggedInUser && loggedInUser.userType === 2 && (
+                                                            <td>{(frequencies?.Offense || 0) + (frequencies?.Misbehavior || 0)}</td>
+                                                        )}
+                                                        <td>{frequencies?.Clinic || 0}</td>
+                                                        <td>{frequencies?.['Request Permit'] || 0}</td>
+                                                        <td>{frequencies?.Sanction || 0}</td>
+                                                        <td style={{ borderLeft: '2px solid #8A252C', fontWeight: 'bold', backgroundColor: '#eee' }}>
+                                                            <b>{rowTotal}</b>
+                                                        </td>
+                                                    </tr>
+                                                );
+                                            })}
+                                            {/* Total row for all columns */}
+                                            {!selectedGrade && !selectedSection && (
+                                                <tr style={{ borderTop: '2px solid #8A252C', fontWeight: 'bold', backgroundColor: '#eee' }}>
+                                                    <td>Total</td>
+                                                    <td>{Object.values(filteredFrequencyData).reduce((sum, f) => sum + (f?.Absent || 0), 0)}</td>
+                                                    <td>{Object.values(filteredFrequencyData).reduce((sum, f) => sum + (f?.Tardy || 0), 0)}</td>
+                                                    <td>{Object.values(filteredFrequencyData).reduce((sum, f) => sum + (f?.['Cutting Classes'] || 0), 0)}</td>
+                                                    <td>{Object.values(filteredFrequencyData).reduce((sum, f) => sum + (f?.['Improper Uniform'] || 0), 0)}</td>
+                                                    {loggedInUser && loggedInUser.userType !== 2 && (
+                                                        <>
+                                                            <td>{Object.values(filteredFrequencyData).reduce((sum, f) => sum + (f?.Offense || 0), 0)}</td>
+                                                            <td>{Object.values(filteredFrequencyData).reduce((sum, f) => sum + (f?.Misbehavior || 0), 0)}</td>
+                                                        </>
+                                                    )}
+                                                    {loggedInUser && loggedInUser.userType === 2 && (
+                                                        <td>
+                                                            {Object.values(filteredFrequencyData).reduce(
+                                                                (sum, f) => sum + (f?.Offense || 0) + (f?.Misbehavior || 0),
+                                                                0
+                                                            )}
+                                                        </td>
+                                                    )}
+                                                    <td>{Object.values(filteredFrequencyData).reduce((sum, f) => sum + (f?.Clinic || 0), 0)}</td>
+                                                    <td>{Object.values(filteredFrequencyData).reduce((sum, f) => sum + (f?.['Request Permit'] || 0), 0)}</td>
+                                                    <td>{Object.values(filteredFrequencyData).reduce((sum, f) => sum + (f?.Sanction || 0), 0)}</td>
+                                                    <td style={{ borderLeft: '2px solid #8A252C', backgroundColor: '#ddd'}}>
+                                                        {Object.values(filteredFrequencyData).reduce((sum, f) => {
+                                                            const rowTotal =
+                                                                (f?.Absent || 0) +
+                                                                (f?.Tardy || 0) +
+                                                                (f?.['Cutting Classes'] || 0) +
+                                                                (f?.['Improper Uniform'] || 0) +
+                                                                (f?.Clinic || 0) +
+                                                                (f?.['Request Permit'] || 0) +
+                                                                (f?.Sanction || 0) +
+                                                                (loggedInUser && loggedInUser.userType !== 2
+                                                                    ? (f?.Offense || 0) + (f?.Misbehavior || 0)
+                                                                    : (f?.Offense || 0) + (f?.Misbehavior || 0));
+                                                            return sum + rowTotal;
+                                                        }, 0)}
+                                                    </td>
+                                                </tr>
+                                            )}
+                                        </>
+                                    )}
                                 </tbody>
                             </table>
                         </div>
@@ -533,32 +746,11 @@ const Record = () => {
                                             <th>Misbehavior</th>
                                             <th>Clinic</th>
                                             <th>Request Permit</th>
-                                            <th>Sanction</th>
+                                            <th style={{borderRight: '0.5px solid #8A252C'}}>Sanction</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        {Object.entries(filteredStudentRecords).length > 0 ? (
-                                            Object.entries(filteredStudentRecords).map(([studentName, counts]) => (
-                                                <tr key={studentName}>
-                                                    <td style={{ width: '350px' }}>{studentName}</td>
-                                                    <td>{counts.Absent}</td>
-                                                    <td>{counts.Tardy}</td>
-                                                    <td>{counts['Cutting Classes']}</td>
-                                                    <td>{counts['Improper Uniform']}</td>
-                                                    <td>{counts.Offense}</td>
-                                                    <td>{counts.Misbehavior}</td>
-                                                    <td>{counts.Clinic}</td>
-                                                    <td>{counts['Request Permit']}</td>
-                                                    <td>{counts.SanctionFrequency}</td>
-                                                </tr>
-                                            ))
-                                        ) : (
-                                            <tr>
-                                                <td colSpan="10" style={{ textAlign: 'center' }}>
-                                                    No records found.
-                                                </td>
-                                            </tr>
-                                        )}
+                                        {selectedMonth && selectedSection ? <>{classOverviewTableByMonth}</> :<>{classOverviewTable}</>}
                                     </tbody>
                                 </table>
                             </div>
@@ -577,8 +769,10 @@ const Record = () => {
                                         plugins: {
                                             legend: { position: 'top' },
                                             title: { display: true, text: selectedMonth ? `Daily Frequencies in ${selectedMonth}` : 'Monthly Frequencies (Aug to May)' },
+                                            datalabels: false, // Disable data labels
                                         },
                                     }}
+                                    style={{ width: '100%', height: '100%' }}
                                 />
                             )}
                             {selectedChartType === 'bar' && (
@@ -590,25 +784,43 @@ const Record = () => {
                                         plugins: {
                                             legend: { position: 'top' },
                                             title: { display: true, text: selectedMonth ? `Daily Frequencies in ${selectedMonth}` : 'Monthly Frequencies (Aug to May)' },
+                                            datalabels: false, // Disable data labels
                                         },
                                     }}
+                                    style={{ width: '100%', height: '100%' }}
                                 />
                             )}
                             <div className={styles['piechart-Container']}>
                                 {selectedChartType === 'pie' && (
                                     <Pie
-                                    data={getChartPieData()}
-                                    options={{
-                                        responsive: true,
-                                        maintainAspectRatio: false, // This allows the chart to take the container size
-                                        plugins: {
-                                            legend: { position: 'top' },
-                                            title: { display: true, text: 'Monitored Records Distribution' },
-                                        },
-                                    }}
-                                    style={{ width: '75%', height: '75%' }} // Ensure the pie chart takes 100% width and height of the container
+                                        data={getChartPieData()}
+                                        options={{
+                                            responsive: true,
+                                            maintainAspectRatio: false,
+                                            plugins: {
+                                                legend: {
+                                                    position: 'top',
+                                                },
+                                                title: { display: true, text: 'Monitored Records Distribution' },
+                                                datalabels: {
+                                                    formatter: (value, context) => {
+                                                        const total = context.dataset.data.reduce((acc, curr) => acc + curr, 0);
+                                                        const percentage = ((value / total) * 100).toFixed(1);
+                                                        return `${percentage}%`; // Display percentage
+                                                    },
+                                                    color: '#fff',
+                                                    textStrokeColor: '#000', // Simulate shadow effect
+                                                    textStrokeWidth: 2,
+                                                    font: {
+                                                        weight: 'bold',
+                                                    },
+                                                    anchor: 'end', // Position the label outside the pie slice
+                                                    align: 'start',  // Align the label with the edge of the chart
+                                                },
+                                            },
+                                        }}
+                                        style={{ width: '100%', height: '100%' }}
                                     />
-
                                 )}
                             </div>
                         </div>

@@ -3,7 +3,7 @@
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: 800px; /* Increased width */
+  width: 950px; /* Increased width */
   max-height: 90vh; /* Ensure the modal doesn't overflow the screen */
   overflow-y: auto; /* Enable scrolling if content is too tall */
   background-color: white;
@@ -16,6 +16,8 @@
   .suspension-modal-formContainer {
     margin: 0;
     padding: 0;
+    font-family: sans-serif;
+    text-align: justify;
   }
   
   .suspension-modal-title {
@@ -23,6 +25,7 @@
     text-transform: uppercase;
     font-weight: bold;
     margin-bottom: 20px;
+    text-shadow: none;
   }
   
   /* Directly target all <p> elements */
@@ -72,6 +75,11 @@
   text-align: center; /* Ensure the name is centered */
 }
 
+.suspension-modal-image {
+  width: 100%; /* Adjust this based on your preferred size */
+  height: auto; /* Maintain aspect ratio */
+  margin-right: 100px;
+}
 
 .separator {
   display: flex;

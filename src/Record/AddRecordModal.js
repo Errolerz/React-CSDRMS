@@ -16,7 +16,7 @@ const AddRecordModal = ({ student, onClose, refreshRecords }) => {
   const [complainant, setComplainant] = useState(`${loggedInUser.firstname} ${loggedInUser.lastname}`);
   const [complaint, setComplaint] = useState('');
   const [remarks, setRemarks] = useState('');
-  const [source, setSource] = useState(1); // Initialize as null for "Select"
+  const [source, setSource] = useState(''); // Initialize as null for "Select"
   const [complete, setComplete] = useState('');
 
   // State for dynamic student selection
@@ -33,6 +33,7 @@ const AddRecordModal = ({ student, onClose, refreshRecords }) => {
     'Misbehavior',
     'Clinic',
     ...(source !== 2 ? ['Lost/Found Items', 'Request ID', 'Request Permit'] : []),
+    'TBD',
   ];
 
   // Fetch students on component mount
@@ -42,7 +43,7 @@ const AddRecordModal = ({ student, onClose, refreshRecords }) => {
     }
     const fetchStudents = async () => {
       try {
-        const response = await axios.get('https://spring-csdrms-g8ra.onrender.com/student/getAllCurrentStudents');
+        const response = await axios.get('http://localhost:8080/student/getAllCurrentStudents');
         setStudents(response.data);
       } catch (error) {
         console.error('Error fetching students:', error);
@@ -55,6 +56,11 @@ const AddRecordModal = ({ student, onClose, refreshRecords }) => {
   }, []);
 
   const handleSubmit = async () => {
+    if (!student && !selectedStudent) {
+      alert('Please select a student before submitting.');
+      return;
+    }
+    
     if (!recordDate || !incidentDate || !monitoredRecord || !source) {
       alert('Please fill in all required fields.');
       return;
@@ -67,13 +73,14 @@ const AddRecordModal = ({ student, onClose, refreshRecords }) => {
 
     const newRecord = {
       id: student?.id || selectedStudent?.id,
-      encoderId: loggedInUser.userId,
+      userId: loggedInUser.userId,
       name: student?.name || selectedStudent?.name,
       record_date: recordDate,
       incident_date: incidentDate,
       time: time,
       monitored_record: monitoredRecord,
       remarks: finalRemarks,  // Use the final value of remarks
+      encoder: `${loggedInUser.firstname} ${loggedInUser.lastname}`,
       complainant: complainant,
       complaint: complaint,
       source: source,
@@ -81,7 +88,7 @@ const AddRecordModal = ({ student, onClose, refreshRecords }) => {
     };
 
     try {
-      await axios.post(`https://spring-csdrms-g8ra.onrender.com/record/insert/${loggedInUser.userId}`, newRecord);
+      await axios.post(`http://localhost:8080/record/insert/${loggedInUser.userId}`, newRecord);
       alert('Record added successfully');
       refreshRecords();
       onClose();
@@ -114,6 +121,21 @@ const AddRecordModal = ({ student, onClose, refreshRecords }) => {
         <h2>Add New Record</h2>
 
         <div className={formStyles['form-container']}>
+          <div className={formStyles['form-group']}>
+            <label>Source</label>
+            <select
+              value={source || ''}
+              onChange={(e) => setSource(Number(e.target.value))} // Convert the value to integer
+              className={`${formStyles['input']} ${styles['student-modal-select']}`}
+              disabled={loggedInUser.userType !== 1}
+            >
+              <option value="">Select Source</option> 
+              <option value="1">Log Book</option>
+              <option value="2">Complaint</option>
+              <option value="0">N/A</option>
+            </select>
+          </div>
+          
           {!student && (
             <>
               <div className={formStyles['form-group']}>
@@ -199,21 +221,6 @@ const AddRecordModal = ({ student, onClose, refreshRecords }) => {
               ))}
             </select>
           </div>
-
-          
-            <div className={formStyles['form-group']}>
-              <label>Source</label>
-              <select
-                value={source || ''}
-                onChange={(e) => setSource(Number(e.target.value))} // Convert the value to integer
-                className={`${formStyles['input']} ${styles['student-modal-select']}`}
-                disabled={loggedInUser.userType !== 1}
-              >
-                <option value="1">Log Book</option>
-                <option value="2">Complaint</option>
-              </select>
-            </div>
-         
 
           {/* Show Complainant and Complaint if source is Complaint */}
           {source === 2 ? (

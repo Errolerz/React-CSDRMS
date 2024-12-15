@@ -26,6 +26,8 @@
     text-shadow: 3px 3px 5px #000;  /* Slight shadow for text */
     font-weight: 600;
     border: none;
+    /* word-wrap: break-word;  */
+    /* overflow-wrap: break-word; Ensures */
 }
 
 .global-table th, .global-table td {
@@ -40,7 +42,9 @@
     border-right: 1px solid #ccc;
     border-bottom: 1px solid #ccc;
     text-align: center; /* Center align table data */
-    cursor: pointer; /* Pointer cursor for rows */
+    cursor: pointer; /* Pointer cursor for rows */    
+    word-wrap: break-word; /* Prevent long text like emails from overflowing */
+    overflow-wrap: break-word; /* Ensures wrapping of long text in table cells */
 }
 
 .global-table tr {

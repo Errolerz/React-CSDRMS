@@ -13,6 +13,7 @@
     "@testing-library/user-event": "^13.5.0",
     "axios": "^1.6.8",
     "chart.js": "^4.4.4",
+    "chartjs-plugin-datalabels": "^2.2.0",
     "csdrms_react": "file:",
     "html2canvas": "^1.4.1",
     "jspdf": "^2.5.2",

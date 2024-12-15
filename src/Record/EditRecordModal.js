@@ -13,6 +13,7 @@ const RecordStudentEditModal = ({ record, onClose, refreshRecords }) => {
     ...(record.source === 1 ? ['Lost/Found Items', 'Request ID', 'Request Permit'] : []),
   ];
 
+  const [selectedSource, setSelectedSource] = useState(record?.source || '');
   const [selectedRecord, setSelectedRecord] = useState(record?.monitored_record || '');
   const [remarks, setRemarks] = useState(record?.remarks || '');
   const [sanction, setSanction] = useState(record?.sanction || '');
@@ -35,7 +36,7 @@ const RecordStudentEditModal = ({ record, onClose, refreshRecords }) => {
     const fetchSuspensionData = async () => {
       if (record?.recordId) {
         try {
-          const response = await axios.get(`https://spring-csdrms-g8ra.onrender.com/suspension/getSuspensionByRecord/${record.recordId}`);
+          const response = await axios.get(`http://localhost:8080/suspension/getSuspensionByRecord/${record.recordId}`);
           if (response.data) {
             setExistingSuspension(response.data);
             setSuspensionDetails({
@@ -129,7 +130,7 @@ const RecordStudentEditModal = ({ record, onClose, refreshRecords }) => {
   
       try {
         await axios.put(
-          `https://spring-csdrms-g8ra.onrender.com/suspension/update/${existingSuspension.suspensionId}/${loggedInUser.userId}`,
+          `http://localhost:8080/suspension/update/${existingSuspension.suspensionId}/${loggedInUser.userId}`,
           updatedSuspension
         );
         successMessage = 'Record updated successfully with its suspension!';
@@ -147,7 +148,7 @@ const RecordStudentEditModal = ({ record, onClose, refreshRecords }) => {
   
       try {
         await axios.post(
-          `https://spring-csdrms-g8ra.onrender.com/suspension/insertSuspension/${loggedInUser.userId}`,
+          `http://localhost:8080/suspension/insertSuspension/${loggedInUser.userId}`,
           newSuspension
         );
         successMessage = 'Record added successfully with its suspension!';
@@ -161,7 +162,7 @@ const RecordStudentEditModal = ({ record, onClose, refreshRecords }) => {
     if (!isSuspension && existingSuspension) {
       try {
         await axios.delete(
-          `https://spring-csdrms-g8ra.onrender.com/suspension/delete/${existingSuspension.suspensionId}/${loggedInUser.userId}`
+          `http://localhost:8080/suspension/delete/${existingSuspension.suspensionId}/${loggedInUser.userId}`
         );
         successMessage = 'Record updated successfully, suspension deleted!';
       } catch (error) {
@@ -173,6 +174,7 @@ const RecordStudentEditModal = ({ record, onClose, refreshRecords }) => {
     // Prepare the updated record data
     const updatedRecord = {
       ...record,
+      source: selectedSource,  // Include the selected source in the updated record
       monitored_record: selectedRecord,
       remarks: record.complaint === 2 ? null : remarks, // Set remarks to null if it's a case (record type 2)
       sanction: formattedSanction,
@@ -185,7 +187,7 @@ const RecordStudentEditModal = ({ record, onClose, refreshRecords }) => {
     // Update the record
     try {
       await axios.put(
-        `https://spring-csdrms-g8ra.onrender.com/record/update/${record.recordId}/${loggedInUser.userId}`,
+        `http://localhost:8080/record/update/${record.recordId}/${loggedInUser.userId}`,
         updatedRecord
       );
       alert(successMessage);
@@ -204,6 +206,21 @@ const RecordStudentEditModal = ({ record, onClose, refreshRecords }) => {
       <div className={styles.modal}>
         <h2>{record.source === 2 ? 'Investigate Student Case' : 'Edit Student Record'}</h2>
         <form onSubmit={handleSubmit}>
+          {loggedInUser.userType === 1 && (
+            <div className={styles.inputGroup}>
+              <label>Source:</label>
+              <select
+                value={selectedSource === null ? "0" : selectedSource}
+                onChange={(e) => setSelectedSource(parseInt(e.target.value, 10))}
+                className={styles.select}
+              >
+                <option value="">Select Source</option>
+                <option value="1">Logbook</option>
+                <option value="2">Complaint</option>
+              </select>
+            </div>
+          )}
+
           <div className={styles.inputGroup}>
             <label>Monitored Record:</label>
             <select 
@@ -221,7 +238,7 @@ const RecordStudentEditModal = ({ record, onClose, refreshRecords }) => {
             </select>
           </div>
 
-          {record.source == 2 && (
+          {record.source === 2 && (
             <>
               <div className={styles.inputGroup}>     
                 <label>Complainant:</label>
@@ -241,7 +258,7 @@ const RecordStudentEditModal = ({ record, onClose, refreshRecords }) => {
                 />
               </div>
               
-              {loggedInUser.userType == 1 && (
+              {loggedInUser.userType === 1 && (
               <div className={styles.inputGroup}>
                 <label>Investigation Details:</label>
                   <textarea
@@ -253,7 +270,7 @@ const RecordStudentEditModal = ({ record, onClose, refreshRecords }) => {
             </>
           )}
 
-          {record.source == 1 && (
+          {record.source === 1 && (
             <>
               <div className={styles.inputGroup}>                 
                 <label>Remarks:</label>
@@ -280,7 +297,7 @@ const RecordStudentEditModal = ({ record, onClose, refreshRecords }) => {
             </>
           )}          
 
-          {loggedInUser.userType === 1 && record.source == 2 && !isSuspension && (
+          {loggedInUser.userType === 1 && record.source === 2 && !isSuspension && (
             <>
               <div className={styles.inputGroup}>
                 <label>Is the Case Complete?</label>

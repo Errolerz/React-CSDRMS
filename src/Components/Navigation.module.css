@@ -34,7 +34,7 @@ body{
     flex-direction: column;
     align-items: center;
     position: fixed;
-    z-index: 999;
+    z-index: 998;
 }
 
 .sidenav-title {

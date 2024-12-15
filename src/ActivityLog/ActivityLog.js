@@ -45,7 +45,7 @@ const ActivityLog = () => {
     useEffect(() => {
         const fetchActivityLogs = async () => {
             try {
-                const response = await axios.get('https://spring-csdrms-g8ra.onrender.com/activity-log/getAllActivityLogs');
+                const response = await axios.get('http://localhost:8080/activity-log/getAllActivityLogs');
                 const sortedLogs = response.data.sort((a, b) => b.activitylog_id - a.activitylog_id); // Sort by ID in descending order
                 setActivityLogs(sortedLogs);
             } catch (err) {
@@ -159,7 +159,7 @@ const ActivityLog = () => {
                             {paginatedLogs.length > 0 ? (
                                 paginatedLogs.map((log) => (
                                     <tr key={log.activitylog_id}>
-                                        <td>{log.user.firstname} {log.user.lastname}</td>
+                                        <td style={{textAlign: 'left', paddingLeft: '50px'}}>{log.user.firstname} {log.user.lastname}</td>
                                         <td>{getUserTypeString(log.user.userType)}</td>
                                         <td>{log.action}</td>
                                         <td>{log.description}</td>

@@ -43,7 +43,7 @@
 /* Increase the width of the second column */
 .student-list-table th:nth-child(5), 
 .student-list-table td:nth-child(5) {
-    width: 350px; /* Adjust this value as needed */
+    width: 330px; /* Adjust this value as needed */
 }
 
 /* Increase the width of the second column */
@@ -52,6 +52,11 @@
     width: 120px; /* Adjust this value as needed */
 }
 
+/* Increase the width of the second column */
+.student-list-table th:nth-child(7), 
+.student-list-table td:nth-child(7) {
+    text-align: center;
+}
 
 .student-list-table td {
     cursor: pointer;

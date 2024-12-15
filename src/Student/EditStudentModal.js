@@ -29,15 +29,15 @@ const EditStudentModal = ({ student, onClose, refreshStudents }) => {
         // Fetch available grades and school years when modal opens
         const fetchData = async () => {
           try {
-            const gradesResponse = await axios.get('https://spring-csdrms-g8ra.onrender.com/class/allUniqueGrades');
+            const gradesResponse = await axios.get('http://localhost:8080/class/allUniqueGrades');
             setGrades(gradesResponse.data);
     
-            const schoolYearsResponse = await axios.get('https://spring-csdrms-g8ra.onrender.com/schoolYear/getAllSchoolYears');
+            const schoolYearsResponse = await axios.get('http://localhost:8080/schoolYear/getAllSchoolYears');
             setSchoolYears(schoolYearsResponse.data);
     
             // Fetch sections for the current grade
             if (formData.grade) {
-              const sectionsResponse = await axios.get(`https://spring-csdrms-g8ra.onrender.com/class/sections/${formData.grade}`);
+              const sectionsResponse = await axios.get(`http://localhost:8080/class/sections/${formData.grade}`);
               setSections(sectionsResponse.data);
             }
           } catch (error) {
@@ -59,7 +59,7 @@ const EditStudentModal = ({ student, onClose, refreshStudents }) => {
 
   const fetchSections = async (grade) => {
     try {
-      const response = await axios.get(`https://spring-csdrms-g8ra.onrender.com/class/sections/${grade}`);
+      const response = await axios.get(`http://localhost:8080/class/sections/${grade}`);
       setSections(response.data);
     } catch (error) {
       console.error('Error fetching sections:', error);
@@ -70,7 +70,7 @@ const EditStudentModal = ({ student, onClose, refreshStudents }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.put(`https://spring-csdrms-g8ra.onrender.com/student/update/${student.id}/${loggedInUser.userId}`, formData); // Update API endpoint
+      await axios.put(`http://localhost:8080/student/update/${student.id}/${loggedInUser.userId}`, formData); // Update API endpoint
       refreshStudents(); // Refresh the student list after update
       window.location.reload();
       onClose(); // Close modal on success

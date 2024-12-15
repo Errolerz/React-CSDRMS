@@ -70,7 +70,7 @@ const AdminDashboard = () => {
 
   const fetchUsers = async () => {
     try {
-      const response = await axios.get('https://spring-csdrms-g8ra.onrender.com/user/getAllUsers');
+      const response = await axios.get('http://localhost:8080/user/getAllUsers');
       setUsers(response.data);
     } catch (error) {
       console.error('Error fetching users:', error);
@@ -81,7 +81,7 @@ const AdminDashboard = () => {
   const confirmDelete = async () => {
     if (selectedUser) {
       try {
-        await axios.delete(`https://spring-csdrms-g8ra.onrender.com/user/deleteUser/${selectedUser.username}/${loggedInUser.userId}`);
+        await axios.delete(`http://localhost:8080/user/deleteUser/${selectedUser.username}/${loggedInUser.userId}`);
         setUsers((prevUsers) => prevUsers.filter((user) => user.username !== selectedUser.username));
         setSelectedUser(null);
         setIsConfirmationModalOpen(false); // Close the modal after successful deletion

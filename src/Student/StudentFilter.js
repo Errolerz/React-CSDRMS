@@ -15,7 +15,10 @@ const StudentFilter = ({
   setSelectedMonth,
   selectedWeek,
   setSelectedWeek,
+  setSelectedMonitoredRecord,
+  selectedMonitoredRecord,
   grades,
+
   chartType, // New prop for chart type
   setChartType, // New prop to set chart type
   showGradeAndSection = true, // Existing prop to control grade and section visibility
@@ -43,9 +46,20 @@ const StudentFilter = ({
     { value: '5', label: 'Week 5' },
   ];
 
+  const monitored_record = [
+    { value: 'Absent', label: 'Absent' },
+    { value: 'Tardy', label: 'Tardy' },
+    { value: 'Cutting Classes', label: 'Cutting Classes' },
+    { value: 'Improper Uniform', label: 'Improper Uniform' },
+    { value: 'Offense', label: 'Offense' },
+    { value: 'Misbehavior', label: 'Misbehavior' },
+    { value: 'Clinic', label: 'Clinic' },
+    
+  ];
+
   const fetchSectionsByGrade = async (grade) => {
     try {
-      const response = await axios.get(`https://spring-csdrms-g8ra.onrender.com/class/sections/${grade}`);
+      const response = await axios.get(`http://localhost:8080/class/sections/${grade}`);
       setSections(response.data);
     } catch (error) {
       console.error('Error fetching sections:', error);
@@ -63,6 +77,18 @@ const StudentFilter = ({
   return (
     <div className={styles.filterContainer}>
       <label>Filters: 
+        <select
+          value={selectedMonitoredRecord}
+          onChange={(e) => setSelectedMonitoredRecord(e.target.value)}
+        >
+          <option value="">All Monitored Records</option>
+          {monitored_record.map((monitored_record) => (
+            <option key={monitored_record.value} value={monitored_record.value}>
+              {monitored_record.label}
+            </option>
+          ))}
+        </select>
+        
         {loggedInUser?.userType !== 3 && (
           <select
             value={selectedSchoolYear}
@@ -136,6 +162,8 @@ const StudentFilter = ({
             </option>
           ))}
         </select>
+        
+
 
         {/* Conditional rendering for the chart type dropdown */}
         {isAnalytics && (

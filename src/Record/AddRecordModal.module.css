@@ -85,8 +85,12 @@
   font-size: 16px;
   padding: 10px 10px;
   cursor: pointer;
+  color: #000; /* Change color on hover */
+  transition: color 0.3s, transform 0.3s;
+  font-weight: bold;
 }
 
 .clearButton:hover {
-  transform: scale(1.1); /* Slightly increase size on hover */
+  color: #000; /* Change color on hover */
+  transform: scale(1.1); /* Slightly enlarge the button on hover */
 }

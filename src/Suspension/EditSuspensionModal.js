@@ -40,7 +40,7 @@ const EditSuspensionModal = ({ isOpen, onClose, suspension }) => {
         days,
       };
 
-      await axios.put(`https://spring-csdrms-g8ra.onrender.com/suspension/update/${suspension.suspensionId}/${loggedInUser.userId}`, updatedSuspension);
+      await axios.put(`https://spring-csdrms.onrender.com/suspension/update/${suspension.suspensionId}/${loggedInUser.userId}`, updatedSuspension);
       window.location.reload();
       onClose(); // Close modal after save
     } catch (error) {

@@ -50,7 +50,7 @@ const Suspensions = () => {
       setLoading(true);
       setError(null);
       try {
-        const response = await axios.get('https://spring-csdrms-g8ra.onrender.com/suspension/getAllSuspensions');
+        const response = await axios.get('https://spring-csdrms.onrender.com/suspension/getAllSuspensions');
   
         const sortedSuspensions = response.data.sort((a, b) => b.suspensionId - a.suspensionId);
         setSuspensions(sortedSuspensions);
@@ -78,7 +78,7 @@ const Suspensions = () => {
     if (selectedSuspension) {
       try {
         const response = await axios.post(
-          `https://spring-csdrms-g8ra.onrender.com/suspension/approveSuspension/${loggedInUser.userId}?suspensionId=${selectedSuspension.suspensionId}`
+          `https://spring-csdrms.onrender.com/suspension/approveSuspension/${loggedInUser.userId}?suspensionId=${selectedSuspension.suspensionId}`
         );
         console.log("Approval Response:", response.data);
         alert("Suspension approved successfully.");
@@ -105,7 +105,7 @@ const Suspensions = () => {
       if (!confirmDelete) return; // Exit if user cancels
   
       try {
-        await axios.delete(`https://spring-csdrms-g8ra.onrender.com/suspension/delete/${selectedSuspension.suspensionId}/${loggedInUser.userId}`);
+        await axios.delete(`https://spring-csdrms.onrender.com/suspension/delete/${selectedSuspension.suspensionId}/${loggedInUser.userId}`);
         setSuspensions(suspensions.filter(suspension => suspension.suspensionId !== selectedSuspension.suspensionId));
         setSelectedSuspension(null); // Deselect after deletion
       } catch (error) {

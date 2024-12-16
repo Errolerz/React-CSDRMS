@@ -19,7 +19,7 @@ const UserTimeLogModal = ({ user, onClose }) => { // Changed from adviser to use
     useEffect(() => {
         const fetchUserTimeLogs = async () => { // Changed from fetchAdviserTimeLogs
             try {
-                const response = await axios.get(`https://spring-csdrms-g8ra.onrender.com/time-log/getAllTimelogsByUser/${user.userId}`); // Changed endpoint
+                const response = await axios.get(`https://spring-csdrms.onrender.com/time-log/getAllTimelogsByUser/${user.userId}`); // Changed endpoint
                 setUserTimeLogs(response.data);
                 setLoading(false);
             } catch (err) {
@@ -34,7 +34,7 @@ const UserTimeLogModal = ({ user, onClose }) => { // Changed from adviser to use
     useEffect(() => {
         const fetchActivityLogs = async () => {
             try {
-                const response = await axios.get(`https://spring-csdrms-g8ra.onrender.com/activity-log/getAllActivityLogsByUser/${user.userId}`);
+                const response = await axios.get(`https://spring-csdrms.onrender.com/activity-log/getAllActivityLogsByUser/${user.userId}`);
                 const sortedLogs = response.data.sort((a, b) => b.activitylog_id - a.activitylog_id); // Sort by ID in descending order
                 setActivityLogs(sortedLogs);
             } catch (err) {

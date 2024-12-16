@@ -45,7 +45,7 @@ const ActivityLog = () => {
     useEffect(() => {
         const fetchActivityLogs = async () => {
             try {
-                const response = await axios.get('https://spring-csdrms-g8ra.onrender.com/activity-log/getAllActivityLogs');
+                const response = await axios.get('https://spring-csdrms.onrender.com/activity-log/getAllActivityLogs');
                 const sortedLogs = response.data.sort((a, b) => b.activitylog_id - a.activitylog_id); // Sort by ID in descending order
                 setActivityLogs(sortedLogs);
             } catch (err) {

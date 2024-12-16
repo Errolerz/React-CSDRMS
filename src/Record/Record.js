@@ -73,7 +73,7 @@ const Record = () => {
     let params = {};
 
     if (loggedInUser.userType === 3) {
-      url = 'https://spring-csdrms-g8ra.onrender.com/record/getRecordsByAdviser';
+      url = 'https://spring-csdrms.onrender.com/record/getRecordsByAdviser';
       params = {
         grade: loggedInUser.grade,
         section: loggedInUser.section,
@@ -81,12 +81,12 @@ const Record = () => {
         userId: loggedInUser.userId,
       };
     } else if ([5, 6, 2].includes(loggedInUser.userType)) {
-      url = 'https://spring-csdrms-g8ra.onrender.com/record/getAllRecordsByUserId';
+      url = 'https://spring-csdrms.onrender.com/record/getAllRecordsByUserId';
       params = {
         userId: loggedInUser.userId,
       };
     } else if (loggedInUser.userType === 1) {
-      url = 'https://spring-csdrms-g8ra.onrender.com/record/getAllRecords';
+      url = 'https://spring-csdrms.onrender.com/record/getAllRecords';
     }
 
     if (url) {
@@ -136,7 +136,7 @@ const Record = () => {
   const handleDelete = (recordId) => {
     if (window.confirm('Are you sure you want to delete this record?')) {
       axios
-        .delete(`https://spring-csdrms-g8ra.onrender.com/record/delete/${recordId}/${loggedInUser.userId}`)
+        .delete(`https://spring-csdrms.onrender.com/record/delete/${recordId}/${loggedInUser.userId}`)
         .then(() => {
           alert('Record deleted successfully.');
           fetchRecords();

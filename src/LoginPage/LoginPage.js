@@ -54,7 +54,7 @@ const LoginPage = () => {
     e.preventDefault();
     setLoading(true); // Show loader when login starts
     try {
-      const response = await axios.post('https://spring-csdrms-g8ra.onrender.com/user/login', {
+      const response = await axios.post('https://spring-csdrms.onrender.com/user/login', {
         username,
         password,
       });
@@ -73,7 +73,7 @@ const LoginPage = () => {
      
       // Only log time if the userType is 3
       const loginTime = new Date().toISOString(); // Get current time in ISO format
-      await axios.post('https://spring-csdrms-g8ra.onrender.com/time-log/login', {
+      await axios.post('https://spring-csdrms.onrender.com/time-log/login', {
         userId: response.data.userId, // Assuming userObject contains uid
         loginTime: loginTime,
       });

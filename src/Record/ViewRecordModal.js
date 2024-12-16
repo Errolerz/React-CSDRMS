@@ -125,11 +125,6 @@ const ViewRecordModal = ({ record, onClose }) => {
               <td><strong>{record.source === 1 ? 'Logbook' : record.source === 2 ? 'Complaint' : 'N/A'}</strong>  </td>
             </tr>    
             <tr>
-              <td><strong>Remarks</strong></td>
-              <td><strong>:</strong></td>
-              <td>{record.remarks || 'N/A'}</td>
-            </tr>     
-            <tr>
               <td><strong>Sanction</strong></td>
               <td><strong>:</strong></td>
               <td>{record.sanction || 'N/A'}</td>

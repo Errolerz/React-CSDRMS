@@ -35,7 +35,7 @@ const RecordStudentEditModal = ({ record, onClose, refreshRecords }) => {
     const fetchSuspensionData = async () => {
       if (record?.recordId) {
         try {
-          const response = await axios.get(`https://spring-csdrms-g8ra.onrender.com/suspension/getSuspensionByRecord/${record.recordId}`);
+          const response = await axios.get(`http://localhost:8080/suspension/getSuspensionByRecord/${record.recordId}`);
           if (response.data) {
             setExistingSuspension(response.data);
             setSuspensionDetails({
@@ -97,7 +97,7 @@ const RecordStudentEditModal = ({ record, onClose, refreshRecords }) => {
   
       try {
         await axios.put(
-          `https://spring-csdrms-g8ra.onrender.com/suspension/update/${existingSuspension.suspensionId}/${loggedInUser.userId}`,
+          `http://localhost:8080/suspension/update/${existingSuspension.suspensionId}/${loggedInUser.userId}`,
           updatedSuspension
         );
         successMessage = 'Record updated successfully with its suspension!';
@@ -115,7 +115,7 @@ const RecordStudentEditModal = ({ record, onClose, refreshRecords }) => {
   
       try {
         await axios.post(
-          `https://spring-csdrms-g8ra.onrender.com/suspension/insertSuspension/${loggedInUser.userId}`,
+          `http://localhost:8080/suspension/insertSuspension/${loggedInUser.userId}`,
           newSuspension
         );
         successMessage = 'Record added successfully with its suspension!';
@@ -129,7 +129,7 @@ const RecordStudentEditModal = ({ record, onClose, refreshRecords }) => {
     if (!isSuspension && existingSuspension) {
       try {
         await axios.delete(
-          `https://spring-csdrms-g8ra.onrender.com/suspension/delete/${existingSuspension.suspensionId}/${loggedInUser.userId}`
+          `http://localhost:8080/suspension/delete/${existingSuspension.suspensionId}/${loggedInUser.userId}`
         );
         successMessage = 'Record updated successfully, suspension deleted!';
       } catch (error) {
@@ -153,7 +153,7 @@ const RecordStudentEditModal = ({ record, onClose, refreshRecords }) => {
     // Update the record
     try {
       await axios.put(
-        `https://spring-csdrms-g8ra.onrender.com/record/update/${record.recordId}/${loggedInUser.userId}`,
+        `http://localhost:8080/record/update/${record.recordId}/${loggedInUser.userId}`,
         updatedRecord
       );
       alert(successMessage);

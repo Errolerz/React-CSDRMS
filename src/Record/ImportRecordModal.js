@@ -25,7 +25,7 @@ const ImportRecordModal = ({ isOpen, onClose, refreshRecords, loggedInUser }) =>
 
     // Sending the file to the backend for import
     axios
-      .post(`https://spring-csdrms-g8ra.onrender.com/record/import/${loggedInUser.userId}`, formData, {
+      .post(`http://localhost:8080/record/import/${loggedInUser.userId}`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },

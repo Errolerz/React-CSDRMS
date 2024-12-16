@@ -10,7 +10,7 @@ const StudentDetailsModal = ({ student, onClose }) => {
     if (student) {
       const fetchAdviser = async () => {
         try {
-          const response = await axios.get('https://spring-csdrms-g8ra.onrender.com/user/adviser', {
+          const response = await axios.get('http://localhost:8080/user/adviser', {
             params: { grade: student.grade, section: student.section, schoolYear: student.schoolYear },
           });
           setAdviser(response.data); // Set the adviser data

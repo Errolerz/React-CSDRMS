@@ -69,7 +69,7 @@ const AddLogBookModal = ({ isOpen, onClose, refreshRecords }) => {
   
   const fetchRecords = async () => {
     try {
-      const response = await axios.get('https://spring-csdrms-g8ra.onrender.com/record/getRecordsByStudentDetails', {
+      const response = await axios.get('http://localhost:8080/record/getRecordsByStudentDetails', {
         params: {
           schoolYear: selectedSchoolYear,
           grade: selectedGrade,
@@ -109,7 +109,7 @@ const AddLogBookModal = ({ isOpen, onClose, refreshRecords }) => {
   
   const fetchStudents = async () => {
     try {
-      const response = await axios.get('https://spring-csdrms-g8ra.onrender.com/student/getAllCurrentStudents', {
+      const response = await axios.get('http://localhost:8080/student/getAllCurrentStudents', {
         headers: { Authorization: `Bearer ${authToken}` },
       });
 
@@ -136,7 +136,7 @@ const AddLogBookModal = ({ isOpen, onClose, refreshRecords }) => {
 
   const fetchSchoolYears = async () => {
     try {
-      const response = await axios.get('https://spring-csdrms-g8ra.onrender.com/schoolYear/getAllSchoolYears', {
+      const response = await axios.get('http://localhost:8080/schoolYear/getAllSchoolYears', {
         headers: { Authorization: `Bearer ${authToken}` },
       });
       setSchoolYears(response.data);
@@ -147,7 +147,7 @@ const AddLogBookModal = ({ isOpen, onClose, refreshRecords }) => {
 
   const fetchGrades = async () => {
     try {
-      const response = await axios.get('https://spring-csdrms-g8ra.onrender.com/class/allUniqueGrades', {
+      const response = await axios.get('http://localhost:8080/class/allUniqueGrades', {
         headers: { Authorization: `Bearer ${authToken}` },
       });
       setGrades(response.data);
@@ -158,7 +158,7 @@ const AddLogBookModal = ({ isOpen, onClose, refreshRecords }) => {
 
   const fetchSections = async (grade) => {
     try {
-      const response = await axios.get(`https://spring-csdrms-g8ra.onrender.com/class/sections/${grade}`, {
+      const response = await axios.get(`http://localhost:8080/class/sections/${grade}`, {
         headers: { Authorization: `Bearer ${authToken}` },
       });
       setSections(response.data);
@@ -243,7 +243,7 @@ const AddLogBookModal = ({ isOpen, onClose, refreshRecords }) => {
     });
 
     try {
-      await axios.post('https://spring-csdrms-g8ra.onrender.com/record/insertMultipleRecords', payload, {
+      await axios.post('http://localhost:8080/record/insertMultipleRecords', payload, {
         headers: { Authorization: `Bearer ${authToken}` },
       });
       alert('Records successfully saved!');

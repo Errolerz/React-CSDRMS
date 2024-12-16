@@ -27,7 +27,7 @@ const ImportModal = ({ onClose, schoolYears = [] }) => {
 
     setLoading(true); // Set loading to true
     try {
-      await axios.post('https://spring-csdrms-g8ra.onrender.com/student/import', formData, {
+      await axios.post('http://localhost:8080/student/import', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },

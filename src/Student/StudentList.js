@@ -54,10 +54,10 @@ const StudentList = () => {
 
       if (userType === 1 || userType === 4) {
         // Admin: Fetch all current students
-        response = await axios.get('https://spring-csdrms-g8ra.onrender.com/student/getAllCurrentStudents');
+        response = await axios.get('http://localhost:8080/student/getAllCurrentStudents');
       } else if (userType === 3){
         // Adviser: Fetch students based on grade, section, and school year
-        response = await axios.get('https://spring-csdrms-g8ra.onrender.com/student/getAllStudentsByAdviser', { 
+        response = await axios.get('http://localhost:8080/student/getAllStudentsByAdviser', { 
           params: {
             grade: loggedInUser.grade,
             section: loggedInUser.section,
@@ -84,7 +84,7 @@ const StudentList = () => {
 
   const fetchSchoolYears = useCallback(async () => {
     try {
-      const response = await axios.get('https://spring-csdrms-g8ra.onrender.com/schoolYear/getAllSchoolYears');
+      const response = await axios.get('http://localhost:8080/schoolYear/getAllSchoolYears');
       if (Array.isArray(response.data)) {
         setSchoolYears(response.data);
       } else {
@@ -99,12 +99,12 @@ const StudentList = () => {
   const fetchGradesAndSections = useCallback(async () => {
     try {
       // Fetch available grades
-      const gradeResponse = await axios.get('https://spring-csdrms-g8ra.onrender.com/class/allUniqueGrades');
+      const gradeResponse = await axios.get('http://localhost:8080/class/allUniqueGrades');
       setGrades(gradeResponse.data);
 
       // Fetch sections for the selected grade
       if (selectedGrade) {
-        const sectionResponse = await axios.get(`https://spring-csdrms-g8ra.onrender.com/class/sections/${selectedGrade}`);
+        const sectionResponse = await axios.get(`http://localhost:8080/class/sections/${selectedGrade}`);
         setSections(sectionResponse.data);
       }
     } catch (error) {
@@ -177,7 +177,7 @@ const StudentList = () => {
     const confirmDelete = window.confirm('Are you sure you want to delete this student?');
     if (confirmDelete) {
       try {
-        await axios.delete(`https://spring-csdrms-g8ra.onrender.com/student/delete/${id}/${loggedInUser.userId}`);
+        await axios.delete(`http://localhost:8080/student/delete/${id}/${loggedInUser.userId}`);
         fetchStudents(); // Refresh student list after deletion
       } catch (error) {
         console.error('Error deleting student:', error);

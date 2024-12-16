@@ -39,12 +39,12 @@ const Navigation = ({ loggedInUser }) => {
   const handleLogout = async () => {
     try {
       const logoutTime = new Date().toISOString();
-      const response = await axios.get(`https://spring-csdrms-g8ra.onrender.com/time-log/getLatestLog/${userId}`);
+      const response = await axios.get(`http://localhost:8080/time-log/getLatestLog/${userId}`);
       console.log('Response from API:', response.data);
 
       const { timelog_id: timelogId } = response.data;
 
-      await axios.post('https://spring-csdrms-g8ra.onrender.com/time-log/logout', {
+      await axios.post('http://localhost:8080/time-log/logout', {
         timelogId,
         logoutTime,
       });
@@ -100,7 +100,7 @@ const Navigation = ({ loggedInUser }) => {
   useEffect(() => {
     const fetchNotifications = async () => {
       try {
-        const response = await axios.get(`https://spring-csdrms-g8ra.onrender.com/notifications/user/${userId}`);
+        const response = await axios.get(`http://localhost:8080/notifications/user/${userId}`);
         const notificationsData = response.data;
 
         notificationsData.sort((a, b) => b.userNotificationId - a.userNotificationId);

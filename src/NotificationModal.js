@@ -15,7 +15,7 @@ const NotificationModal = ({ onClose, loggedInUser, notifications, setNotificati
   useEffect(() => {
     const markNotificationsAsViewed = async () => {
       try {
-        await axios.post(`https://spring-csdrms-g8ra.onrender.com/notifications/user/${loggedInUser.userId}/mark-all-as-viewed`);
+        await axios.post(`http://localhost:8080/notifications/user/${loggedInUser.userId}/mark-all-as-viewed`);
         refreshNotifications(); // Refresh notification count
       } catch (error) {
         console.error('Error marking notifications as viewed:', error);
@@ -30,7 +30,7 @@ const NotificationModal = ({ onClose, loggedInUser, notifications, setNotificati
     const confirmDelete = window.confirm('Are you sure you want to delete this notification?');
     if (confirmDelete) {
       try {
-        await axios.delete(`https://spring-csdrms-g8ra.onrender.com/notifications/delete/${userNotificationId}`);
+        await axios.delete(`http://localhost:8080/notifications/delete/${userNotificationId}`);
         setNotifications((prevNotifications) =>
           prevNotifications.filter((notification) => notification.userNotificationId !== userNotificationId)
         );

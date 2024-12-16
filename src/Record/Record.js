@@ -234,12 +234,12 @@ const Record = () => {
           <div className={buttonStyles['button-group']} style={{marginTop: '0px'}}>
           {loggedInUser?.userType === 1 && (
           <>
-            {/* <button
+            <button
               className={`${buttonStyles['action-button']} ${buttonStyles['maroon-button']}`}
               onClick={openImportModal}
               >
               <ImportIcon />Import Records
-            </button> */}
+            </button>
             <button
               className={`${buttonStyles['action-button']} ${buttonStyles['gold-button']}`}
               onClick={openAddLogBookModal}

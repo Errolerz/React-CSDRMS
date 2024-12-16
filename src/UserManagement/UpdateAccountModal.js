@@ -28,10 +28,10 @@
 
         const fetchDynamicData = async () => {
             try {
-                const gradesResponse = await axios.get('https://spring-csdrms.onrender.com/class/allUniqueGrades');
+                const gradesResponse = await axios.get('https://spring-csdrms-g8ra.onrender.com/class/allUniqueGrades');
                 setGrades(gradesResponse.data);
 
-                const schoolYearsResponse = await axios.get('https://spring-csdrms.onrender.com/schoolYear/getAllSchoolYears');
+                const schoolYearsResponse = await axios.get('https://spring-csdrms-g8ra.onrender.com/schoolYear/getAllSchoolYears');
                 setSchoolYears(schoolYearsResponse.data);
             } catch (error) {
                 console.error('Error fetching dynamic data:', error);
@@ -43,7 +43,7 @@
             setUpdatedUser((prevUser) => ({ ...prevUser, grade: selectedGrade }));
             
             try {
-                const sectionsResponse = await axios.get(`https://spring-csdrms.onrender.com/class/sections/${selectedGrade}`);
+                const sectionsResponse = await axios.get(`https://spring-csdrms-g8ra.onrender.com/class/sections/${selectedGrade}`);
                 const newSections = sectionsResponse.data;
                 setSections(newSections);
         
@@ -107,7 +107,7 @@
                 }
             }
 
-            axios.put(`https://spring-csdrms.onrender.com/user/updateUser/${userId}/${loggedInUser.userId}`, updatedData)
+            axios.put(`https://spring-csdrms-g8ra.onrender.com/user/updateUser/${userId}/${loggedInUser.userId}`, updatedData)
                 .then(response => {
                     console.log(response.data);
                     alert('Account Successfully Updated');

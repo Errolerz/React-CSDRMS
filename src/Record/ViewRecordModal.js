@@ -9,7 +9,7 @@ const ViewRecordModal = ({ record, onClose }) => {
     const fetchSuspensionData = async () => {
       if (record?.recordId) {
         try {
-          const response = await axios.get(`https://spring-csdrms.onrender.com/suspension/getSuspensionByRecord/${record.recordId}`);
+          const response = await axios.get(`https://spring-csdrms-g8ra.onrender.com/suspension/getSuspensionByRecord/${record.recordId}`);
           if (response.data) {
             // Check if the suspension is approved or not
             const status = response.data.approved ? 'Approved' : 'Not Approved';  // Or 'Pending' depending on your choice

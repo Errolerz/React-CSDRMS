@@ -42,10 +42,10 @@ const MenuPopupState = () => {
 
         try {
             const logoutTime = new Date().toISOString();
-            const response = await axios.get(`https://spring-csdrms.onrender.com/time-log/getLatestLog/${userId}`);
+            const response = await axios.get(`https://spring-csdrms-g8ra.onrender.com/time-log/getLatestLog/${userId}`);
             const { timelog_id: timelogId } = response.data;
 
-            await axios.post('https://spring-csdrms.onrender.com/time-log/logout', {
+            await axios.post('https://spring-csdrms-g8ra.onrender.com/time-log/logout', {
                 timelogId,
                 logoutTime,
             });
